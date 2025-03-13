@@ -33,7 +33,7 @@ func login(c *fiber.Ctx) error {
 	return internal.RenderTemplate(c, "login.html")
 }
 
-func ProcessRegister(c *fiber.Ctx) error {
+func processRegister(c *fiber.Ctx) error {
 	var err error
 	DB, err = sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
 	if err != nil {
@@ -61,7 +61,7 @@ func ProcessRegister(c *fiber.Ctx) error {
 	return c.Redirect("/")
 }
 
-func ProcessLogin(c *fiber.Ctx) error {
+func processLogin(c *fiber.Ctx) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 	DB, _ = sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
@@ -136,12 +136,12 @@ func LoginRequired() func(*fiber.Ctx) error {
 	}
 }
 
-func GetUserData(c *fiber.Ctx) (models.Account, error) {
-
+func GetUserData(c *fiber.Ctx) (interface{}, error) {
 	var user models.Account
 	cookie := c.Cookies("jwt")
 	if cookie == "" {
-		return user, fmt.Errorf("no jwt cookie found")
+		user.Fill_default()
+		return user, nil
 	}
 	token, err := jwt.Parse(cookie, func(token *jwt.Token) (interface{}, error) {
 		return []byte(JWT_SECRET), nil
@@ -174,8 +174,8 @@ func hash_pwd(password string) string {
 
 func SetupAuthHandlers(app *fiber.App) {
 	app.Get("/register", register)
-	app.Post("/submit", ProcessRegister)
+	app.Post("/submit", processRegister)
 	app.Get("/login", login)
-	app.Post("/login", ProcessLogin)
+	app.Post("/login", processLogin)
 	app.Get("/logout", LoginRequired(), Logout)
 }
