@@ -7,7 +7,11 @@ import (
 )
 
 func index(c *fiber.Ctx) error {
-	return internal.RenderTemplate(c, "index.html", nil)
+	user, err := handlers.GetUserData(c)
+	if err != nil {
+		return err
+	}
+	return internal.RenderTemplate(c, "index.html", [2]interface{}{"user", user})
 }
 
 func SetupHandlers(app *fiber.App) {
