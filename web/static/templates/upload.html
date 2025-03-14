@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Завантаження файлу</h2>
+
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <label>
+        <input type="radio" name="category" value="audio" required> Музика
+    </label>
+    <label>
+        <input type="radio" name="category" value="midi"> MIDI
+    </label>
+    <label>
+        <input type="radio" name="category" value="samples"> Семпли
+    </label>
+
+    <br><br>
+
+    <input type="file" name="file" id="fileInput" required>
+    <br><br>
+
+    <button type="submit">Завантажити файл</button>
+</form>
+
+<script>
+document.getElementById("fileInput").addEventListener("change", function () {
+    const file = this.files[0];
+    const category = document.querySelector('input[name="category"]:checked');
+
+    if (!file || !category) {
+        alert("Оберіть файл і категорію.");
+        return;
+    }
+
+    const audioFormats = [".mp3", ".wav", ".flac", ".ogg", ".m4a"];
+    const archiveFormats = [".zip"];
+    const fileExt = file.name.split(".").pop().toLowerCase();
+
+    if (category.value === "audio" && !audioFormats.includes("." + fileExt)) {
+        alert("Файл має бути аудіоформатом.");
+        this.value = "";
+    } else if ((category.value === "midi" || category.value === "samples") && !archiveFormats.includes("." + fileExt)) {
+        alert("Файл має бути ZIP-архівом.");
+        this.value = "";
+    }
+});
+</script>
+{% endblock %}
