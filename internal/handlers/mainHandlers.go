@@ -16,5 +16,4 @@ func index(c *fiber.Ctx) error {
 
 func SetupHandlers(app *fiber.App) {
 	app.Get("/", index)
-	handlers.SetupAuthHandlers(app)
 }
