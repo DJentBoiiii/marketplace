@@ -136,7 +136,7 @@ func LoginRequired() func(*fiber.Ctx) error {
 	}
 }
 
-func GetUserData(c *fiber.Ctx) (interface{}, error) {
+func GetUserData(c *fiber.Ctx) (models.Account, error) {
 	var user models.Account
 	cookie := c.Cookies("jwt")
 	if cookie == "" {
@@ -161,6 +161,37 @@ func GetUserData(c *fiber.Ctx) (interface{}, error) {
 	return user, nil
 }
 
+func GetUserFromDB(username string) (*models.Account, error) {
+	DB, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
+	if err != nil {
+		return nil, fmt.Errorf("помилка підключення до БД: %w", err)
+	}
+	defer DB.Close()
+
+	var user models.Account
+	err = DB.QueryRow("SELECT id, name, email, is_admin FROM Users WHERE name = ?", username).
+		Scan(&user.Id, &user.Username, &user.Email, &user.Is_admin)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("користувача не знайдено")
+		}
+		return nil, fmt.Errorf("помилка отримання даних користувача: %w", err)
+	}
+	return &user, nil
+}
+
+func Profile(c *fiber.Ctx) error {
+	username := c.Params("username")
+	user, err := GetUserFromDB(username)
+	if err != nil {
+		return c.Status(404).SendString("Користувач не знайдений")
+	}
+
+	return internal.RenderTemplate(c, "profile.html",
+		[2]interface{}{"user", user},
+	)
+}
+
 func hash_pwd(password string) string {
 	passwordWithKey := password + SHA_SECRET
 	hash := sha256.New()
@@ -178,4 +209,6 @@ func SetupAuthHandlers(app *fiber.App) {
 	app.Get("/login", login)
 	app.Post("/login", processLogin)
 	app.Get("/logout", LoginRequired(), Logout)
+	app.Get("/profile/:username", Profile)
+
 }
