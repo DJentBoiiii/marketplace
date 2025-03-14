@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/DjentBoiiii/marketplace/internal"
-	handlers "github.com/DjentBoiiii/marketplace/internal/handlers/auth"
+	"github.com/DjentBoiiii/marketplace/internal/auth"
+	"github.com/DjentBoiiii/marketplace/internal/render"
 	"github.com/gofiber/fiber/v2"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
@@ -38,7 +38,7 @@ func init() {
 }
 
 func UploadFile(c *fiber.Ctx) error {
-	user, err := handlers.GetUserData(c)
+	user, err := auth.GetUserData(c)
 	if err != nil {
 		return c.Status(500).SendString("Помилка отримання даних користувача")
 	}
@@ -122,8 +122,8 @@ func hasExecutableFiles(file multipart.File) bool {
 }
 
 func SetupUploadHandlers(app *fiber.App) {
-	app.Get("/upload", handlers.LoginRequired(), func(c *fiber.Ctx) error {
-		return internal.RenderTemplate(c, "upload.html")
+	app.Get("/upload", auth.LoginRequired(), func(c *fiber.Ctx) error {
+		return render.RenderTemplate(c, "upload.html")
 	})
-	app.Post("/upload", handlers.LoginRequired(), UploadFile)
+	app.Post("/upload", auth.LoginRequired(), UploadFile)
 }

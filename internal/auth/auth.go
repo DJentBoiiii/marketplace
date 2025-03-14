@@ -1,4 +1,4 @@
-package handlers
+package auth
 
 import (
 	"crypto/sha256"
@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/DjentBoiiii/marketplace/internal"
 	"github.com/DjentBoiiii/marketplace/internal/models"
+	"github.com/DjentBoiiii/marketplace/internal/render"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
@@ -25,12 +25,12 @@ var DB *sql.DB
 
 func register(c *fiber.Ctx) error {
 	fmt.Println("Register page visited")
-	return internal.RenderTemplate(c, "register.html")
+	return render.RenderTemplate(c, "register.html")
 }
 
 func login(c *fiber.Ctx) error {
 	fmt.Println("Login page visited")
-	return internal.RenderTemplate(c, "login.html")
+	return render.RenderTemplate(c, "login.html")
 }
 
 func processRegister(c *fiber.Ctx) error {
@@ -187,7 +187,7 @@ func Profile(c *fiber.Ctx) error {
 		return c.Status(404).SendString("Користувач не знайдений")
 	}
 
-	return internal.RenderTemplate(c, "profile.html",
+	return render.RenderTemplate(c, "profile.html",
 		[2]interface{}{"user", user},
 	)
 }

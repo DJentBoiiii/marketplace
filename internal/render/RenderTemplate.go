@@ -1,4 +1,4 @@
-package internal
+package render
 
 import (
 	"github.com/flosch/pongo2/v6"

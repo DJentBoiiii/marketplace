@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/DjentBoiiii/marketplace/internal/service"
+	"github.com/DjentBoiiii/marketplace/internal"
 )
 
 func main() {
-	service.StartService()
+	internal.StartService()
 }
