@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"io"
+	"os"
 	"strconv"
 	"strings"
 
@@ -60,6 +61,24 @@ func UploadFile(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка читання зображення")
 	}
 
+	// Збереження зображення в локальну директорію
+	imgDir := "static/images/"
+	if err := os.MkdirAll(imgDir, os.ModePerm); err != nil {
+		return c.Status(500).SendString("Не вдалося створити директорію для зображень")
+	}
+
+	imgPath := fmt.Sprintf("%s%s", imgDir, image.Filename)
+	imgFile, err := os.Create(imgPath)
+	if err != nil {
+		return c.Status(500).SendString("Не вдалося створити файл зображення")
+	}
+	defer imgFile.Close()
+
+	if _, err := imgFile.Write(imgData.Bytes()); err != nil {
+		return c.Status(500).SendString("Помилка запису зображення")
+	}
+
+	// Перевірка категорії файлів
 	switch category {
 	case "audio":
 		if !isAudio(file.Filename) {
@@ -81,9 +100,9 @@ func UploadFile(c *fiber.Ctx) error {
 		}
 	}
 
+	// Завантаження файлу на MinIO
 	bucketName := strings.ToLower(user.Username)
 	objectPath := fmt.Sprintf("%s/%s/%s", user.Username, category, file.Filename)
-	imgPath := fmt.Sprintf("%s/%s/%s", user.Username, "thumbnails", image.Filename)
 
 	exists, _ := MinioClient.BucketExists(c.Context(), bucketName)
 	if !exists {
@@ -107,19 +126,7 @@ func UploadFile(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка завантаження файлу")
 	}
 
-	_, err = MinioClient.PutObject(
-		c.Context(),
-		bucketName,
-		imgPath,
-		bytes.NewReader(imgData.Bytes()),
-		int64(imgData.Len()),
-		minio.PutObjectOptions{ContentType: image.Header["Content-Type"][0]},
-	)
-	if err != nil {
-		fmt.Println(err)
-		return c.Status(500).SendString("Помилка завантаження зображення")
-	}
-
+	// Збереження даних у базу даних
 	db, _ := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
 	_, err = db.Exec(
 		"INSERT INTO Products (name, type, price, description, vendor, product_path, product_img) VALUES (?, ?, ?, ?, ?, ?, ?)",
