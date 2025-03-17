@@ -17,7 +17,7 @@ func DownloadFile(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка отримання даних користувача")
 	}
 
-	filePath := "audio/Kira.mp3"
+	filePath := "samples/sample_test.zip"
 	if filePath == "" {
 		return c.Status(400).SendString("Файл не знайдено")
 	}

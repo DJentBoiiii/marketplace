@@ -38,3 +38,17 @@ func hasExecutableFiles(file multipart.File) bool {
 	}
 	return false
 }
+
+func hasMIDI(data []byte) bool {
+	r, err := zip.NewReader(bytes.NewReader(data), int64(len(data)))
+	if err != nil {
+		return false
+	}
+
+	for _, f := range r.File {
+		if strings.HasSuffix(strings.ToLower(f.Name), ".midi") || strings.HasSuffix(strings.ToLower(f.Name), ".mid") {
+			return true
+		}
+	}
+	return false
+}
