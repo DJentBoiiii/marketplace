@@ -16,7 +16,24 @@
 
     <br><br>
 
+    <label for="fileInput">Файл:</label>
     <input type="file" name="file" id="fileInput" required>
+
+    <br><br>
+
+    <label for="imageInput">Обкладинка:</label>
+    <input type="file" name="image" id="imageInput" required>
+
+    <br><br>
+
+    <label for="description">Опис:</label>
+    <textarea name="description" id="description" rows="3" required></textarea>
+
+    <br><br>
+
+    <label for="price">Ціна:</label>
+    <input type="number" name="price" id="price" min="0" required>
+
     <br><br>
 
     <button type="submit">Завантажити файл</button>
@@ -41,6 +58,19 @@ document.getElementById("fileInput").addEventListener("change", function () {
         this.value = "";
     } else if ((category.value === "midi" || category.value === "samples") && !archiveFormats.includes("." + fileExt)) {
         alert("Файл має бути ZIP-архівом.");
+        this.value = "";
+    }
+});
+
+document.getElementById("imageInput").addEventListener("change", function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    const imgFormats = [".jpg", ".jpeg", ".png", ".webp"];
+    const fileExt = file.name.split(".").pop().toLowerCase();
+
+    if (!imgFormats.includes("." + fileExt)) {
+        alert("Зображення має бути у форматі JPG, JPEG, PNG або WebP.");
         this.value = "";
     }
 });

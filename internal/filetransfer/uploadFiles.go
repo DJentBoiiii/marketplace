@@ -2,13 +2,17 @@ package filetransfer
 
 import (
 	"bytes"
+	"database/sql"
 	"fmt"
 	"io"
+	"strconv"
 	"strings"
 
 	"github.com/DjentBoiiii/marketplace/internal/auth"
-	"github.com/gofiber/fiber/v2"
 	"github.com/minio/minio-go/v7"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/gofiber/fiber/v2"
 )
 
 func UploadFile(c *fiber.Ctx) error {
@@ -22,11 +26,18 @@ func UploadFile(c *fiber.Ctx) error {
 		return c.Status(400).SendString("Файл не надано")
 	}
 
+	image, err := c.FormFile("image")
+	if err != nil {
+		return c.Status(400).SendString("Зображення не надано")
+	}
+
 	category := c.FormValue("category")
+	description := c.FormValue("description")
+	price, _ := strconv.Atoi(c.FormValue("price"))
+
 	if category != "audio" && category != "midi" && category != "samples" {
 		return c.Status(400).SendString("Некоректна категорія")
 	}
-
 	src, err := file.Open()
 	if err != nil {
 		return c.Status(500).SendString("Помилка відкриття файлу")
@@ -38,7 +49,16 @@ func UploadFile(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка читання файлу")
 	}
 
-	reader := bytes.NewReader(fileData.Bytes())
+	imgSrc, err := image.Open()
+	if err != nil {
+		return c.Status(500).SendString("Помилка відкриття зображення")
+	}
+	defer imgSrc.Close()
+
+	imgData := new(bytes.Buffer)
+	if _, err := io.Copy(imgData, imgSrc); err != nil {
+		return c.Status(500).SendString("Помилка читання зображення")
+	}
 
 	switch category {
 	case "audio":
@@ -59,11 +79,11 @@ func UploadFile(c *fiber.Ctx) error {
 		if hasExecutableFiles(src) {
 			return c.Status(400).SendString("Архів містить виконувані файли")
 		}
-		reader = bytes.NewReader(fileData.Bytes())
 	}
 
 	bucketName := strings.ToLower(user.Username)
 	objectPath := fmt.Sprintf("%s/%s/%s", user.Username, category, file.Filename)
+	imgPath := fmt.Sprintf("%s/%s/%s", user.Username, "thumbnails", image.Filename)
 
 	exists, _ := MinioClient.BucketExists(c.Context(), bucketName)
 	if !exists {
@@ -74,10 +94,40 @@ func UploadFile(c *fiber.Ctx) error {
 		}
 	}
 
-	_, err = MinioClient.PutObject(c.Context(), bucketName, objectPath, reader, int64(fileData.Len()), minio.PutObjectOptions{ContentType: file.Header["Content-Type"][0]})
+	_, err = MinioClient.PutObject(
+		c.Context(),
+		bucketName,
+		objectPath,
+		bytes.NewReader(fileData.Bytes()),
+		int64(fileData.Len()),
+		minio.PutObjectOptions{ContentType: file.Header["Content-Type"][0]},
+	)
 	if err != nil {
 		fmt.Println(err)
 		return c.Status(500).SendString("Помилка завантаження файлу")
+	}
+
+	_, err = MinioClient.PutObject(
+		c.Context(),
+		bucketName,
+		imgPath,
+		bytes.NewReader(imgData.Bytes()),
+		int64(imgData.Len()),
+		minio.PutObjectOptions{ContentType: image.Header["Content-Type"][0]},
+	)
+	if err != nil {
+		fmt.Println(err)
+		return c.Status(500).SendString("Помилка завантаження зображення")
+	}
+
+	db, _ := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
+	_, err = db.Exec(
+		"INSERT INTO Products (name, type, price, description, vendor, product_path, product_img) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		file.Filename, category, price, description, user.Id, objectPath, imgPath,
+	)
+	if err != nil {
+		fmt.Println(err)
+		return c.Status(500).SendString("Помилка запису в базу")
 	}
 
 	return c.SendString("Файл успішно завантажено")
