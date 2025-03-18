@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="playlist-header">
+    <h2>Плейлист: {{ playlist_name }}</h2>
+    <div class="playlist-actions">
+        <a href="/playlists" class="back-button">Назад до плейлистів</a>
+    </div>
+</div>
+
+{% if items|length > 0 %}
+<div class="playlist-items">
+    {% for item in items %}
+    <div class="playlist-item">
+        <img src="{{ item.ImageURL }}" alt="{{ item.Name }}" class="product-image">
+        <div class="item-info">
+            <h3>{{ item.Name }}</h3>
+            <p><strong>Власник:</strong> {{ item.Owner }}</p>
+            <p><strong>Тип:</strong> {{ item.Type }}</p>
+            {% if item.Genre %}
+            <p><strong>Жанр:</strong> {{ item.Genre }}</p>
+            {% endif %}
+            <div class="item-actions">
+                <a href="/product/{{ item.Name }}/{{ item.Owner }}" class="details-button">Детальніше</a>
+                <form action="/playlist/remove" method="POST" class="remove-form">
+                    <input type="hidden" name="item_id" value="{{ item.ItemId }}">
+                    <input type="hidden" name="playlist_id" value="{{ playlist_id }}">
+                    <button type="submit" class="remove-button">Видалити з плейлиста</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="empty-playlist">Плейлист порожній</p>
+{% endif %}
+
+<style>
+    .playlist-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .back-button {
+        padding: 8px 12px;
+        background-color: #6c757d;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+    .playlist-items {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .playlist-item {
+        display: flex;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        background-color: #f8f9fa;
+    }
+    .product-image {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 15px;
+    }
+    .item-info {
+        flex: 1;
+    }
+    .item-info h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+    .item-actions {
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .details-button, .remove-button {
+        padding: 6px 10px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .details-button {
+        background-color: #007bff;
+        color: white;
+    }
+    .remove-button {
+        background-color: #dc3545;
+        color: white;
+    }
+    .empty-playlist {
+        padding: 20px;
+        text-align: center;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+    .remove-form {
+        display: inline;
+    }
+</style>
+{% endblock %}

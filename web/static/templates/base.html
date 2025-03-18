@@ -4,13 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/style.css">
-    <title>Document</title>
+    <title>Marketplace</title>
+    <style>
+        /* Basic navigation styling */
+        .navbar {
+            background-color: #333;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-links li {
+            margin-right: 20px;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .user-info {
+            color: white;
+            float: right;
+        }
+    </style>
 </head>
 <body>
-    {{ user.Username }}
-    <h1>Basic header</h1>
+    <nav class="navbar">
+        <ul class="nav-links">
+            <li><a href="/">Головна</a></li>
+            <li><a href="/catalogue">Каталог</a></li>
+            {% if user.Username %}
+            <li><a href="/cart">Кошик</a></li>
+            <li><a href="/playlists">Плейлисти</a></li>
+            <li><a href="/upload">Завантажити</a></li>
+            <li><a href="/profile/{{ user.Username }}">Профіль</a></li>
+            <li><a href="/logout">Вийти</a></li>
+            <span class="user-info">Привіт, {{ user.Username }}</span>
+            {% else %}
+            <li><a href="/login">Увійти</a></li>
+            <li><a href="/register">Зареєструватися</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    
     {% block content %}{% endblock %}
-    <div class="test">basic body</div>
-
+    
 </body>
 </html>
