@@ -22,5 +22,41 @@ CREATE TABLE Products (
 );
 
 
+ALTER TABLE Products
+ADD COLUMN Genre VARCHAR(100);
+
+
 DROP table `Users`;
 DROP table `Products`;
+
+
+CREATE TABLE Cart (
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    user_id     INT NOT NULL,
+    product_id  INT NOT NULL,
+    added_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_cart_user FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_cart_product FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE
+);
+
+
+DROP table `Cart`;
+
+
+CREATE TABLE Playlists (
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    name        VARCHAR(100) NOT NULL,
+    user_id     INT NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_playlist_user FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+-- Таблиця для елементів плейлиста
+CREATE TABLE PlaylistItems (
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    playlist_id INT NOT NULL,
+    product_id  INT NOT NULL,
+    added_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_playlistitem_playlist FOREIGN KEY (playlist_id) REFERENCES Playlists(id) ON DELETE CASCADE,
+    CONSTRAINT fk_playlistitem_product FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE
+);

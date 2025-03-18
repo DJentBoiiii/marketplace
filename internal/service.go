@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/DjentBoiiii/marketplace/internal/auth"
+	"github.com/DjentBoiiii/marketplace/internal/cart"
 	"github.com/DjentBoiiii/marketplace/internal/filetransfer"
 	"github.com/DjentBoiiii/marketplace/internal/productManagement"
 	"github.com/gofiber/fiber/v2"
@@ -14,7 +15,7 @@ func SetupHandlers(app *fiber.App) {
 	auth.SetupAuthHandlers(app)
 	filetransfer.SetupUploadHandlers(app)
 	productManagement.SetupProductHandlers(app)
-
+	cart.SetupCartHandlers(app)
 }
 
 func StartService() {
