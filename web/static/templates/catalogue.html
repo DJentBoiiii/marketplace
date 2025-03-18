@@ -47,8 +47,8 @@
             <label for="playlist_id">Оберіть плейлист:</label>
             <select name="playlist_id" required>
                 <option value="">Оберіть плейлист</option>
-                {% for playlist in playlists %}
-                <option value="{{ playlist.Id }}">{{ playlist.Name }} ({{ playlist.ItemCount }} треків)</option>
+                {% for item in playlist %}
+                <option value="{{ item.Id }}">{{ item.Name }} ({{ item.ItemCount }} треків)</option>
                 {% endfor %}
             </select>
             <button type="submit" class="add-to-playlist-button">Додати</button>
