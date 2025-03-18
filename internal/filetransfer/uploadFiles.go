@@ -32,13 +32,10 @@ func UploadFile(c *fiber.Ctx) error {
 		return c.Status(400).SendString("Зображення не надано")
 	}
 
-	category := c.FormValue("category")
+	typeVal := c.FormValue("type")
 	description := c.FormValue("description")
 	price, _ := strconv.Atoi(c.FormValue("price"))
 
-	if category != "audio" && category != "midi" && category != "samples" {
-		return c.Status(400).SendString("Некоректна категорія")
-	}
 	src, err := file.Open()
 	if err != nil {
 		return c.Status(500).SendString("Помилка відкриття файлу")
@@ -48,6 +45,13 @@ func UploadFile(c *fiber.Ctx) error {
 	fileData := new(bytes.Buffer)
 	if _, err := io.Copy(fileData, src); err != nil {
 		return c.Status(500).SendString("Помилка читання файлу")
+	}
+
+	if typeVal == "audio" && !isAudio(file.Filename) {
+		return c.Status(400).SendString("Файл має бути аудіоформатом")
+	}
+	if (typeVal == "midi" || typeVal == "samples") && !isArchive(file.Filename) {
+		return c.Status(400).SendString("Файл має бути ZIP-архівом")
 	}
 
 	imgSrc, err := image.Open()
@@ -61,13 +65,10 @@ func UploadFile(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка читання зображення")
 	}
 
-	// Збереження зображення в локальну директорію
-	imgDir := "static/images/"
-	if err := os.MkdirAll(imgDir, os.ModePerm); err != nil {
-		return c.Status(500).SendString("Не вдалося створити директорію для зображень")
-	}
+	imgDir := "../web/static/images/"
 
 	imgPath := fmt.Sprintf("%s%s", imgDir, image.Filename)
+	imgDBPath := fmt.Sprintf("static/images/%s", image.Filename)
 	imgFile, err := os.Create(imgPath)
 	if err != nil {
 		return c.Status(500).SendString("Не вдалося створити файл зображення")
@@ -78,37 +79,13 @@ func UploadFile(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка запису зображення")
 	}
 
-	// Перевірка категорії файлів
-	switch category {
-	case "audio":
-		if !isAudio(file.Filename) {
-			return c.Status(400).SendString("Файл не є аудіоформатом")
-		}
-	case "midi":
-		if !isArchive(file.Filename) {
-			return c.Status(400).SendString("Файл має бути архівом")
-		}
-		if !hasMIDI(fileData.Bytes()) {
-			return c.Status(400).SendString("Архів не містить MIDI-файлів")
-		}
-	case "samples":
-		if !isArchive(file.Filename) {
-			return c.Status(400).SendString("Файл має бути архівом")
-		}
-		if hasExecutableFiles(src) {
-			return c.Status(400).SendString("Архів містить виконувані файли")
-		}
-	}
-
-	// Завантаження файлу на MinIO
 	bucketName := strings.ToLower(user.Username)
-	objectPath := fmt.Sprintf("%s/%s/%s", user.Username, category, file.Filename)
+	objectPath := fmt.Sprintf("%s/%s/%s", user.Username, typeVal, file.Filename)
 
 	exists, _ := MinioClient.BucketExists(c.Context(), bucketName)
 	if !exists {
 		err := MinioClient.MakeBucket(c.Context(), bucketName, minio.MakeBucketOptions{})
 		if err != nil {
-			fmt.Println(err)
 			return c.Status(500).SendString("Не вдалося створити бакет")
 		}
 	}
@@ -122,15 +99,13 @@ func UploadFile(c *fiber.Ctx) error {
 		minio.PutObjectOptions{ContentType: file.Header["Content-Type"][0]},
 	)
 	if err != nil {
-		fmt.Println(err)
 		return c.Status(500).SendString("Помилка завантаження файлу")
 	}
 
-	// Збереження даних у базу даних
 	db, _ := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
 	_, err = db.Exec(
-		"INSERT INTO Products (name, type, price, description, vendor, product_path, product_img) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		file.Filename, category, price, description, user.Id, objectPath, imgPath,
+		"INSERT INTO Products (name, type, price, description, vendor, image_url) VALUES (?, ?, ?, ?, ?, ?)",
+		file.Filename, typeVal, price, description, user.Username, imgDBPath,
 	)
 	if err != nil {
 		fmt.Println(err)

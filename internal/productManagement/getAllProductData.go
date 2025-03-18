@@ -6,10 +6,10 @@ import (
 
 func GetAllProductsData(owner, productType string) ([]models.Product, error) {
 	rows, err := DB.Query(`
-		SELECT p.name, p.price, p.type, u.name, p.product_img 
+		SELECT p.name, p.price, p.type, u.username, p.image_url 
 		FROM Products p
-		JOIN Users u ON p.vendor = u.id
-		WHERE u.name = ? AND p.type = ?`, owner, productType)
+		JOIN Users u ON p.vendor = u.username
+		WHERE u.username = ? AND p.type = ?`, owner, productType)
 	if err != nil {
 		return nil, err
 	}
@@ -22,7 +22,7 @@ func GetAllProductsData(owner, productType string) ([]models.Product, error) {
 		if err := rows.Scan(&p.Name, &p.Price, &p.Type, &p.Owner, &imagePath); err != nil {
 			return nil, err
 		}
-		p.ImageURL = imagePath
+		p.ImageURL = "/" + imagePath
 		products = append(products, p)
 	}
 	return products, nil

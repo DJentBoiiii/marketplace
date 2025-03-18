@@ -48,7 +48,6 @@ func SetupUploadHandlers(app *fiber.App) {
 		return render.RenderTemplate(c, "upload.html")
 	})
 	app.Post("/upload", auth.LoginRequired(), UploadFile)
-	// app.Get("/download/:filePath", DownloadFile)
 	app.Get("/delete", auth.LoginRequired(), func(c *fiber.Ctx) error {
 		return render.RenderTemplate(c, "delete.html")
 	})

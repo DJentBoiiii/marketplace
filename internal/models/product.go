@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type Product struct {
 	Name        string
 	Price       int
@@ -7,4 +9,5 @@ type Product struct {
 	Description string
 	Owner       string
 	ImageURL    string
+	CreatedAt   time.Time
 }

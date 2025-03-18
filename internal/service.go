@@ -19,7 +19,7 @@ func SetupHandlers(app *fiber.App) {
 
 func StartService() {
 	app := fiber.New(fiber.Config{
-		BodyLimit: 50 * 1024 * 1024, // встановіть ліміт на 50MB (за потреби змінити на ваш розмір)
+		BodyLimit: 50 * 1024 * 1024,
 	})
 	app.Static("/static", "../web/static")
 	fmt.Println("Service starts on port 69420")

@@ -18,7 +18,7 @@ func GetUserFromDB(username string) (*models.Account, error) {
 	defer DB.Close()
 
 	var user models.Account
-	err = DB.QueryRow("SELECT id, name, email, is_admin FROM Users WHERE name = ?", username).
+	err = DB.QueryRow("SELECT id, username, email, is_admin FROM Users WHERE name = ?", username).
 		Scan(&user.Id, &user.Username, &user.Email, &user.Is_admin)
 	if err != nil {
 		if err == sql.ErrNoRows {
