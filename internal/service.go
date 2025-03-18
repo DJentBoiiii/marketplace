@@ -1,3 +1,4 @@
+// Оновлення internal/service.go для включення обробників плейлистів
 package internal
 
 import (
@@ -6,6 +7,7 @@ import (
 	"github.com/DjentBoiiii/marketplace/internal/auth"
 	"github.com/DjentBoiiii/marketplace/internal/cart"
 	"github.com/DjentBoiiii/marketplace/internal/filetransfer"
+	"github.com/DjentBoiiii/marketplace/internal/playlist"
 	"github.com/DjentBoiiii/marketplace/internal/productManagement"
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,6 +18,7 @@ func SetupHandlers(app *fiber.App) {
 	filetransfer.SetupUploadHandlers(app)
 	productManagement.SetupProductHandlers(app)
 	cart.SetupCartHandlers(app)
+	playlist.SetupPlaylistHandlers(app)
 }
 
 func StartService() {

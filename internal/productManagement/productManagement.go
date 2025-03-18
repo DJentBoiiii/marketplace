@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/DjentBoiiii/marketplace/internal/auth"
+	"github.com/DjentBoiiii/marketplace/internal/playlist"
 	"github.com/DjentBoiiii/marketplace/internal/render"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gofiber/fiber/v2"
@@ -40,8 +42,9 @@ func SetupProductHandlers(app *fiber.App) {
 			fmt.Println(err)
 			return c.Status(500).SendString("Помилка отримання даних")
 		}
-
-		return render.RenderTemplate(c, "catalogue.html", [2]interface{}{"products", products})
+		user, _ := auth.GetUserData(c)
+		playlist, _ := playlist.GetUserPlaylists(user.Id)
+		return render.RenderTemplate(c, "catalogue.html", [2]interface{}{"products", products}, [2]interface{}{"playlist", playlist})
 	})
 
 	// Інформація про один продукт
