@@ -1,44 +1,28 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h2>Завантаження файлу</h2>
+<h2>Завантажити продукт</h2>
+<form action="/upload" method="POST" enctype="multipart/form-data">
+    <label for="file">Файл:</label>
+    <input type="file" name="file" id="fileInput" required><br>
 
-<form action="/upload" method="post" enctype="multipart/form-data">
-    <label>
-        <input type="radio" name="category" value="audio" required> Музика
-    </label>
-    <label>
-        <input type="radio" name="category" value="midi"> MIDI
-    </label>
-    <label>
-        <input type="radio" name="category" value="samples"> Семпли
-    </label>
+    <label for="image">Зображення:</label>
+    <input type="file" name="image" id="imageInput" required><br>
 
-    <br><br>
-
-    <label for="fileInput">Файл:</label>
-    <input type="file" name="file" id="fileInput" required>
-
-    <br><br>
-
-    <label for="imageInput">Обкладинка:</label>
-    <input type="file" name="image" id="imageInput" required>
-
-    <br><br>
+    <label for="type">Тип:</label>
+    <select name="type">
+        <option value="audio">Аудіо</option>
+        <option value="midi">MIDI</option>
+        <option value="samples">Семпли</option>
+    </select><br>
 
     <label for="description">Опис:</label>
-    <textarea name="description" id="description" rows="3" required></textarea>
-
-    <br><br>
+    <textarea name="description"></textarea><br>
 
     <label for="price">Ціна:</label>
-    <input type="number" name="price" id="price" min="0" required>
+    <input type="number" name="price" required><br>
 
-    <br><br>
-
-    <button type="submit">Завантажити файл</button>
+    <button type="submit">Завантажити</button>
 </form>
-
 <script>
 document.getElementById("fileInput").addEventListener("change", function () {
     const file = this.files[0];

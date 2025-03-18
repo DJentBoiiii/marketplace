@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ product.Name }}</h2>
+
+<div class="product-details">
+    <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+    <div class="product-info">
+        <h3>Ціна: ${{ product.Price }}</h3>
+        <p><strong>Тип:</strong> {{ product.Type }}</p>
+        <p><strong>Власник:</strong> {{ product.Owner }}</p>
+        <p><strong>Опис:</strong> {{ product.Description }}</p>
+    </div>
+</div>
+
+<a href="/catalogue/{{ product.Owner }}/{{ product.Type }}" class="back-to-catalogue">Повернутись до каталогу</a>
+
+<style>
+    .product-details {
+        display: flex;
+        gap: 20px;
+    }
+    .product-image {
+        width: 300px;
+        height: auto;
+        border-radius: 5px;
+    }
+    .product-info {
+        max-width: 600px;
+    }
+    .back-to-catalogue {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+</style>
+{% endblock %}
