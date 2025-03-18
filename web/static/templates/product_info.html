@@ -9,7 +9,30 @@
         <h3>Ціна: ${{ product.Price }}</h3>
         <p><strong>Тип:</strong> {{ product.Type }}</p>
         <p><strong>Власник:</strong> {{ product.Owner }}</p>
+        {% if product.Genre %}
+        <p><strong>Жанр:</strong> {{ product.Genre }}</p>
+        {% endif %}
         <p><strong>Опис:</strong> {{ product.Description }}</p>
+        
+        <!-- Кнопка додавання до кошика -->
+        <form action="/cart/add" method="POST" class="action-form">
+            <input type="hidden" name="product_id" value="{{ product.Id }}">
+            <button type="submit" class="add-to-cart-button">Додати до кошика</button>
+        </form>
+        
+        <!-- Якщо це аудіо, показуємо кнопку додавання до плейлиста -->
+        {% if product.Type == "audio" %}
+        <form action="/playlist/add" method="POST" class="action-form">
+            <input type="hidden" name="product_id" value="{{ product.Id }}">
+            <select name="playlist_id" required>
+                <option value="">Оберіть плейлист</option>
+                {% for playlist in playlists %}
+                <option value="{{ playlist.id }}">{{ playlist.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="add-to-playlist-button">Додати до плейлиста</button>
+        </form>
+        {% endif %}
     </div>
 </div>
 
@@ -36,6 +59,29 @@
         color: white;
         text-decoration: none;
         border-radius: 5px;
+    }
+    .action-form {
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+    .add-to-cart-button, .add-to-playlist-button {
+        padding: 8px 16px;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .add-to-cart-button {
+        background-color: #28a745;
+    }
+    .add-to-playlist-button {
+        background-color: #6c757d;
+    }
+    select {
+        padding: 8px;
+        margin-right: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
     }
 </style>
 {% endblock %}

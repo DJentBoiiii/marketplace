@@ -1,6 +1,8 @@
 package render
 
 import (
+	"fmt"
+
 	"github.com/flosch/pongo2/v6"
 	"github.com/gofiber/fiber/v2"
 )
@@ -19,6 +21,7 @@ func RenderTemplate(c *fiber.Ctx, templateName string, args ...[2]interface{}) e
 
 	tpl, err := pongo2.FromFile("/marketplace/web/static/templates/" + templateName)
 	if err != nil {
+		fmt.Println(err)
 		return c.Status(500).SendString("Помилка завантаження шаблону")
 	}
 

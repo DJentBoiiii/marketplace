@@ -10,10 +10,37 @@
             <h3>{{ product.Name }}</h3>
             <p><strong>Власник:</strong> {{ product.Owner }}</p>
             <p><strong>Ціна:</strong> ${{ product.Price }}</p>
+            {% if product.Genre %}
+            <p><strong>Жанр:</strong> {{ product.Genre }}</p>
+            {% endif %}
             <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="details-button">Детальніше</a>
+            
+            <!-- Кнопка додавання до кошика -->
+            <form action="/cart/add" method="POST" class="action-form">
+                <input type="hidden" name="product_id" value="{{ product.Id }}">
+                <button type="submit" class="add-to-cart-button">Додати до кошика</button>
+            </form>
+            
+            <!-- Якщо це аудіо, показуємо кнопку додавання до плейлиста -->
+            {% if product.Type == "audio" %}
+            <form action="/playlist/add" method="POST" class="action-form">
+                <input type="hidden" name="product_id" value="{{ product.Id }}">
+                <select name="playlist_id" required>
+                    <option value="">Оберіть плейлист</option>
+                    {% for playlist in playlists %}
+                    <option value="{{ playlist.id }}">{{ playlist.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="add-to-playlist-button">Додати до плейлиста</button>
+            </form>
+            {% endif %}
         </div>
     </div>
     {% endfor %}
+    <form action="/playlist/create" method="POST">
+        <input type="text" name="playlist_name" placeholder="Назва плейлиста" required>
+        <button type="submit">Створити плейлист</button>
+    </form>
 </div>
 
 <style>
@@ -36,7 +63,7 @@
     .product-info {
         margin-top: 10px;
     }
-    .details-button {
+    .details-button, .add-to-cart-button, .add-to-playlist-button {
         display: inline-block;
         margin-top: 5px;
         padding: 5px 10px;
@@ -44,6 +71,41 @@
         color: white;
         text-decoration: none;
         border-radius: 5px;
+        border: none;
+        cursor: pointer;
+    }
+    .add-to-cart-button {
+        background-color: #28a745;
+    }
+    .add-to-playlist-button {
+        background-color: #6c757d;
+    }
+    .action-form {
+        margin-top: 5px;
+    }
+    select {
+        margin-bottom: 5px;
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
     }
 </style>
+<script>
+    function showPlaylistModal(productId) {
+        document.getElementById('modalProductId').value = productId;
+        document.getElementById('playlistModal').style.display = 'block';
+    }
+    
+    function closePlaylistModal() {
+        document.getElementById('playlistModal').style.display = 'none';
+    }
+    
+    // Закриття модального вікна при кліку поза ним
+    window.onclick = function(event) {
+        const modal = document.getElementById('playlistModal');
+        if (event.target == modal) {
+            closePlaylistModal();
+        }
+    }
+</script>
 {% endblock %}
