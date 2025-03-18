@@ -29,8 +29,22 @@ func processLogin(c *fiber.Ctx) error {
 	var dbUsername string
 	var dbEmail string
 	var IsAdmin bool
-	err := DB.QueryRow("SELECT * FROM Users WHERE name = ?", username).Scan(&id, &dbUsername, &dbEmail, &dbPassword, &IsAdmin)
+	var profilePhoto string
+	var bio string
+	var createdAt []uint8
+	err := DB.QueryRow(`
+	SELECT id, username, email, password, is_admin, COALESCE(profile_photo, ''), COALESCE(bio, ''), created_at 
+	FROM Users WHERE username = ?`, username).Scan(
+		&id, &dbUsername, &dbEmail, &dbPassword, &IsAdmin, &profilePhoto, &bio, &createdAt)
+	if err == nil {
+		createdAtTime, err := time.Parse("2006-01-02 15:04:05", string(createdAt))
+		if err != nil {
+			return c.Status(500).SendString("Помилка обробки дати")
+		}
+		fmt.Println("User created at:", createdAtTime)
+	}
 	if err != nil {
+		fmt.Println(err)
 		return c.Status(500).SendString("Помилка входу")
 	}
 	hashed_password := hash_pwd(password)
@@ -56,6 +70,7 @@ func processLogin(c *fiber.Ctx) error {
 		Name:  "jwt",
 		Value: tokenString,
 	})
+
 	fmt.Println("User logged in")
 	return c.Redirect("/")
 }

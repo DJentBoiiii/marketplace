@@ -32,7 +32,7 @@ func processRegister(c *fiber.Ctx) error {
 		return c.Status(400).SendString("Заповніть всі поля")
 	}
 
-	_, err = DB.Exec("INSERT INTO Users (name, email, password) VALUES (?, ?, ?)", username, email, hashed_pwd)
+	_, err = DB.Exec("INSERT INTO Users (username, email, password) VALUES (?, ?, ?)", username, email, hashed_pwd)
 	if err != nil {
 		fmt.Println(err)
 		return c.Status(500).SendString("Помилка реєстрації")

@@ -1,27 +1,28 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h2>Завантаження файлу</h2>
+<h2>Завантажити продукт</h2>
+<form action="/upload" method="POST" enctype="multipart/form-data">
+    <label for="file">Файл:</label>
+    <input type="file" name="file" id="fileInput" required><br>
 
-<form action="/upload" method="post" enctype="multipart/form-data">
-    <label>
-        <input type="radio" name="category" value="audio" required> Музика
-    </label>
-    <label>
-        <input type="radio" name="category" value="midi"> MIDI
-    </label>
-    <label>
-        <input type="radio" name="category" value="samples"> Семпли
-    </label>
+    <label for="image">Зображення:</label>
+    <input type="file" name="image" id="imageInput" required><br>
 
-    <br><br>
+    <label for="type">Тип:</label>
+    <select name="type">
+        <option value="audio">Аудіо</option>
+        <option value="midi">MIDI</option>
+        <option value="samples">Семпли</option>
+    </select><br>
 
-    <input type="file" name="file" id="fileInput" required>
-    <br><br>
+    <label for="description">Опис:</label>
+    <textarea name="description"></textarea><br>
 
-    <button type="submit">Завантажити файл</button>
+    <label for="price">Ціна:</label>
+    <input type="number" name="price" required><br>
+
+    <button type="submit">Завантажити</button>
 </form>
-
 <script>
 document.getElementById("fileInput").addEventListener("change", function () {
     const file = this.files[0];
@@ -41,6 +42,19 @@ document.getElementById("fileInput").addEventListener("change", function () {
         this.value = "";
     } else if ((category.value === "midi" || category.value === "samples") && !archiveFormats.includes("." + fileExt)) {
         alert("Файл має бути ZIP-архівом.");
+        this.value = "";
+    }
+});
+
+document.getElementById("imageInput").addEventListener("change", function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    const imgFormats = [".jpg", ".jpeg", ".png", ".webp"];
+    const fileExt = file.name.split(".").pop().toLowerCase();
+
+    if (!imgFormats.includes("." + fileExt)) {
+        alert("Зображення має бути у форматі JPG, JPEG, PNG або WebP.");
         this.value = "";
     }
 });
