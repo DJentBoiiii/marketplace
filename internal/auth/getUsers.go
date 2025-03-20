@@ -18,8 +18,13 @@ func GetUserFromDB(username string) (*models.Account, error) {
 	defer DB.Close()
 
 	var user models.Account
-	err = DB.QueryRow("SELECT id, username, email, is_admin FROM Users WHERE name = ?", username).
-		Scan(&user.Id, &user.Username, &user.Email, &user.Is_admin)
+	// Додаємо поля bio та profile_pic
+	err = DB.QueryRow(`
+	    SELECT id, username, email, is_admin, 
+	    COALESCE(bio, '') as bio, 
+	    COALESCE(profile_photo, '') as profile_photo 
+	    FROM Users WHERE username = ?`, username).
+		Scan(&user.Id, &user.Username, &user.Email, &user.Is_admin, &user.Bio, &user.Profile_pic)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("користувача не знайдено")

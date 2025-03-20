@@ -8,12 +8,17 @@ import (
 
 func Profile(c *fiber.Ctx) error {
 	username := c.Params("username")
-	user, err := GetUserFromDB(username)
+	user, err := GetUserWithProfile(username)
 	if err != nil {
 		return c.Status(404).SendString("Користувач не знайдений")
 	}
 
+	// Get current logged in user to determine if viewing own profile
+	currentUser, _ := GetUserData(c)
+	isOwnProfile := currentUser.Username == user.Username
+
 	return render.RenderTemplate(c, "profile.html",
 		[2]interface{}{"user", user},
+		[2]interface{}{"isOwnProfile", isOwnProfile},
 	)
 }
