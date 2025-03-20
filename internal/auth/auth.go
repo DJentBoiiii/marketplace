@@ -39,5 +39,7 @@ func SetupAuthHandlers(app *fiber.App) {
 	app.Post("/login", processLogin)
 	app.Get("/logout", LoginRequired(), Logout)
 	app.Get("/profile/:username", Profile)
-
+	app.Get("/profile/edit/:username", LoginRequired(), EditProfile)
+	app.Post("/profile/update/:username", LoginRequired(), UpdateProfile)
+	app.Post("/profile/change-password/:username", LoginRequired(), ChangePassword)
 }

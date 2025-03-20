@@ -26,3 +26,7 @@ go.work.sum
 
 
 web/static/images/*
+
+cmd/__debug_*
+
+web/static/uploads

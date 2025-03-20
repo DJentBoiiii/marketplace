@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile-edit-container">
+    <h2>Редагувати профіль</h2>
+    
+    <div class="profile-form-container">
+        <form action="/profile/update/{{ user.Username }}" method="POST" enctype="multipart/form-data" class="profile-form">
+            <div class="form-group">
+                <label for="username">Ім'я користувача:</label>
+                <input type="text" id="username" value="{{ user.Username }}" readonly class="form-control readonly">
+                <span class="help-text">Ім'я користувача не можна змінити</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="{{ user.Email }}" required class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label for="bio">Про себе:</label>
+                <textarea id="bio" name="bio" rows="4" class="form-control">{{ user.Bio }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="profile_photo">Фото профілю:</label>
+                <div class="photo-preview-container">
+                    {% if user.Profile_pic %}
+                    <img src="{{ user.Profile_pic }}" alt="Фото профілю" class="profile-photo-preview">
+                    {% else %}
+                    <div class="no-photo">Немає фото</div>
+                    {% endif %}
+                </div>
+                <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="form-control">
+                <span class="help-text">Завантажте нове фото або залиште порожнім, щоб зберегти поточне</span>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-save">Зберегти зміни</button>
+                <a href="/profile/{{ user.Username }}" class="btn-cancel">Скасувати</a>
+            </div>
+        </form>
+    </div>
+    
+    <div class="password-change-container">
+        <h3>Змінити пароль</h3>
+        <form action="/profile/change-password/{{ user.Username }}" method="POST" class="password-form">
+            <div class="form-group">
+                <label for="old_password">Поточний пароль:</label>
+                <input type="password" id="old_password" name="old_password" required class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label for="new_password">Новий пароль:</label>
+                <input type="password" id="new_password" name="new_password" required class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password">Підтвердження паролю:</label>
+                <input type="password" id="confirm_password" name="confirm_password" required class="form-control">
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-save">Змінити пароль</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .profile-edit-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .profile-form-container, .password-change-container {
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    textarea.form-control {
+        resize: vertical;
+    }
+    
+    .readonly {
+        background-color: #e9ecef;
+        cursor: not-allowed;
+    }
+    
+    .help-text {
+        display: block;
+        font-size: 0.8em;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+    
+    .photo-preview-container {
+        margin: 10px 0;
+        width: 150px;
+        height: 150px;
+        overflow: hidden;
+        border-radius: 50%;
+        border: 1px solid #ddd;
+    }
+    
+    .profile-photo-preview {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .no-photo {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #e9ecef;
+        color: #6c757d;
+    }
+    
+    .form-actions {
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    
+    .btn-save, .btn-cancel {
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        cursor: pointer;
+        display: inline-block;
+    }
+    
+    .btn-save {
+        background-color: #28a745;
+        color: white;
+        border: none;
+    }
+    
+    .btn-cancel {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+    }
+    
+    h3 {
+        margin-top: 0;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+    }
+</style>
+
+<script>
+    // Preview profile photo before upload
+    document.getElementById('profile_photo').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.querySelector('.profile-photo-preview');
+                if (preview) {
+                    preview.src = e.target.result;
+                } else {
+                    const container = document.querySelector('.photo-preview-container');
+                    container.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = 'Фото профілю';
+                    img.className = 'profile-photo-preview';
+                    container.appendChild(img);
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Password confirmation validation
+    document.querySelector('.password-form').addEventListener('submit', function(event) {
+        const newPassword = document.getElementById('new_password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+        
+        if (newPassword !== confirmPassword) {
+            event.preventDefault();
+            alert('Паролі не співпадають!');
+        }
+    });
+</script>
+{% endblock %}
