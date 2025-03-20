@@ -15,6 +15,7 @@
         <img src="{{ item.ImageURL }}" alt="{{ item.Name }}" class="product-image">
         <div class="item-info">
             <h3>{{ item.Name }}</h3>
+            <img src="{{ track.image_url }}" alt="{{ track.name }}" onclick="playAudio('{{ track.id }}')">
             <p><strong>Власник:</strong> {{ item.Owner }}</p>
             <p><strong>Тип:</strong> {{ item.Type }}</p>
             {% if item.Genre %}

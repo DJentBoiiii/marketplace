@@ -5,7 +5,7 @@
 <div class="catalogue-grid">
     {% for product in products %}
     <div class="product-card">
-        <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+        <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" onclick="playAudio('{{ product.Id }}')">
         <div class="product-info">
             <h3>{{ product.Name }}</h3>
             <p><strong>Власник:</strong> {{ product.Owner }}</p>
