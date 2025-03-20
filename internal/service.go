@@ -7,6 +7,7 @@ import (
 	"github.com/DjentBoiiii/marketplace/internal/auth"
 	"github.com/DjentBoiiii/marketplace/internal/cart"
 	"github.com/DjentBoiiii/marketplace/internal/filetransfer"
+	"github.com/DjentBoiiii/marketplace/internal/player"
 	"github.com/DjentBoiiii/marketplace/internal/playlist"
 	"github.com/DjentBoiiii/marketplace/internal/productManagement"
 	"github.com/gofiber/fiber/v2"
@@ -19,6 +20,7 @@ func SetupHandlers(app *fiber.App) {
 	productManagement.SetupProductHandlers(app)
 	cart.SetupCartHandlers(app)
 	playlist.SetupPlaylistHandlers(app)
+	player.RegisterRoutes(app)
 }
 
 func StartService() {

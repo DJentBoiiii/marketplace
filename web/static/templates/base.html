@@ -56,5 +56,21 @@
     
     {% block content %}{% endblock %}
     
+    <div id="audio-player" class="audio-player">
+        <audio id="audio" controls></audio>
+    </div>
+    
+    <script>
+        function playAudio(trackId) {
+            const audioPlayer = document.getElementById('audio-player');
+            const audio = document.getElementById('audio');
+            
+            audio.src = `/audio/${trackId}`;
+            audioPlayer.style.display = 'flex';
+        
+            audio.oncanplay = () => audio.play(); // Чекаємо завантаження перед відтворенням
+        }
+        
+    </script>
 </body>
 </html>

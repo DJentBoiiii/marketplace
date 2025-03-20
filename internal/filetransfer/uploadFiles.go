@@ -65,7 +65,7 @@ func UploadFile(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка читання зображення")
 	}
 
-	imgDir := "../web/static/images/"
+	imgDir := "../web/static/products/" + typeVal + "/"
 
 	imgPath := fmt.Sprintf("%s%s", imgDir, image.Filename)
 	imgDBPath := fmt.Sprintf("static/images/%s", image.Filename)
