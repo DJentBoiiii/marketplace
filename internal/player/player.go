@@ -64,7 +64,11 @@ func GetAudio(c *fiber.Ctx) error {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "Audio file not found in MinIO"})
 	}
 
-	c.Set("Content-Type", "audio/mpeg")
+	contentType := stat.ContentType
+	if contentType == "" {
+		contentType = "application/octet-stream"
+	}
+	c.Set("Content-Type", contentType)
 	c.Set("Content-Length", strconv.FormatInt(stat.Size, 10))
 
 	_, err = io.Copy(c.Response().BodyWriter(), object)

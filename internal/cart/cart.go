@@ -28,5 +28,6 @@ func init() {
 func SetupCartHandlers(app *fiber.App) {
 	app.Post("/cart/add", auth.LoginRequired(), AddToCart)
 	app.Post("/cart/remove", auth.LoginRequired(), RemoveFromCart)
+	app.Post("/cart/purchase", auth.LoginRequired(), PurchaseItems)
 	app.Get("/cart", auth.LoginRequired(), ViewCart)
 }

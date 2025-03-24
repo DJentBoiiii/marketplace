@@ -52,5 +52,5 @@ func SetupUploadHandlers(app *fiber.App) {
 		return render.RenderTemplate(c, "delete.html")
 	})
 	app.Post("/delete", auth.LoginRequired(), DeleteFile)
-	app.Post("/download", auth.LoginRequired(), DownloadFile)
+	app.Post("/download/:id", auth.LoginRequired(), DownloadFile)
 }

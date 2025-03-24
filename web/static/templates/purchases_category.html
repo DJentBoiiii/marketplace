@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Ваші придбані {{ productType }}</h2>
+
+{% if products|length > 0 %}
+<div class="products-grid">
+    {% for product in products %}
+    <div class="product-card">
+        <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+        <h3>{{ product.Name }}</h3>
+        <p>Власник: {{ product.Owner }}</p>
+        {% if product.Genre %}
+        <p>Жанр: {{ product.Genre }}</p>
+        {% endif %}
+        <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="view-details">Деталі</a>
+        {% if product.Type == "audio" %}
+        <button onclick="playAudio('{{ product.Id }}')" class="play-button">Відтворити</button>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>У вас немає придбаних продуктів типу {{ productType }}</p>
+{% endif %}
+{% endblock %}

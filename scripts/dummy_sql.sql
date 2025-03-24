@@ -51,7 +51,6 @@ CREATE TABLE Playlists (
     CONSTRAINT fk_playlist_user FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
--- Таблиця для елементів плейлиста
 CREATE TABLE PlaylistItems (
     id          INT PRIMARY KEY AUTO_INCREMENT,
     playlist_id INT NOT NULL,
@@ -59,4 +58,14 @@ CREATE TABLE PlaylistItems (
     added_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_playlistitem_playlist FOREIGN KEY (playlist_id) REFERENCES Playlists(id) ON DELETE CASCADE,
     CONSTRAINT fk_playlistitem_product FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Purchases (
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    user_id     INT NOT NULL,
+    product_id  INT NOT NULL,
+    purchased_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_purchase (user_id, product_id),
+    CONSTRAINT fk_purchase_user FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_purchase_product FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE
 );
