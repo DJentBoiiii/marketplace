@@ -6,7 +6,6 @@ import (
 	"github.com/DjentBoiiii/marketplace/internal/models"
 )
 
-// CheckUserOwnsProduct checks if the current user has purchased this product
 func CheckUserOwnsProduct(userId int, productId int) (bool, error) {
 	var count int
 	err := DB.QueryRow("SELECT COUNT(*) FROM Purchases WHERE user_id = ? AND product_id = ?", userId, productId).Scan(&count)
@@ -16,7 +15,6 @@ func CheckUserOwnsProduct(userId int, productId int) (bool, error) {
 	return count > 0, nil
 }
 
-// GetUserOwnedProducts returns all products owned by a user of a specific type
 func GetUserOwnedProducts(userId int, productType string) ([]models.Product, error) {
 	query := `
 		SELECT p.id, p.name, p.price, p.type, u.username, p.image_url, p.description, p.genre
@@ -49,25 +47,21 @@ func GetUserOwnedProducts(userId int, productType string) ([]models.Product, err
 	return products, nil
 }
 
-// ViewPurchases shows all purchased products
 func ViewPurchases(userId int) (map[string][]models.Product, error) {
 	result := make(map[string][]models.Product)
 
-	// Get audio products
 	audioProducts, err := GetUserOwnedProducts(userId, "audio")
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 	result["audio"] = audioProducts
 
-	// Get midi products
 	midiProducts, err := GetUserOwnedProducts(userId, "midi")
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 	result["midi"] = midiProducts
 
-	// Get samples products
 	samplesProducts, err := GetUserOwnedProducts(userId, "samples")
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
