@@ -32,7 +32,7 @@ func init() {
 }
 
 func SetupProductHandlers(app *fiber.App) {
-	// Каталог продуктів (всі продукти певного користувача і певного типу)
+
 	app.Get("/catalogue/:owner/:type", func(c *fiber.Ctx) error {
 		owner := c.Params("owner")
 		productType := c.Params("type")
@@ -47,7 +47,6 @@ func SetupProductHandlers(app *fiber.App) {
 		return render.RenderTemplate(c, "catalogue.html", [2]interface{}{"products", products}, [2]interface{}{"playlist", playlist})
 	})
 
-	// Інформація про один продукт
 	app.Get("/product/:name/:owner", func(c *fiber.Ctx) error {
 		name := c.Params("name")
 		owner := c.Params("owner")
@@ -57,6 +56,54 @@ func SetupProductHandlers(app *fiber.App) {
 			return c.Status(404).SendString("Продукт не знайдено")
 		}
 
-		return render.RenderTemplate(c, "product_info.html", [2]interface{}{"product", product})
+		user, _ := auth.GetUserData(c)
+
+		isOwned := false
+		if user.Id > 0 {
+			isOwned, _ = CheckUserOwnsProduct(user.Id, product.Id)
+		}
+
+		return render.RenderTemplate(c, "product_info.html",
+			[2]interface{}{"product", product},
+			[2]interface{}{"isOwned", isOwned},
+			[2]interface{}{"user", user})
+	})
+
+	app.Get("/purchases", auth.LoginRequired(), func(c *fiber.Ctx) error {
+		user, err := auth.GetUserData(c)
+		if err != nil {
+			return c.Status(500).SendString("Помилка отримання даних користувача")
+		}
+
+		purchasedProducts, err := ViewPurchases(user.Id)
+		if err != nil {
+			return c.Status(500).SendString("Помилка отримання придбаних продуктів")
+		}
+
+		return render.RenderTemplate(c, "purchases.html",
+			[2]interface{}{"products", purchasedProducts},
+			[2]interface{}{"user", user})
+	})
+
+	app.Get("/purchases/:type", auth.LoginRequired(), func(c *fiber.Ctx) error {
+		productType := c.Params("type")
+		if productType != "audio" && productType != "midi" && productType != "samples" {
+			return c.Status(400).SendString("Невірний тип продукту")
+		}
+
+		user, err := auth.GetUserData(c)
+		if err != nil {
+			return c.Status(500).SendString("Помилка отримання даних користувача")
+		}
+
+		products, err := GetUserOwnedProducts(user.Id, productType)
+		if err != nil {
+			return c.Status(500).SendString("Помилка отримання придбаних продуктів")
+		}
+
+		return render.RenderTemplate(c, "purchases_category.html",
+			[2]interface{}{"products", products},
+			[2]interface{}{"productType", productType},
+			[2]interface{}{"user", user})
 	})
 }

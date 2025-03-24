@@ -25,7 +25,13 @@
         </div>
         {% endfor %}
     </div>  
-
+    
+    
+    <div class="cart-actions">
+        <form action="/cart/purchase" method="POST">
+            <button type="submit" class="purchase-button">Придбати все</button>
+        </form>
+    </div>
 </div>
 {% else %}
 <p>Кошик порожній</p>

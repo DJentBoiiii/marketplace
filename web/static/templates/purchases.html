@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Ваші придбані продукти</h2>
+
+<div class="categories">
+    <h3>Аудіо</h3>
+    {% if products.audio|length > 0 %}
+    <div class="products-grid">
+        {% for product in products.audio %}
+        <div class="product-card">
+            <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+            <h3>{{ product.Name }}</h3>
+            <p>Власник: {{ product.Owner }}</p>
+            {% if product.Genre %}
+            <p>Жанр: {{ product.Genre }}</p>
+            {% endif %}
+            <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="view-details">Деталі</a>
+            {% if product.Type == "audio" %}
+            <button onclick="playAudio('{{ product.Id }}')" class="play-button">Відтворити</button>
+            {% endif %}
+            <form action="/download/{{ product.Id }}" method="post">
+                <button type="submit" class="download-button">Завантажити</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>У вас немає придбаних аудіо продуктів</p>
+    {% endif %}
+    
+    <h3>MIDI</h3>
+    {% if products.midi|length > 0 %}
+    <div class="products-grid">
+        {% for product in products.midi %}
+        <div class="product-card">
+            <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+            <h3>{{ product.Name }}</h3>
+            <p>Власник: {{ product.Owner }}</p>
+            {% if product.Genre %}
+            <p>Жанр: {{ product.Genre }}</p>
+            {% endif %}
+            <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="view-details">Деталі</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>У вас немає придбаних MIDI продуктів</p>
+    {% endif %}
+    
+    <h3>Семпли</h3>
+    {% if products.samples|length > 0 %}
+    <div class="products-grid">
+        {% for product in products.samples %}
+        <div class="product-card">
+            <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+            <h3>{{ product.Name }}</h3>
+            <p>Власник: {{ product.Owner }}</p>
+            {% if product.Genre %}
+            <p>Жанр: {{ product.Genre }}</p>
+            {% endif %}
+            <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="view-details">Деталі</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>У вас немає придбаних семплів</p>
+    {% endif %}
+</div>
+{% endblock %}

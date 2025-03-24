@@ -1,29 +1,29 @@
 package filetransfer
 
 import (
+	"database/sql"
 	"fmt"
 	"io"
 	"strings"
 
-	"github.com/DjentBoiiii/marketplace/internal/auth"
 	"github.com/gofiber/fiber/v2"
 	"github.com/minio/minio-go/v7"
 )
 
 func DownloadFile(c *fiber.Ctx) error {
 
-	user, err := auth.GetUserData(c)
+	audio_id := c.Params("id")
+
+	db, _ := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
+	defer db.Close()
+	var vendor, name, fileType string
+	err := db.QueryRow("SELECT vendor, type, name FROM Products WHERE id = ?", audio_id).Scan(&vendor, &fileType, &name)
 	if err != nil {
-		return c.Status(500).SendString("Помилка отримання даних користувача")
+		return c.Status(500).SendString("Помилка отримання даних продукту")
 	}
 
-	filePath := "samples/sample_test.zip"
-	if filePath == "" {
-		return c.Status(400).SendString("Файл не знайдено")
-	}
-
-	bucketName := strings.ToLower(user.Username)
-	objectPath := fmt.Sprintf("%s/%s", user.Username, filePath)
+	bucketName := strings.ToLower("djent")
+	objectPath := fmt.Sprintf("%s/%s/%s", vendor, fileType, name)
 
 	object, err := MinioClient.GetObject(c.Context(), bucketName, objectPath, minio.GetObjectOptions{})
 	if err != nil {
@@ -31,7 +31,7 @@ func DownloadFile(c *fiber.Ctx) error {
 	}
 
 	c.Set("Content-Type", "application/octet-stream")
-	c.Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filePath))
+	c.Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", name))
 	_, err = io.Copy(c.Response().BodyWriter(), object)
 	if err != nil {
 		return c.Status(500).SendString("Помилка завантаження файлу")
