@@ -1,4 +1,3 @@
-// internal/models/playlistItem.go
 package models
 
 type PlaylistItem struct {
