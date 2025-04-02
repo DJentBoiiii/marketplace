@@ -65,12 +65,13 @@ func UploadFile(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка читання зображення")
 	}
 
-	imgDir := "../web/static/products/" + typeVal + "/"
+	imgDir := "/marketplace/web/static/uploads/products/" + typeVal + "/"
 
 	imgPath := fmt.Sprintf("%s%s", imgDir, image.Filename)
-	imgDBPath := fmt.Sprintf("static/images/%s", image.Filename)
+	imgDBPath := "static/uploads/products/" + typeVal + "/" + image.Filename
 	imgFile, err := os.Create(imgPath)
 	if err != nil {
+		fmt.Println(err)
 		return c.Status(500).SendString("Не вдалося створити файл зображення")
 	}
 	defer imgFile.Close()
@@ -79,7 +80,7 @@ func UploadFile(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка запису зображення")
 	}
 
-	bucketName := strings.ToLower(user.Username)
+	bucketName := strings.ToLower("dyploma-marketplace-products")
 	objectPath := fmt.Sprintf("%s/%s/%s", user.Username, typeVal, file.Filename)
 
 	exists, _ := MinioClient.BucketExists(c.Context(), bucketName)
@@ -102,7 +103,7 @@ func UploadFile(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка завантаження файлу")
 	}
 
-	db, _ := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
+	db, _ := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
 	_, err = db.Exec(
 		"INSERT INTO Products (name, type, price, description, vendor, image_url) VALUES (?, ?, ?, ?, ?, ?)",
 		file.Filename, typeVal, price, description, user.Username, imgDBPath,

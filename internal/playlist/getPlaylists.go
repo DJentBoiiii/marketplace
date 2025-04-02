@@ -73,9 +73,6 @@ func GetPlaylistItems(playlistId string) ([]models.PlaylistItem, error) {
 	return items, nil
 }
 
-// Допоміжна функція для парсингу дати
 func parseCreatedTime(timeStr string) (string, error) {
-	// Для спрощення просто повертаємо рядок з датою
-	// У реальному випадку можете конвертувати в time.Time
 	return timeStr, nil
 }

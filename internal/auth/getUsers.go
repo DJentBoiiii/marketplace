@@ -11,14 +11,13 @@ import (
 )
 
 func GetUserFromDB(username string) (*models.Account, error) {
-	DB, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
+	DB, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
 	if err != nil {
 		return nil, fmt.Errorf("помилка підключення до БД: %w", err)
 	}
 	defer DB.Close()
 
 	var user models.Account
-	// Додаємо поля bio та profile_pic
 	err = DB.QueryRow(`
 	    SELECT id, username, email, is_admin, 
 	    COALESCE(bio, '') as bio, 

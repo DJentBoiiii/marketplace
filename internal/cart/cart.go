@@ -15,12 +15,13 @@ var (
 	DB_USER     = os.Getenv("MYSQL_USER")
 	DB_PASSWORD = os.Getenv("MYSQL_PASSWORD")
 	DB_NAME     = os.Getenv("MYSQL_DATABASE")
+	DB_HOST     = os.Getenv("DB_HOST")
 	DB          *sql.DB
 )
 
 func init() {
 	var err error
-	DB, err = sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
+	DB, err = sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
 	if err != nil {
 		panic(err)
 	}

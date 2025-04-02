@@ -14,7 +14,7 @@ func DownloadFile(c *fiber.Ctx) error {
 
 	audio_id := c.Params("id")
 
-	db, _ := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
+	db, _ := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
 	defer db.Close()
 	var vendor, name, fileType string
 	err := db.QueryRow("SELECT vendor, type, name FROM Products WHERE id = ?", audio_id).Scan(&vendor, &fileType, &name)
@@ -22,7 +22,7 @@ func DownloadFile(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка отримання даних продукту")
 	}
 
-	bucketName := strings.ToLower("djent")
+	bucketName := strings.ToLower("dyploma-marketplace-products")
 	objectPath := fmt.Sprintf("%s/%s/%s", vendor, fileType, name)
 
 	object, err := MinioClient.GetObject(c.Context(), bucketName, objectPath, minio.GetObjectOptions{})

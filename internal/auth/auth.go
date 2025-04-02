@@ -18,6 +18,7 @@ var (
 	DB_NAME     = os.Getenv("MYSQL_DATABASE")
 	JWT_SECRET  = os.Getenv("JWT_SECRET")
 	SHA_SECRET  = os.Getenv("SHA_SECRET")
+	DB_HOST     = os.Getenv("DB_HOST")
 	DB          *sql.DB
 )
 

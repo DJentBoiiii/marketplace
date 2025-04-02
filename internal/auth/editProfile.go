@@ -21,7 +21,7 @@ func EditProfile(c *fiber.Ctx) error {
 	}
 
 	// Fetch the full user data from DB including bio and profile photo
-	DB, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
+	DB, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
 	if err != nil {
 		return c.Status(500).SendString("Помилка підключення до БД")
 	}
@@ -55,7 +55,7 @@ func UpdateProfile(c *fiber.Ctx) error {
 	bio := c.FormValue("bio")
 
 	// Connect to database
-	DB, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
+	DB, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
 	if err != nil {
 		return c.Status(500).SendString("Помилка підключення до БД")
 	}
@@ -177,7 +177,7 @@ func ChangePassword(c *fiber.Ctx) error {
 }
 
 func GetUserWithProfile(username string) (*models.Account, error) {
-	DB, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
+	DB, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
 	if err != nil {
 		return nil, fmt.Errorf("помилка підключення до БД: %w", err)
 	}
