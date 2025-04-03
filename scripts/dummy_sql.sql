@@ -75,4 +75,14 @@ CREATE TABLE Purchases (
 );
 
 
-SELECT User, Host FROM mysql.user WHERE User = 'admin';
+
+CREATE TABLE Comments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    comment TEXT NOT NULL,
+    likes_product BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_comment_product FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE
+);
