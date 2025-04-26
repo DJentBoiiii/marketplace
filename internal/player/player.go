@@ -16,10 +16,11 @@ import (
 )
 
 var minioClient *minio.Client
-var bucketName = "djent"
+var bucketName = "dyploma-marketplace-products"
 var DB_USER = os.Getenv("MYSQL_USER")
 var DB_PASSWORD = os.Getenv("MYSQL_PASSWORD")
 var DB_NAME = os.Getenv("MYSQL_DATABASE")
+var DB_HOST = os.Getenv("DB_HOST")
 var _ = godotenv.Load("/marketplace/.env")
 
 func init() {
@@ -41,14 +42,14 @@ func init() {
 func GetAudio(c *fiber.Ctx) error {
 	trackID := c.Params("track_id")
 
-	db, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
+	db, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to connect to database"})
 	}
 	defer db.Close()
 
 	var path string
-	err = db.QueryRow(`SELECT CONCAT(vendor, '/', type, '/', name) FROM Products WHERE id = ?`, trackID).Scan(&path)
+	err = db.QueryRow(`SELECT CONCAT(vendor, '/watermarked/', name, '.wav') FROM Products WHERE id = ?`, trackID).Scan(&path)
 	if err != nil {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "Audio file not found in DB"})
 	}

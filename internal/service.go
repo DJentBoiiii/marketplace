@@ -6,6 +6,7 @@ import (
 
 	"github.com/DjentBoiiii/marketplace/internal/auth"
 	"github.com/DjentBoiiii/marketplace/internal/cart"
+	"github.com/DjentBoiiii/marketplace/internal/comments"
 	"github.com/DjentBoiiii/marketplace/internal/filetransfer"
 	"github.com/DjentBoiiii/marketplace/internal/player"
 	"github.com/DjentBoiiii/marketplace/internal/playlist"
@@ -21,13 +22,14 @@ func SetupHandlers(app *fiber.App) {
 	cart.SetupCartHandlers(app)
 	playlist.SetupPlaylistHandlers(app)
 	player.RegisterRoutes(app)
+	comments.SetupCommentRoutes(app)
 }
 
 func StartService() {
 	app := fiber.New(fiber.Config{
 		BodyLimit: 50 * 1024 * 1024,
 	})
-	app.Static("/static", "../web/static")
+	app.Static("/static", "/marketplace/web/static")
 	fmt.Println("Service starts on port 69420")
 	SetupHandlers(app)
 	app.Listen(":3000")

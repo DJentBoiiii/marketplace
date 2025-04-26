@@ -5,7 +5,10 @@ import (
 	"database/sql"
 	"fmt"
 	"io"
+	"mime/multipart"
+	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -65,12 +68,13 @@ func UploadFile(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка читання зображення")
 	}
 
-	imgDir := "../web/static/products/" + typeVal + "/"
+	imgDir := "/marketplace/web/static/uploads/products/" + typeVal + "/"
 
 	imgPath := fmt.Sprintf("%s%s", imgDir, image.Filename)
-	imgDBPath := fmt.Sprintf("static/images/%s", image.Filename)
+	imgDBPath := "static/uploads/products/" + typeVal + "/" + image.Filename
 	imgFile, err := os.Create(imgPath)
 	if err != nil {
+		fmt.Println(err)
 		return c.Status(500).SendString("Не вдалося створити файл зображення")
 	}
 	defer imgFile.Close()
@@ -79,7 +83,7 @@ func UploadFile(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка запису зображення")
 	}
 
-	bucketName := strings.ToLower(user.Username)
+	bucketName := strings.ToLower("dyploma-marketplace-products")
 	objectPath := fmt.Sprintf("%s/%s/%s", user.Username, typeVal, file.Filename)
 
 	exists, _ := MinioClient.BucketExists(c.Context(), bucketName)
@@ -101,16 +105,67 @@ func UploadFile(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).SendString("Помилка завантаження файлу")
 	}
+	filename := strings.TrimSuffix(file.Filename, filepath.Ext(file.Filename))
+	extension := filepath.Ext(file.Filename)
 
-	db, _ := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
+	db, _ := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
 	_, err = db.Exec(
-		"INSERT INTO Products (name, type, price, description, vendor, image_url) VALUES (?, ?, ?, ?, ?, ?)",
-		file.Filename, typeVal, price, description, user.Username, imgDBPath,
+		"INSERT INTO Products (name, type, price, description, vendor, image_url, Extension) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		filename, typeVal, price, description, user.Username, imgDBPath, extension,
 	)
 	if err != nil {
 		fmt.Println(err)
 		return c.Status(500).SendString("Помилка запису в базу")
 	}
 
+	err = sendEmbedRequest(objectPath, "Licensed by DSA")
+	if err != nil {
+		fmt.Println("Помилка вмонтування водяного знаку:", err)
+		return c.Status(500).SendString("Помилка вмонтування водяного знаку")
+	}
+
+	fmt.Println("File uploaded successfully:", filename)
+
 	return c.SendString("Файл успішно завантажено")
+}
+
+func sendEmbedRequest(s3Key, message string) error {
+	var b bytes.Buffer
+	w := multipart.NewWriter(&b)
+
+	// Додаємо s3_key
+	err := w.WriteField("s3_key", s3Key)
+	if err != nil {
+		return err
+	}
+
+	// Додаємо message
+	err = w.WriteField("message", message)
+	if err != nil {
+		return err
+	}
+
+	w.Close()
+
+	req, err := http.NewRequest("POST", "http://fastapi-app:8000/embed", &b)
+	if err != nil {
+		return err
+	}
+
+	// Встановлюємо правильний Content-Type
+	req.Header.Set("Content-Type", w.FormDataContentType())
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("FastAPI повернув помилку %s: %s", resp.Status, string(bodyBytes))
+	}
+
+	return nil
 }

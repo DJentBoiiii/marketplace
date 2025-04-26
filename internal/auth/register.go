@@ -16,7 +16,7 @@ func register(c *fiber.Ctx) error {
 
 func processRegister(c *fiber.Ctx) error {
 	var err error
-	DB, err = sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
+	DB, err = sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
 	if err != nil {
 		fmt.Println(err)
 		return c.Status(500).SendString("Помилка підключення до бази даних:" + err.Error())

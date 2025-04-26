@@ -6,17 +6,11 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/DjentBoiiii/marketplace/internal/auth"
 	"github.com/gofiber/fiber/v2"
 	"github.com/minio/minio-go/v7"
 )
 
 func DeleteFile(c *fiber.Ctx) error {
-
-	user, err := auth.GetUserData(c)
-	if err != nil {
-		return c.Status(500).SendString("Помилка отримання даних користувача")
-	}
 
 	filePath := "/DJent/audio/Kira.mp3"
 
@@ -24,7 +18,7 @@ func DeleteFile(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(400).SendString("Невірний шлях до файлу")
 	}
-	bucketName := strings.ToLower(user.Username)
+	bucketName := strings.ToLower("dyploma-marketplace-products")
 	exists, err := MinioClient.BucketExists(context.Background(), bucketName)
 	if err != nil {
 		return c.Status(500).SendString("Помилка перевірки бакету: " + err.Error())

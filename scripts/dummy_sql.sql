@@ -1,3 +1,5 @@
+USE marketplace_test;
+
 CREATE TABLE Users (
     id            INT PRIMARY KEY AUTO_INCREMENT,
     username      VARCHAR(50) UNIQUE NOT NULL,
@@ -25,6 +27,11 @@ CREATE TABLE Products (
 ALTER TABLE Products
 ADD COLUMN Genre VARCHAR(100);
 
+ALTER TABLE Products
+ADD COLUMN `Extension` VARCHAR(100);
+
+ALTER TABLE `Products`
+MODIFY column  `Genre` VARCHAR(100) DEFAULT "none";
 
 DROP table `Users`;
 DROP table `Products`;
@@ -68,4 +75,17 @@ CREATE TABLE Purchases (
     UNIQUE KEY unique_purchase (user_id, product_id),
     CONSTRAINT fk_purchase_user FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
     CONSTRAINT fk_purchase_product FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE Comments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    comment TEXT NOT NULL,
+    likes_product BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_comment_product FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE
 );

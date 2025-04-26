@@ -19,7 +19,7 @@ func login(c *fiber.Ctx) error {
 func processLogin(c *fiber.Ctx) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
-	DB, _ = sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
+	DB, _ = sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
 	if username == "" || password == "" {
 		return c.Status(400).SendString("Заповніть всі поля")
 	}
