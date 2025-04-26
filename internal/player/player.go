@@ -49,7 +49,7 @@ func GetAudio(c *fiber.Ctx) error {
 	defer db.Close()
 
 	var path string
-	err = db.QueryRow(`SELECT CONCAT(vendor, '/', type, '/', name) FROM Products WHERE id = ?`, trackID).Scan(&path)
+	err = db.QueryRow(`SELECT CONCAT(vendor, '/watermarked/', name, '.wav') FROM Products WHERE id = ?`, trackID).Scan(&path)
 	if err != nil {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "Audio file not found in DB"})
 	}

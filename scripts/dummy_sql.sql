@@ -27,6 +27,9 @@ CREATE TABLE Products (
 ALTER TABLE Products
 ADD COLUMN Genre VARCHAR(100);
 
+ALTER TABLE Products
+ADD COLUMN `Extension` VARCHAR(100);
+
 ALTER TABLE `Products`
 MODIFY column  `Genre` VARCHAR(100) DEFAULT "none";
 
