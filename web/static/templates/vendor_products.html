@@ -1,0 +1,69 @@
+<!-- vendor_products.html -->
+<!-- Template for viewing all products from a specific vendor -->
+{% extends "base.html" %}
+
+{% block title %}Продукти від {{ vendor.Username }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="vendor-header">
+        <div class="vendor-info">
+            {% if vendor.ProfilePic %}
+            <img src="{{ vendor.ProfilePic }}" alt="{{ vendor.Username }}" class="vendor-image">
+            {% else %}
+            <div class="vendor-image-placeholder">{{ vendor.Username|slice:":1" }}</div>
+            {% endif %}
+            <h1>Продукти від {{ vendor.Username }}</h1>
+        </div>
+        <a href="/catalogue" class="back-button">← До каталогу</a>
+    </div>
+
+    {% for type, products in productsByType %}
+    <section>
+        <div class="catalogue-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+                <div class="product-info">
+                    <h3>{{ product.Name }}</h3>
+                    <p>{{ product.Price }} грн</p>
+                    <a href="/product/{{ product.Id }}" class="details-button">Деталі</a>
+                    {% if user.Username %}
+                    <form action="/cart/add" method="POST" class="action-form">
+                        <input type="hidden" name="product_id" value="{{ product.Id }}">
+                        <button type="submit" class="add-to-cart-button">В кошик</button>
+                    </form>
+                    <button onclick="showPlaylistModal('{{ product.Id }}')" class="add-to-playlist-button">До плейлиста</button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endfor %}
+
+    {% if productsByType|length == 0 %}
+    <div class="empty-result">
+        <p>У цього продавця поки що немає продуктів</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Playlist Modal -->
+{% if user.Username %}
+<div id="playlistModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closePlaylistModal()">&times;</span>
+        <h3>Додати до плейлиста</h3>
+        <form action="/playlist/add-item" method="POST">
+            <input type="hidden" id="modalProductId" name="product_id" value="">
+            <select name="playlist_id" required>
+                <option value="">Оберіть плейлист</option>
+                <!-- In a real app, this would be populated from the backend -->
+            </select>
+            <button type="submit" class="add-to-playlist-button">Додати</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

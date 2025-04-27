@@ -1,58 +1,113 @@
+<!-- catalogue.html -->
 {% extends "base.html" %}
 
+{% block title %}Каталог продуктів{% endblock %}
+
 {% block content %}
-<h2>Каталог</h2>
-<div class="catalogue-grid">
-    {% for product in products %}
-    <div class="product-card">
-        <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" onclick="playAudio('{{ product.Id }}')">
-        <div class="product-info">
-            <h3>{{ product.Name }}</h3>
-            <p><strong>Власник:</strong> {{ product.Owner }}</p>
-            <p><strong>Ціна:</strong> ${{ product.Price }}</p>
-            {% if product.Genre %}
-            <p><strong>Жанр:</strong> {{ product.Genre }}</p>
-            {% endif %}
-            <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="details-button">Детальніше</a>
-            
-            <form action="/cart/add" method="POST" class="action-form">
-                <input type="hidden" name="product_id" value="{{ product.Id }}">
-                <button type="submit" class="add-to-cart-button">Додати до кошика</button>
-            </form>
+<div class="container">
+    <h1>Каталог продуктів</h1>
 
-            {% if product.Type == "audio" %}
-            <button onclick="showPlaylistModal('{{ product.Id }}')" class="add-to-playlist-button">Додати до плейлиста</button>
-            {% endif %}
+    <!-- Audio Products Section -->
+    <section>
+        <div class="section-header">
+            <h2>Аудіо</h2>
+            <a href="/catalogue/audio" class="view-all">Переглянути всі</a>
         </div>
-    </div>
-    {% endfor %}
+        <div class="catalogue-grid">
+            {% for product in audioProducts %}
+            <div class="product-card">
+                <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+                <div class="product-info">
+                    <h3>{{ product.Name }}</h3>
+                    <p>{{ product.Price }} грн</p>
+                    <p class="vendor">Продавець: <a href="/catalogue/vendor/{{ product.Owner }}">{{ product.Owner }}</a></p>
+                    <a href="/product/{{ product.Id }}" class="details-button">Деталі</a>
+                    {% if user.Username %}
+                    <form action="/cart/add" method="POST" class="action-form">
+                        <input type="hidden" name="product_id" value="{{ product.Id }}">
+                        <button type="submit" class="add-to-cart-button">В кошик</button>
+                    </form>
+                    <button onclick="showPlaylistModal('{{ product.Id }}')" class="add-to-playlist-button">До плейлиста</button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- MIDI Products Section -->
+    <section>
+        <div class="section-header">
+            <h2>MIDI</h2>
+            <a href="/catalogue/midi" class="view-all">Переглянути всі</a>
+        </div>
+        <div class="catalogue-grid">
+            {% for product in midiProducts %}
+            <div class="product-card">
+                <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+                <div class="product-info">
+                    <h3>{{ product.Name }}</h3>
+                    <p>{{ product.Price }} грн</p>
+                    <p class="vendor">Продавець: <a href="/catalogue/vendor/{{ product.Owner }}">{{ product.Owner }}</a></p>
+                    <a href="/product/{{ product.Id }}" class="details-button">Деталі</a>
+                    {% if user.Username %}
+                    <form action="/cart/add" method="POST" class="action-form">
+                        <input type="hidden" name="product_id" value="{{ product.Id }}">
+                        <button type="submit" class="add-to-cart-button">В кошик</button>
+                    </form>
+                    <button onclick="showPlaylistModal('{{ product.Id }}')" class="add-to-playlist-button">До плейлиста</button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Samples Products Section -->
+    <section>
+        <div class="section-header">
+            <h2>Семпли</h2>
+            <a href="/catalogue/samples" class="view-all">Переглянути всі</a>
+        </div>
+        <div class="catalogue-grid">
+            {% for product in samplesProducts %}
+            <div class="product-card">
+                <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+                <div class="product-info">
+                    <h3>{{ product.Name }}</h3>
+                    <p>{{ product.Price }} грн</p>
+                    <p class="vendor">Продавець: <a href="/catalogue/vendor/{{ product.Owner }}">{{ product.Owner }}</a></p>
+                    <a href="/product/{{ product.Id }}" class="details-button">Деталі</a>
+                    {% if user.Username %}
+                    <form action="/cart/add" method="POST" class="action-form">
+                        <input type="hidden" name="product_id" value="{{ product.Id }}">
+                        <button type="submit" class="add-to-cart-button">В кошик</button>
+                    </form>
+                    <button onclick="showPlaylistModal('{{ product.Id }}')" class="add-to-playlist-button">До плейлиста</button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
 </div>
 
-<!-- Форма створення нового плейлиста -->
-<div class="playlist-management">
-    <h3>Ваші плейлисти</h3>
-    <form action="/playlist/create" method="POST">
-        <input type="text" name="playlist_name" placeholder="Назва плейлиста" required>
-        <button type="submit">Створити</button>
-    </form>
-</div>
-
-<!-- Модальне вікно для додавання у плейлист -->
+<!-- Playlist Modal -->
+{% if user.Username %}
 <div id="playlistModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closePlaylistModal()">&times;</span>
-        <h3>Додати у плейлист</h3>
-        <form action="/playlist/add" method="POST">
-            <input type="hidden" id="modalProductId" name="product_id">
-            <label for="playlist_id">Оберіть плейлист:</label>
+        <h3>Додати до плейлиста</h3>
+        <form action="/playlist/add-item" method="POST">
+            <input type="hidden" id="modalProductId" name="product_id" value="">
             <select name="playlist_id" required>
                 <option value="">Оберіть плейлист</option>
-                {% for item in playlist %}
-                <option value="{{ item.Id }}">{{ item.Name }} ({{ item.ItemCount }} треків)</option>
-                {% endfor %}
+                <!-- In a real app, this would be populated from the backend -->
+                <!-- For now, it's static as we haven't implemented playlist fetching here -->
             </select>
             <button type="submit" class="add-to-playlist-button">Додати</button>
         </form>
     </div>
 </div>
+{% endif %}
 {% endblock %}
