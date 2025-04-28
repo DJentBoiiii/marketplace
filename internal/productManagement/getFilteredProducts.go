@@ -26,9 +26,7 @@ func GetFilteredProducts(options FilterOptions) ([]models.Product, error) {
 		return nil, fmt.Errorf("failed to connect to database: %v", err)
 	}
 	defer db.Close()
-
-	// Build query
-
+	// Build the query
 	queryBase := `SELECT id, name, price, type, description, vendor, genre, image_url, created_at 
                   FROM Products WHERE 1=1`
 
