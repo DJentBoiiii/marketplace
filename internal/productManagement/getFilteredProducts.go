@@ -27,7 +27,8 @@ func GetFilteredProducts(options FilterOptions) ([]models.Product, error) {
 	}
 	defer db.Close()
 
-	// Build the query
+	// Build query
+
 	queryBase := `SELECT id, name, price, type, description, vendor, genre, image_url, created_at 
                   FROM Products WHERE 1=1`
 
