@@ -1,0 +1,117 @@
+<!-- catalogue_type.html -->
+<!-- Template for viewing all products of a specific type with filtering -->
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="section-header">
+        <h1>{{ title }}</h1>
+        <a href="/catalogue" class="back-button">← До каталогу</a>
+    </div>
+
+    <!-- Filter panel -->
+    <div class="filter-panel">
+        <h3>Фільтри</h3>
+        <form action="/catalogue/{{ type }}" method="GET" class="filter-form">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="name">Назва:</label>
+                    <input type="text" id="name" name="name" value="{{ filters.Name }}" placeholder="Назва продукту">
+                </div>
+                <div class="filter-group">
+                    <label for="vendor">Продавець:</label>
+                    <select id="vendor" name="vendor">
+                        <option value="">Всі</option>
+                        {% for vendor in vendors %}
+                        <option value="{{ vendor }}" {% if filters.Vendor == vendor %}selected{% endif %}>{{ vendor }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="genre">Жанр:</label>
+                    <select id="genre" name="genre">
+                        <option value="">Всі</option>
+                        {% for genre in genres %}
+                        <option value="{{ genre }}" {% if filters.Genre == genre %}selected{% endif %}>{{ genre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Ціна:</label>
+                    <div class="price-range">
+                        <input type="number" name="min_price" value="{{ filters.MinPrice }}" min="0" placeholder="Від" class="price-input">
+                        <span>-</span>
+                        <input type="number" name="max_price" value="{{ filters.MaxPrice }}" min="0" placeholder="До" class="price-input">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label for="sort">Сортування:</label>
+                    <select id="sort" name="sort">
+                        <option value="newest" {% if filters.SortBy == "newest" %}selected{% endif %}>Нові спочатку</option>
+                        <option value="name" {% if filters.SortBy == "name" %}selected{% endif %}>За алфавітом</option>
+                        <option value="price_asc" {% if filters.SortBy == "price_asc" %}selected{% endif %}>Ціна (від дешевих)</option>
+                        <option value="price_desc" {% if filters.SortBy == "price_desc" %}selected{% endif %}>Ціна (від дорогих)</option>
+                        <option value="vendor" {% if filters.SortBy == "vendor" %}selected{% endif %}>За продавцем</option>
+                    </select>
+                </div>
+                <div class="filter-buttons">
+                    <button type="submit" class="filter-button">Застосувати</button>
+                    <a href="/catalogue/{{ type }}" class="reset-button">Скинути</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="catalogue-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+            <div class="product-info">
+                <h3>{{ product.Name }}</h3>
+                <p>{{ product.Price }} грн</p>
+                <p class="vendor">Продавець: <a href="/catalogue/vendor/{{ product.Owner }}">{{ product.Owner }}</a></p>
+                {% if product.Genre %}
+                <p class="genre">Жанр: {{ product.Genre }}</p>
+                {% endif %}
+                <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="details-button">Деталі</a>
+                {% if user.Username %}
+                <form action="/cart/add" method="POST" class="action-form">
+                    <input type="hidden" name="product_id" value="{{ product.Id }}">
+                    <button type="submit" class="add-to-cart-button">В кошик</button>
+                </form>
+                <button onclick="showPlaylistModal('{{ product.Id }}')" class="add-to-playlist-button">До плейлиста</button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if products|length == 0 %}
+    <div class="empty-result">
+        <p>За вашим запитом не знайдено продуктів</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Playlist Modal -->
+{% if user.Username %}
+<div id="playlistModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closePlaylistModal()">&times;</span>
+        <h3>Додати до плейлиста</h3>
+        <form action="/playlist/add-item" method="POST">
+            <input type="hidden" id="modalProductId" name="product_id" value="">
+            <select name="playlist_id" required>
+                <option value="">Оберіть плейлист</option>
+                <!-- In a real app, this would be populated from the backend -->
+            </select>
+            <button type="submit" class="add-to-playlist-button">Додати</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

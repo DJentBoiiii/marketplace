@@ -45,7 +45,7 @@ func SetupProductHandlers(app *fiber.App) {
 		}
 		user, _ := auth.GetUserData(c)
 		playlist, _ := playlist.GetUserPlaylists(user.Id)
-		return render.RenderTemplate(c, "catalogue.html", [2]interface{}{"products", products}, [2]interface{}{"playlist", playlist})
+		return render.RenderTemplate(c, "catalogue_v.html", [2]interface{}{"products", products}, [2]interface{}{"playlist", playlist})
 	})
 
 	app.Get("/product/:name/:owner", func(c *fiber.Ctx) error {
