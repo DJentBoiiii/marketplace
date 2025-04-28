@@ -1,20 +1,19 @@
-<!-- catalogue_type.html -->
-<!-- Template for viewing all products of a specific type with filtering -->
+<!-- catalogue_filtered.html -->
 {% extends "base.html" %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}Фільтровані Продукти{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="section-header">
-        <h1>{{ title }}</h1>
+        <h1>Каталог - Фільтровані Продукти</h1>
         <a href="/catalogue" class="back-button">← До каталогу</a>
     </div>
 
     <!-- Filter panel -->
     <div class="filter-panel">
         <h3>Фільтри</h3>
-        <form action="/catalogue/{{ type }}" method="GET" class="filter-form">
+        <form action="" method="GET" class="filter-form">
             <div class="filter-row">
                 <div class="filter-group">
                     <label for="name">Назва:</label>
@@ -60,37 +59,43 @@
                 </div>
                 <div class="filter-buttons">
                     <button type="submit" class="filter-button">Застосувати</button>
-                    <a href="/catalogue/{{ type }}" class="reset-button">Скинути</a>
+                    <a href="/catalogue" class="reset-button">Скинути</a>
                 </div>
             </div>
         </form>
     </div>
 
-    <div class="catalogue-grid">
-        {% for product in products %}
-        <div class="product-card">
-            <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
-            <div class="product-info">
-                <h3>{{ product.Name }}</h3>
-                <p>{{ product.Price }} грн</p>
-                <p class="vendor">Продавець: <a href="/catalogue/vendor/{{ product.Owner }}">{{ product.Owner }}</a></p>
-                {% if product.Genre %}
-                <p class="genre">Жанр: {{ product.Genre }}</p>
-                {% endif %}
-                <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="details-button">Деталі</a>
-                {% if user.Username %}
-                <form action="/cart/add" method="POST" class="action-form">
-                    <input type="hidden" name="product_id" value="{{ product.Id }}">
-                    <button type="submit" class="add-to-cart-button">В кошик</button>
-                </form>
-                <button onclick="showPlaylistModal('{{ product.Id }}')" class="add-to-playlist-button">До плейлиста</button>
-                {% endif %}
+    <!-- Display product sections by type -->
+    {% for type, products in productsByType %}
+    <div class="product-section">
+        <h2>{{ formatTypeTitle(type) }}</h2>
+        <div class="catalogue-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+                <div class="product-info">
+                    <h3>{{ product.Name }}</h3>
+                    <p>{{ product.Price }} грн</p>
+                    <p class="vendor">Продавець: <a href="/catalogue/vendor/{{ product.Owner }}">{{ product.Owner }}</a></p>
+                    {% if product.Genre %}
+                    <p class="genre">Жанр: {{ product.Genre }}</p>
+                    {% endif %}
+                    <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="details-button">Деталі</a>
+                    {% if user.Username %}
+                    <form action="/cart/add" method="POST" class="action-form">
+                        <input type="hidden" name="product_id" value="{{ product.Id }}">
+                        <button type="submit" class="add-to-cart-button">В кошик</button>
+                    </form>
+                    <button onclick="showPlaylistModal('{{ product.Id }}')" class="add-to-playlist-button">До плейлиста</button>
+                    {% endif %}
+                </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
+    {% endfor %}
 
-    {% if products|length == 0 %}
+    {% if productsByType|length == 0 %}
     <div class="empty-result">
         <p>За вашим запитом не знайдено продуктів</p>
     </div>
