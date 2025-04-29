@@ -4,6 +4,7 @@ package internal
 import (
 	"fmt"
 
+	"github.com/DjentBoiiii/marketplace/internal/admin"
 	"github.com/DjentBoiiii/marketplace/internal/auth"
 	"github.com/DjentBoiiii/marketplace/internal/cart"
 	"github.com/DjentBoiiii/marketplace/internal/catalogue"
@@ -25,9 +26,8 @@ func SetupHandlers(app *fiber.App) {
 	player.RegisterRoutes(app)
 	comments.SetupCommentRoutes(app)
 	filetransfer.SetupUploadHandlers(app)
-
-	// Setup new catalogue routes
 	catalogue.SetupCatalogueRoutes(app)
+	admin.SetupAdminHandlers(app)
 }
 
 func StartService() {

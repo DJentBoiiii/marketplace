@@ -1,0 +1,52 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Адмін-панель{% endblock %}
+
+{% block admin_content %}
+<h2>Статистика системи</h2>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>Користувачі</h3>
+        <div class="stat-number">{{ stats.UserCount }}</div>
+        <a href="/admin/users" class="stat-link">Управління користувачами</a>
+    </div>
+    
+    <div class="stat-card">
+        <h3>Продукти</h3>
+        <div class="stat-number">{{ stats.ProductCount }}</div>
+        <div class="product-links">
+            <a href="/admin/products?type=audio" class="stat-link">Аудіо</a>
+            <a href="/admin/products?type=midi" class="stat-link">MIDI</a>
+            <a href="/admin/products?type=samples" class="stat-link">Семпли</a>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <h3>Покупки</h3>
+        <div class="stat-number">{{ stats.PurchaseCount }}</div>
+    </div>
+</div>
+
+<h3>Останні зареєстровані користувачі</h3>
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Ім'я користувача</th>
+            <th>Email</th>
+            <th>Дата реєстрації</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in latestUsers %}
+        <tr>
+            <td>{{ u.Id }}</td>
+            <td>{{ u.Username }}</td>
+            <td>{{ u.Email }}</td>
+            <td>{{ u.CreatedAt }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

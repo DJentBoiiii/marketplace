@@ -57,7 +57,7 @@ func processLogin(c *fiber.Ctx) error {
 		"user_id":  id,
 		"username": username,
 		"email":    dbEmail,
-		"is_admin": false,
+		"is_admin": IsAdmin,
 		"exp":      time.Now().Add(time.Hour * 72).Unix(),
 	})
 
