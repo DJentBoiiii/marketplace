@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Адмін-панель{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-sidebar">
+        <h2>Адміністрування</h2>
+        <ul class="admin-nav">
+            <li><a href="/admin">Панель</a></li>
+            <li><a href="/admin/users">Користувачі</a></li>
+            <li class="nav-section">Продукти</li>
+            <li><a href="/admin/products?type=audio">Аудіо</a></li>
+            <li><a href="/admin/products?type=midi">MIDI</a></li>
+            <li><a href="/admin/products?type=samples">Семпли</a></li>
+            <li class="nav-divider"></li>
+            <li><a href="/">На головну</a></li>
+        </ul>
+    </div>
+    
+    <div class="admin-content">
+        {% block admin_content %}{% endblock %}
+    </div>
+</div>
+
+
+{% endblock %}

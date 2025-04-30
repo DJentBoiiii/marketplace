@@ -1,0 +1,50 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Адмін-панель - Управління користувачами{% endblock %}
+
+{% block admin_content %}
+<h2>Управління користувачами</h2>
+
+<div class="admin-table-container">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Ім'я користувача</th>
+                <th>Email</th>
+                <th>Адміністратор</th>
+                <th>Дата реєстрації</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in users %}
+            <tr>
+                <td>{{ u.Id }}</td>
+                <td>{{ u.Username }}</td>
+                <td>{{ u.Email }}</td>
+                <td>
+                    {% if u.IsAdmin %}
+                    <span class="admin-badge">Так</span>
+                    {% else %}
+                    <span>Ні</span>
+                    {% endif %}
+                </td>
+                <td>{{ u.CreatedAt }}</td>
+                <td class="actions">
+                    <form action="/admin/users/{{ u.Id }}/toggle-admin" method="post">
+                        <input type="hidden" name="is_admin" value="{% if u.IsAdmin %}false{% else %}true{% endif %}">
+                        <button type="submit" class="{% if u.IsAdmin %}remove-admin-button{% else %}make-admin-button{% endif %}">
+                            {% if u.IsAdmin %}Забрати адмін-права{% else %}Зробити адміном{% endif %}
+                        </button>
+                    </form>
+                    <form action="/admin/users/{{ u.Id }}/delete" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити цього користувача?');">
+                        <button type="submit" class="delete-button">Видалити</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

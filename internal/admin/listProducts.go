@@ -1,0 +1,65 @@
+package admin
+
+import (
+	"database/sql"
+
+	"github.com/DjentBoiiii/marketplace/internal/auth"
+	"github.com/DjentBoiiii/marketplace/internal/models"
+	"github.com/DjentBoiiii/marketplace/internal/render"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/gofiber/fiber/v2"
+)
+
+// ListProducts retrieves products filtered by type for admin management
+// Displays all products of a specific type (audio, midi, samples) in the admin panel
+func ListProducts(c *fiber.Ctx) error {
+	user, err := auth.GetUserData(c)
+	if err != nil {
+		return c.Status(401).SendString("Необхідно увійти в систему")
+	}
+
+	productType := c.Query("type", "audio")
+
+	DB, err := sql.Open("mysql", auth.DB_USER+":"+auth.DB_PASSWORD+"@tcp("+auth.DB_HOST+":3306)/"+auth.DB_NAME)
+	if err != nil {
+		return c.Status(500).SendString("Помилка підключення до БД")
+	}
+	defer DB.Close()
+
+	rows, err := DB.Query(`
+		SELECT p.id, p.name, p.price, p.type, p.description, p.vendor, p.genre, p.image_url, p.created_at
+		FROM Products p
+		WHERE p.type = ?
+		ORDER BY p.created_at DESC`, productType)
+	if err != nil {
+		return c.Status(500).SendString("Помилка отримання списку продуктів")
+	}
+	defer rows.Close()
+
+	var products []models.Product
+	for rows.Next() {
+		var product models.Product
+		var createdAt []uint8
+		err := rows.Scan(
+			&product.Id,
+			&product.Name,
+			&product.Price,
+			&product.Type,
+			&product.Description,
+			&product.Owner,
+			&product.Genre,
+			&product.ImageURL,
+			&createdAt,
+		)
+		if err != nil {
+			continue
+		}
+		products = append(products, product)
+	}
+
+	return render.RenderTemplate(c, "admin_products.html",
+		[2]interface{}{"user", user},
+		[2]interface{}{"products", products},
+		[2]interface{}{"productType", productType},
+	)
+}

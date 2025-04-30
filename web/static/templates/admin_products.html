@@ -1,0 +1,53 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Адмін-панель - Управління продуктами{% endblock %}
+
+{% block admin_content %}
+<h2>Управління продуктами</h2>
+
+<div class="product-type-selector">
+    <a href="/admin/products?type=audio" class="type-link {% if productType == 'audio' %}active{% endif %}">Аудіо</a>
+    <a href="/admin/products?type=midi" class="type-link {% if productType == 'midi' %}active{% endif %}">MIDI</a>
+    <a href="/admin/products?type=samples" class="type-link {% if productType == 'samples' %}active{% endif %}">Семпли</a>
+</div>
+
+<div class="admin-table-container">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Зображення</th>
+                <th>Назва</th>
+                <th>Ціна</th>
+                <th>Жанр</th>
+                <th>Продавець</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.Id }}</td>
+                <td><img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-thumbnail"></td>
+                <td>{{ product.Name }}</td>
+                <td>{{ product.Price }} грн</td>
+                <td>{{ product.Genre }}</td>
+                <td>{{ product.Owner }}</td>
+                <td class="actions">
+                    <a href="/product/{{ product.Id }}" class="view-button" target="_blank">Перегляд</a>
+                    <form action="/admin/products/{{ product.Id }}/delete?type={{ productType }}" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити цей продукт?');">
+                        <button type="submit" class="delete-button">Видалити</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    {% if products|length == 0 %}
+    <div class="no-items">
+        <p>Немає продуктів типу "{{ productType }}" в системі.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
