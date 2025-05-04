@@ -1,26 +1,39 @@
 {% extends "base.html" %}
 
-{% block content %}
-<h2>Ваші придбані {{ productType }}</h2>
+{% block head %}
+<link rel="stylesheet" href="/css/purchases_category.css">
+{% endblock %}
 
-{% if products|length > 0 %}
-<div class="products-grid">
-    {% for product in products %}
-    <div class="product-card">
-        <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
-        <h3>{{ product.Name }}</h3>
-        <p>Власник: {{ product.Owner }}</p>
-        {% if product.Genre %}
-        <p>Жанр: {{ product.Genre }}</p>
-        {% endif %}
-        <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="view-details">Деталі</a>
-        {% if product.Type == "audio" %}
-        <button onclick="playAudio('{{ product.Id }}')" class="play-button">Відтворити</button>
-        {% endif %}
+{% block content %}
+<div class="container">
+    <h2>Ваші придбані {{ productType }}</h2>
+
+    {% if products|length > 0 %}
+    <div class="products-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+            <div class="product-info">
+                <h3>{{ product.Name }}</h3>
+                <p>Власник: {{ product.Owner }}</p>
+                {% if product.Genre %}
+                <p>Жанр: {{ product.Genre }}</p>
+                {% endif %}
+                <div class="product-card-buttons">
+                    <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="btn btn-primary btn-block">Деталі</a>
+                    {% if product.Type == "audio" %}
+                    <button onclick="playAudio('{{ product.Id }}')" class="btn btn-secondary btn-block">Відтворити</button>
+                    {% endif %}
+                    <form action="/download/{{ product.Id }}" method="post">
+                        <button type="submit" class="btn btn-secondary btn-block">Завантажити</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+    {% else %}
+    <p>У вас немає придбаних продуктів типу {{ productType }}</p>
+    {% endif %}
 </div>
-{% else %}
-<p>У вас немає придбаних продуктів типу {{ productType }}</p>
-{% endif %}
 {% endblock %}

@@ -1,41 +1,44 @@
 {% extends "base.html" %}
 
-{% block content %}
-<div class="playlist-header">
-    <h2>Плейлист: {{ playlist_name }}</h2>
-    <div class="playlist-actions">
-        <a href="/playlists" class="back-button">Назад до плейлистів</a>
-    </div>
-</div>
+{% block head %}
+<link rel="stylesheet" href="/css/playlist_detail.css">
+{% endblock %}
 
-{% if items|length > 0 %}
-<div class="playlist-items">
-    {% for item in items %}
-    <div class="playlist-item">
-        <img src="{{ item.ImageURL }}" alt="{{ item.Name }}" class="product-image">
-        <div class="item-info">
-            <h3>{{ item.Name }}</h3>
-            <img src="{{ track.image_url }}" alt="{{ track.name }}" onclick="playAudio('{{ track.id }}')">
-            <p><strong>Власник:</strong> {{ item.Owner }}</p>
-            <p><strong>Тип:</strong> {{ item.Type }}</p>
-            {% if item.Genre %}
-            <p><strong>Жанр:</strong> {{ item.Genre }}</p>
-            {% endif %}
-            <div class="item-actions">
-                <a href="/product/{{ item.Name }}/{{ item.Owner }}" class="details-button">Детальніше</a>
-                <form action="/playlist/remove" method="POST" class="remove-form">
-                    <input type="hidden" name="item_id" value="{{ item.ItemId }}">
-                    <input type="hidden" name="playlist_id" value="{{ playlist_id }}">
-                    <button type="submit" class="remove-button">Видалити з плейлиста</button>
-                </form>
-            </div>
+{% block content %}
+<div class="container">
+    <div class="playlist-header">
+        <h2>Плейлист: {{ playlist_name }}</h2>
+        <div class="playlist-actions">
+            <a href="/playlists" class="btn btn-secondary">Назад до плейлистів</a>
         </div>
     </div>
-    {% endfor %}
+
+    {% if items|length > 0 %}
+    <div class="playlist-items">
+        {% for item in items %}
+        <div class="playlist-item">
+            <img src="{{ item.ImageURL }}" alt="{{ item.Name }}" class="product-image">
+            <div class="item-info">
+                <h3>{{ item.Name }}</h3>
+                <p><strong>Власник:</strong> {{ item.Owner }}</p>
+                <p><strong>Тип:</strong> {{ item.Type }}</p>
+                {% if item.Genre %}
+                <p><strong>Жанр:</strong> {{ item.Genre }}</p>
+                {% endif %}
+                <div class="item-actions">
+                    <a href="/product/{{ item.Name }}/{{ item.Owner }}" class="btn btn-primary">Детальніше</a>
+                    <form action="/playlist/remove" method="POST" class="remove-form">
+                        <input type="hidden" name="item_id" value="{{ item.ItemId }}">
+                        <input type="hidden" name="playlist_id" value="{{ playlist_id }}">
+                        <button type="submit" class="btn btn-danger">Видалити з плейлиста</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-playlist">Плейлист порожній</p>
+    {% endif %}
 </div>
-{% else %}
-<p class="empty-playlist">Плейлист порожній</p>
-{% endif %}
-
-
 {% endblock %}

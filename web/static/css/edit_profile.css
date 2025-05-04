@@ -1,0 +1,158 @@
+/* Minimal overrides for edit_profile page to align with profile.css and base.css */
+
+.profile-edit-container {
+    background-color: #161616;
+    border-radius: 8px;
+    padding: 40px 20px;
+    min-height: 80vh;
+    color: #eee;
+}
+
+.profile-edit-container h2 {
+    text-align: center;
+}
+
+/* Custom file input styles */
+.custom-file-input {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.custom-file-input input[type="file"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+}
+
+.custom-file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1db954;
+    color: white;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    user-select: none;
+}
+
+.custom-file-label:hover {
+    background-color: #17a44c;
+}
+
+.profile-form-container, .password-change-container {
+    margin: 20px auto 0 auto;
+    width: 100%;
+    max-width: 600px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #eee;
+}
+
+.form-control {
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background-color: #222;
+    color: #eee;
+    font-size: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #1db954;
+    box-shadow: 0 0 5px #1db954;
+    background-color: #1a1a1a;
+}
+
+.form-control.readonly {
+    background-color: #333;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+.help-text {
+    font-size: 0.85rem;
+    color: #aaa;
+    margin-top: 4px;
+}
+
+.photo-preview-container {
+    margin-bottom: 10px;
+}
+
+.profile-photo-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #333;
+}
+
+.no-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #333;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.edit-profile-btn {
+    background-color: #1db954;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.edit-profile-btn:hover {
+    background-color: #17a44c;
+}
+
+.btn-cancel {
+    color: #eee;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 1px solid #444;
+    text-decoration: none;
+    font-weight: 600;
+    transition: border-color 0.3s ease;
+}
+
+.btn-cancel:hover {
+    border-color: #1db954;
+    color: #1db954;
+}

@@ -2,196 +2,83 @@
 
 {% block title %}{{ product.Name }}{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="/static/css/product_info.css">
+{% endblock %}
+
 {% block content %}
-<h2>{{ product.Name }}</h2>
-
-<div class="product-details">
-    <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
-    <div class="product-info">
-        <h3>Ціна: ${{ product.Price }}</h3>
-        <p><strong>Тип:</strong> {{ product.Type }}</p>
-        <p><strong>Власник:</strong> {{ product.Owner }}</p>
-        {% if product.Genre %}
-        <p><strong>Жанр:</strong> {{ product.Genre }}</p>
-        {% endif %}
-        <p><strong>Опис:</strong> {{ product.Description }}</p>
-        <p><strong>id:</strong> {{ product.Id }}</p>
-
-        <!-- Кнопка додавання до кошика -->
-        <form action="/cart/add" method="POST" class="action-form">
-            <input type="hidden" name="product_id" value="{{ product.Id }}">
-            <button type="submit" class="add-to-cart-button">Додати до кошика</button>
-        </form>
-
-        <!-- Якщо це аудіо -->
-        {% if product.Type == "audio" %}
-        <form action="/playlist/add" method="POST" class="action-form">
-            <input type="hidden" name="product_id" value="{{ product.Id }}">
-            <select name="playlist_id" required>
-                <option value="">Оберіть плейлист</option>
-                {% for playlist in playlists %}
-                <option value="{{ playlist.id }}">{{ playlist.name }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit" class="add-to-playlist-button">Додати до плейлиста</button>
-        </form>
-        {% endif %}
-    </div>
-    <button onclick="playAudio('{{ product.Id }}')">Play</button>
+<div class="container">
+    <h2>{{ product.Name }}</h2>
 </div>
 
-<a href="/catalogue/{{ product.Owner }}/{{ product.Type }}" class="back-to-catalogue">Повернутись до каталогу</a>
+<div class="content-wrapper">
+    <div id="product-data" data-product-id="{{ product.Id }}" class="main-content">
+        <div class="product-details">
+            <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+            <div class="product-info">
+                <h3>Ціна: ${{ product.Price }}</h3>
+                <p><strong>Тип:</strong> {{ product.Type }}</p>
+                <p><strong>Власник:</strong> {{ product.Owner }}</p>
+                {% if product.Genre %}
+                <p><strong>Жанр:</strong> {{ product.Genre }}</p>
+                {% endif %}
+                <p><strong>Опис:</strong> {{ product.Description }}</p>
+                <p><strong>id:</strong> {{ product.Id }}</p>
 
-<!-- Коментарі -->
-<div class="comments-section">
-    <h3>Коментарі</h3>
+                <!-- Кнопка додавання до кошика -->
+                <form action="/cart/add" method="POST" class="action-form">
+                    <input type="hidden" name="product_id" value="{{ product.Id }}">
+                    <button type="submit" class="add-to-cart-button">Додати до кошика</button>
+                </form>
 
-    {% if user.Username %}
-    <div class="add-comment-form">
-        <textarea id="comment-text" placeholder="Напишіть ваш коментар..."></textarea>
-        <div class="comment-actions">
-            <label class="like-product">
-                <input type="checkbox" id="likes-product">
-                <span class="heart-icon">❤️</span> Подобається продукт
-            </label>
-            <button id="submit-comment">Додати коментар</button>
+                <!-- Якщо це аудіо -->
+                {% if product.Type == "audio" %}
+                <div class="audio-controls">
+                    <button onclick="playAudio('{{ product.Id }}')" class="play-button">Play</button>
+                    <form action="/playlist/add" method="POST" class="action-form">
+                        <input type="hidden" name="product_id" value="{{ product.Id }}">
+                        <select name="playlist_id" required>
+                            <option value="">Оберіть плейлист</option>
+                            {% for playlist in playlists %}
+                            <option value="{{ playlist.id }}">{{ playlist.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="add-to-playlist-button">Додати до плейлиста</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <a href="/catalogue/{{ product.Owner }}/{{ product.Type }}" class="back-to-catalogue">Повернутись до каталогу</a>
+    </div>
+    
+    <!-- Коментарі -->
+    <div class="comments-section">
+        <h3>Коментарі</h3>
+
+        {% if user.Username %}
+        <div id="user-data" data-user-id="{{ user.ID }}" class="add-comment-form">
+            <textarea id="comment-text" placeholder="Напишіть ваш коментар..."></textarea>
+            <div class="comment-actions">
+                <label class="like-product">
+                    <input type="checkbox" id="likes-product">
+                    <span class="heart-icon">❤️</span> Подобається продукт
+                </label>
+                <button id="submit-comment">Додати коментар</button>
+            </div>
+        </div>
+        {% else %}
+        <p class="login-to-comment">Увійдіть в систему, щоб залишити коментар</p>
+        {% endif %}
+
+        <div id="comments-list" class="comments-list">
+            <div class="loading-comments">Завантаження коментарів...</div>
         </div>
     </div>
-    {% else %}
-    <p class="login-to-comment">Увійдіть в систему, щоб залишити коментар</p>
-    {% endif %}
-
-    <div id="comments-list" class="comments-list">
-        <div class="loading-comments">Завантаження коментарів...</div>
-    </div>
 </div>
+{% endblock %}
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const productId = parseInt("{{ product.Id }}");
-        const commentsList = document.getElementById('comments-list');
-        const commentText = document.getElementById('comment-text');
-        const likesProduct = document.getElementById('likes-product');
-        const submitComment = document.getElementById('submit-comment');
-        
-        loadComments();
-    
-        if (submitComment) {
-            submitComment.addEventListener('click', function() {
-                if (!commentText.value.trim()) {
-                    alert('Будь ласка, введіть текст коментаря');
-                    return;
-                }
-                
-                const comment = {
-                    product_id: productId,
-                    comment: commentText.value,
-                    likes_product: likesProduct.checked
-                };
-                
-                fetch('/api/comments', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(comment)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        commentText.value = '';
-                        likesProduct.checked = false;
-                        loadComments();
-                    } 
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Сталася помилка при додаванні коментаря');
-                });
-            });
-        }
-        
-        function loadComments() {
-            commentsList.innerHTML = '<div class="loading-comments">Завантаження коментарів...</div>';
-            
-            fetch(`/api/comments/${productId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    displayComments(data.comments);
-                } else {
-                    commentsList.innerHTML = '<div class="no-comments">Помилка завантаження коментарів</div>';
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                commentsList.innerHTML = '<div class="no-comments">Помилка завантаження коментарів</div>';
-            });
-        }
-        
-        function displayComments(comments) {
-            if (!comments || comments.length === 0) {
-                commentsList.innerHTML = '<div class="no-comments">Немає коментарів. Будьте першим!</div>';
-                return;
-            }
-            
-            commentsList.innerHTML = '';
-            
-            comments.forEach(comment => {
-                const commentDate = new Date(comment.created_at).toLocaleString('uk-UA');
-                const defaultAvatar = '/static/images/default-avatar.png';
-                const avatarSrc = comment.profile_photo ? comment.profile_photo : defaultAvatar;
-                
-                const isAuthor = "{{ user.ID }}" === comment.user_id.toString();
-                const deleteButton = isAuthor ? 
-                    `<span class="comment-delete" data-id="${comment.id}">Видалити</span>` : '';
-    
-                const commentHtml = `
-                    <div class="comment-item" data-id="${comment.id}">
-                        <img src="${avatarSrc}" alt="${comment.username}" class="comment-avatar">
-                        <div class="comment-content">
-                            <div class="comment-header">
-                                <span class="comment-username">${comment.username}</span>
-                                <span class="comment-date">${commentDate} ${deleteButton}</span>
-                            </div>
-                            <div class="comment-text">${comment.comment}</div>
-                            ${comment.likes_product ? '<div class="comment-likes">❤️ Подобається продукт</div>' : ''}
-                        </div>
-                    </div>
-                `;
-                
-                commentsList.innerHTML += commentHtml;
-            });
-    
-            document.querySelectorAll('.comment-delete').forEach(button => {
-                button.addEventListener('click', function() {
-                    const commentId = this.getAttribute('data-id');
-                    
-                    if (confirm('Ви впевнені, що хочете видалити цей коментар?')) {
-                        deleteComment(commentId);
-                    }
-                });
-            });
-        }
-        
-        function deleteComment(commentId) {
-            fetch(`/api/comments/${commentId}`, {
-                method: 'DELETE'
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    loadComments();
-                } else {
-                    alert('Помилка: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Сталася помилка при видаленні коментаря');
-            });
-        }
-    });
-    
-</script>
+{% block scripts %}
+<script src="/static/js/product_info.js"></script>
 {% endblock %}

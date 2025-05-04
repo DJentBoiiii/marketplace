@@ -4,15 +4,17 @@
 {% block title %}Каталог продуктів{% endblock %}
 
 {% block content %}
+
+<link rel="stylesheet" href="/static/css/catalogue.css">
 <div class="container">
     <h1>Каталог продуктів</h1>
 
     <!-- Audio Products Section -->
     <section>
-        <div class="section-header">
+        <header class="section-header">
             <h2>Аудіо</h2>
             <a href="/catalogue/audio" class="view-all">Переглянути всі</a>
-        </div>
+        </header>
         <div class="catalogue-grid">
             {% for product in audioProducts %}
             <div class="product-card">
@@ -31,6 +33,7 @@
                     {% endif %}
                 </div>
             </div>
+            
             {% endfor %}
         </div>
     </section>

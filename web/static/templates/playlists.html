@@ -1,38 +1,44 @@
 {% extends "base.html" %}
 
-{% block content %}
-<h2>Мої плейлисти</h2>
+{% block head %}
+<link rel="stylesheet" href="/css/playlists.css">
+{% endblock %}
 
-<div class="playlists-container">
-    {% if playlists|length > 0 %}
-    <div class="playlists-grid">
-        {% for playlist in playlists %}
-        <div class="playlist-card">
-            <div class="playlist-info">
-                <h3>{{ playlist.Name }}</h3>
-                <p><strong>Створено:</strong> {{ playlist.CreatedAt }}</p>
-                <p><strong>Кількість треків:</strong> {{ playlist.ItemCount }}</p>
-                <div class="playlist-actions">
-                    <a href="/playlist/{{ playlist.Id }}" class="view-playlist-button">Переглянути</a>
-                    <form action="/playlist/delete" method="POST" class="delete-form">
-                        <input type="hidden" name="playlist_id" value="{{ playlist.Id }}">
-                        <button type="submit" class="delete-playlist-button" onclick="return confirm('Ви впевнені, що хочете видалити цей плейлист?')">Видалити</button>
-                    </form>
+{% block content %}
+<div class="container">
+    <h2>Мої плейлисти</h2>
+
+    <div class="playlists-container">
+        {% if playlists|length > 0 %}
+        <div class="playlists-grid">
+            {% for playlist in playlists %}
+            <div class="playlist-card">
+                <div class="playlist-info">
+                    <h3>{{ playlist.Name }}</h3>
+                    <p><strong>Створено:</strong> {{ playlist.CreatedAt }}</p>
+                    <p><strong>Кількість треків:</strong> {{ playlist.ItemCount }}</p>
+                    <div class="playlist-actions">
+                        <a href="/playlist/{{ playlist.Id }}" class="btn btn-primary btn-block">Переглянути</a>
+                        <form action="/playlist/delete" method="POST" class="delete-form">
+                            <input type="hidden" name="playlist_id" value="{{ playlist.Id }}">
+                            <button type="submit" class="btn btn-danger btn-block" onclick="return confirm('Ви впевнені, що хочете видалити цей плейлист?')">Видалити</button>
+                        </form>
+                    </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <p>У вас ще немає плейлистів</p>
-    {% endif %}
+        {% else %}
+        <p>У вас ще немає плейлистів</p>
+        {% endif %}
 
-    <div class="create-playlist-form">
-        <h3>Створити новий плейлист</h3>
-        <form action="/playlist/create" method="POST">
-            <input type="text" name="playlist_name" placeholder="Назва плейлиста" required>
-            <button type="submit" class="create-playlist-button">Створити плейлист</button>
-        </form>
+        <div class="create-playlist-form">
+            <h3>Створити новий плейлист</h3>
+            <form action="/playlist/create" method="POST">
+                <input type="text" name="playlist_name" placeholder="Назва плейлиста" required>
+                <button type="submit" class="btn btn-primary">Створити плейлист</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

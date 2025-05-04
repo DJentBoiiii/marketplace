@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block head %}
+<link rel="stylesheet" href="/static/css/cart.css">
+{% endblock %}
+
 {% block content %}
 <h2>Кошик</h2>
 
@@ -25,7 +29,6 @@
         </div>
         {% endfor %}
     </div>  
-    
     
     <div class="cart-actions">
         <form action="/cart/purchase" method="POST">

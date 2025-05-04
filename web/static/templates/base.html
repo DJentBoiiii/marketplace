@@ -1,38 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <title>{% block title %}Marketplace{% endblock %}</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Soundify | Home{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
+    {% block head %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar">
-        <ul class="nav-links">
-            <li><a href="/">Головна</a></li>
-            <li><a href="/catalogue">Каталог</a></li>
-            {% if user.Username %}
-            <li><a href="/cart">Кошик</a></li>
-            <li><a href="/playlists">Плейлисти</a></li>
-            <li><a href="/upload">Завантажити</a></li>
-            <li><a href="/profile/{{ user.Username }}">Профіль</a></li>
-            <li><a href="/logout">Вийти</a></li>
-            <span class="user-info">Привіт, {{ user.Username }}</span>
-            {% else %}
-            <li><a href="/login">Увійти</a></li>
-            <li><a href="/register">Зареєструватися</a></li>
-            {% endif %}
-        </ul>
-    </nav>
-
-    {% block content %}{% endblock %}
-
-    <div id="audio-player" class="audio-player">
-        <audio id="audio" controls></audio>
+<header>
+    <div class="container header-container">
+        <h1 class="logo">Soundify</h1>
+        <form class="search-form" action="#" method="GET" role="search">
+            <input type="search" name="q" placeholder="Search music..." aria-label="Search music" />
+            <button type="submit">Search</button>
+        </form>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li class="browse-menu">
+                    <a href="#">Browse</a>
+                    <div class="submenu">
+                        <div class="submenu-section">
+                            <h4>Music</h4>
+                            <ul>
+                                <li><a href="#">Rock</a></li>
+                                <li><a href="#">Pop</a></li>
+                                <li><a href="#">Jazz</a></li>
+                                <li><a href="#">Classical</a></li>
+                                <li><a href="#">Hip Hop</a></li>
+                            </ul>
+                        </div>
+                        <div class="submenu-section">
+                            <h4>MIDI</h4>
+                            <ul>
+                                <li><a href="#">Keyboards</a></li>
+                                <li><a href="#">MIDI Controllers</a></li>
+                            </ul>
+                        </div>
+                        <div class="submenu-section">
+                            <h4>Samples</h4>
+                            <ul>
+                                <li><a href="#">Drum Samples</a></li>
+                                <li><a href="#">Synth Samples</a></li>
+                                <li><a href="#">Vocal Samples</a></li>
+                                <li><a href="#">FX</a></li>
+                            </ul>
+                        </div>
+                        <div class="submenu-section">
+                            <h4>Artists</h4>
+                            <ul>
+                                <li><a href="#">Top Artists</a></li>
+                                <li><a href="#">New Artists</a></li>
+                                <li><a href="#">Featured Artists</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="#">Feed</a></li>
+                <li><a href="#">Library</a></li>
+            </ul>
+        </nav>
+        <div class="auth-links">
+            <a href="/login" class="login-link">Login</a>
+            <!-- Dropdown menu trigger -->
+            <div class="dropdown">
+                <button class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                    Name &#x25BC;
+                </button>
+                <ul class="dropdown-menu" aria-label="submenu">
+                    <li><a href="#">Profile</a></li>
+                    <li><a href="/admin">Admin</a></li>
+                    <li><a href="/cart">Cart</a></li>
+                    <li><a href="/upload">Upload</a></li>
+                    <li><a href="#">My playlists</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
-
-    <script src="/static/js/audio-player.js"></script>
-    <script src="/static/js/comments.js"></script>
-    <script src="/static/js/playlist.js"></script>
+</header>
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+<footer>
+    <div class="container footer-container">
+        <p>&copy; 2023 Soundify. All rights reserved.</p>
+        <p>Contact us at: <a href="mailto:contact@soundify.com">contact@soundify.com</a></p>
+    </div>
+</footer>
+<script src="/static/js/base.js"></script>
+{% block scripts %}{% endblock %}
 </body>
 </html>

@@ -1,0 +1,319 @@
+/* Styles for catalogue_type.html following base.css and catalogue.css conventions */
+
+body {
+    background-color: #121212;
+    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.section-header h1 {
+    font-weight: 600;
+    font-size: 2rem;
+    margin: 0;
+    color: #eee;
+}
+
+.back-button {
+    color: #1db954;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.back-button:hover {
+    border-color: #1db954;
+    color: #17a44c;
+}
+
+.filter-panel {
+    background-color: #161616;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+}
+
+.filter-panel h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: #eee;
+}
+
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.filter-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 200px;
+}
+
+.filter-group label {
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #ccc;
+}
+
+.filter-group input[type="text"],
+.filter-group input[type="number"],
+.filter-group select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    background-color: #121212;
+    color: #eee;
+    box-sizing: border-box;
+}
+
+.price-range {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.price-input {
+    width: 80px;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.filter-buttons button,
+.filter-buttons a {
+    width: 120px;
+    height: 40px;
+    font-size: 1rem;
+    padding: 8px 16px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.filter-button,
+.reset-button {
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    width: 120px; /* fixed width for equal size */
+    height: 40px; /* fixed height for equal size */
+    line-height: 24px;
+}
+
+.filter-button:hover,
+.reset-button:hover {
+    background-color: #17a44c;
+}
+
+.catalogue-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.product-card {
+    background-color: #161616;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease;
+}
+
+.product-card img:hover{
+    transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.7);
+}
+
+.product-image {
+    max-width: 100%;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    display: block;
+    transition: filter 0.3s ease;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.image-container .play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 48px;
+    color: #1db954; /* green color like До кошика link */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    user-select: none;
+}
+
+.image-container:hover .play-button {
+    opacity: 1;
+}
+
+.image-container:hover .product-image {
+    filter: brightness(50%);
+}
+
+.product-info {
+    text-align: center;
+    width: 100%;
+}
+
+.product-info h3 {
+    margin: 0.5em 0;
+    font-size: 1.2rem;
+}
+
+.product-info p {
+    margin: 0.3em 0;
+    color: #ccc;
+}
+
+.vendor a {
+    color: #1db954;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.vendor a:hover {
+    text-decoration: underline;
+}
+
+.details-button,
+.add-to-cart-button,
+.add-to-playlist-button {
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+}
+
+.details-button:hover,
+.add-to-cart-button:hover,
+.add-to-playlist-button:hover {
+    background-color: #17a44c;
+}
+
+.action-form {
+    margin-top: 10px;
+}
+
+.empty-result {
+    text-align: center;
+    color: #aaa;
+    font-size: 1.1rem;
+    margin-top: 40px;
+}
+
+/* Modal styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(18, 18, 18, 0.9);
+}
+
+.modal-content {
+    background-color: #161616;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    color: #eee;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.7);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: white;
+    text-decoration: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .catalogue-grid {
+        grid-template-columns: 1fr;
+    }
+    .filter-row {
+        flex-direction: column;
+    }
+}
