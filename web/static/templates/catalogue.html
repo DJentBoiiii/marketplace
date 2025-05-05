@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<link rel="stylesheet" href="/static/css/catalogue.css">
+<link rel="stylesheet" href="/static/css/catalogue_type.css">
 <div class="container">
     <h1>Каталог продуктів</h1>
 
@@ -17,23 +17,32 @@
         </header>
         <div class="catalogue-grid">
             {% for product in audioProducts %}
-            <div class="product-card">
-                <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+            <div class="product-card" data-product-id="{{ product.Id }}">
+                <div class="image-container">
+                    <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" />
+                    <div class="play-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#1db954" height="48px" width="48px" viewBox="0 0 512 512" >
+                            <g>
+                                <path d="M256,0C114.88,0,0,114.88,0,256s114.88,256,256,256s256-114.88,256-256S397.12,0,256,0z M256,490.667 c-129.387,0-234.667-105.28-234.667-234.667S126.613,21.333,256,21.333S490.667,126.613,490.667,256S385.387,490.667,256,490.667z"/>
+                                <path d="M377.6,246.507L186.027,150.72c-5.227-2.667-11.627-0.533-14.293,4.8c-0.747,1.493-1.173,3.093-1.173,4.8v191.573 c0,5.867,4.8,10.667,10.667,10.667c1.6,0,3.307-0.427,4.8-1.173L377.6,265.493c5.227-2.667,7.36-9.067,4.8-14.293 C381.333,249.173,379.627,247.467,377.6,246.507z M192,334.72V177.28L349.44,256L192,334.72z"/>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
                 <div class="product-info">
                     <h3>{{ product.Name }}</h3>
                     <p>{{ product.Price }} грн</p>
                     <p class="vendor">Продавець: <a href="/catalogue/vendor/{{ product.Owner }}">{{ product.Owner }}</a></p>
-                    <a href="/product/{{ product.Id }}" class="details-button">Деталі</a>
+                    {% if product.Genre %}
+                    <p class="genre">Тип: {{ product.Genre }}</p>
+                    {% endif %}
+                    <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="details-button">Деталі</a>
                     {% if user.Username %}
-                    <form action="/cart/add" method="POST" class="action-form">
-                        <input type="hidden" name="product_id" value="{{ product.Id }}">
-                        <button type="submit" class="add-to-cart-button">В кошик</button>
-                    </form>
-                    <button onclick="showPlaylistModal('{{ product.Id }}')" class="add-to-playlist-button">До плейлиста</button>
+                    <a href="/cart/add?product_id={{ product.Id }}" class="add-to-cart-button">В кошик</a>
+                    <a href="#" onclick="showPlaylistModal('{{ product.Id }}'); return false;" class="add-to-playlist-button">До плейлиста</a>
                     {% endif %}
                 </div>
             </div>
-            
             {% endfor %}
         </div>
     </section>
@@ -46,19 +55,29 @@
         </div>
         <div class="catalogue-grid">
             {% for product in midiProducts %}
-            <div class="product-card">
-                <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+            <div class="product-card" data-product-id="{{ product.Id }}">
+                <div class="image-container">
+                    <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" />
+                    <div class="play-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#1db954" height="48px" width="48px" viewBox="0 0 512 512" >
+                            <g>
+                                <path d="M256,0C114.88,0,0,114.88,0,256s114.88,256,256,256s256-114.88,256-256S397.12,0,256,0z M256,490.667 c-129.387,0-234.667-105.28-234.667-234.667S126.613,21.333,256,21.333S490.667,126.613,490.667,256S385.387,490.667,256,490.667z"/>
+                                <path d="M377.6,246.507L186.027,150.72c-5.227-2.667-11.627-0.533-14.293,4.8c-0.747,1.493-1.173,3.093-1.173,4.8v191.573 c0,5.867,4.8,10.667,10.667,10.667c1.6,0,3.307-0.427,4.8-1.173L377.6,265.493c5.227-2.667,7.36-9.067,4.8-14.293 C381.333,249.173,379.627,247.467,377.6,246.507z M192,334.72V177.28L349.44,256L192,334.72z"/>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
                 <div class="product-info">
                     <h3>{{ product.Name }}</h3>
                     <p>{{ product.Price }} грн</p>
                     <p class="vendor">Продавець: <a href="/catalogue/vendor/{{ product.Owner }}">{{ product.Owner }}</a></p>
-                    <a href="/product/{{ product.Id }}" class="details-button">Деталі</a>
+                    {% if product.Genre %}
+                    <p class="genre">Тип: {{ product.Genre }}</p>
+                    {% endif %}
+                    <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="details-button">Деталі</a>
                     {% if user.Username %}
-                    <form action="/cart/add" method="POST" class="action-form">
-                        <input type="hidden" name="product_id" value="{{ product.Id }}">
-                        <button type="submit" class="add-to-cart-button">В кошик</button>
-                    </form>
-                    <button onclick="showPlaylistModal('{{ product.Id }}')" class="add-to-playlist-button">До плейлиста</button>
+                    <a href="/cart/add?product_id={{ product.Id }}" class="add-to-cart-button">В кошик</a>
+                    <a href="#" onclick="showPlaylistModal('{{ product.Id }}'); return false;" class="add-to-playlist-button">До плейлиста</a>
                     {% endif %}
                 </div>
             </div>
@@ -74,19 +93,29 @@
         </div>
         <div class="catalogue-grid">
             {% for product in samplesProducts %}
-            <div class="product-card">
-                <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+            <div class="product-card" data-product-id="{{ product.Id }}">
+                <div class="image-container">
+                    <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" />
+                    <div class="play-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#1db954" height="48px" width="48px" viewBox="0 0 512 512" >
+                            <g>
+                                <path d="M256,0C114.88,0,0,114.88,0,256s114.88,256,256,256s256-114.88,256-256S397.12,0,256,0z M256,490.667 c-129.387,0-234.667-105.28-234.667-234.667S126.613,21.333,256,21.333S490.667,126.613,490.667,256S385.387,490.667,256,490.667z"/>
+                                <path d="M377.6,246.507L186.027,150.72c-5.227-2.667-11.627-0.533-14.293,4.8c-0.747,1.493-1.173,3.093-1.173,4.8v191.573 c0,5.867,4.8,10.667,10.667,10.667c1.6,0,3.307-0.427,4.8-1.173L377.6,265.493c5.227-2.667,7.36-9.067,4.8-14.293 C381.333,249.173,379.627,247.467,377.6,246.507z M192,334.72V177.28L349.44,256L192,334.72z"/>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
                 <div class="product-info">
                     <h3>{{ product.Name }}</h3>
                     <p>{{ product.Price }} грн</p>
                     <p class="vendor">Продавець: <a href="/catalogue/vendor/{{ product.Owner }}">{{ product.Owner }}</a></p>
-                    <a href="/product/{{ product.Id }}" class="details-button">Деталі</a>
+                    {% if product.Genre %}
+                    <p class="genre">Тип: {{ product.Genre }}</p>
+                    {% endif %}
+                    <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="details-button">Деталі</a>
                     {% if user.Username %}
-                    <form action="/cart/add" method="POST" class="action-form">
-                        <input type="hidden" name="product_id" value="{{ product.Id }}">
-                        <button type="submit" class="add-to-cart-button">В кошик</button>
-                    </form>
-                    <button onclick="showPlaylistModal('{{ product.Id }}')" class="add-to-playlist-button">До плейлиста</button>
+                    <a href="/cart/add?product_id={{ product.Id }}" class="add-to-cart-button">В кошик</a>
+                    <a href="#" onclick="showPlaylistModal('{{ product.Id }}'); return false;" class="add-to-playlist-button">До плейлиста</a>
                     {% endif %}
                 </div>
             </div>
@@ -106,11 +135,14 @@
             <select name="playlist_id" required>
                 <option value="">Оберіть плейлист</option>
                 <!-- In a real app, this would be populated from the backend -->
-                <!-- For now, it's static as we haven't implemented playlist fetching here -->
             </select>
             <button type="submit" class="add-to-playlist-button">Додати</button>
         </form>
     </div>
 </div>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/catalogue.js"></script>
 {% endblock %}

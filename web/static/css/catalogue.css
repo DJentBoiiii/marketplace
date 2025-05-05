@@ -50,6 +50,10 @@ h2 {
     transition: transform 0.2s ease;
 }
 
+.product-card img:hover{
+    transition: transform 0.2s ease;
+}
+
 .product-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0,0,0,0.7);
@@ -59,6 +63,35 @@ h2 {
     max-width: 100%;
     border-radius: 6px;
     margin-bottom: 10px;
+    display: block;
+    transition: filter 0.3s ease;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.image-container .play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 48px;
+    color: #1db954; /* green color like До кошика link */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    user-select: none;
+}
+
+.image-container:hover .play-button {
+    opacity: 1;
+}
+
+.image-container:hover .product-image {
+    filter: brightness(50%);
 }
 
 .product-info {

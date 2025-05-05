@@ -34,7 +34,12 @@
                 <!-- Якщо це аудіо -->
                 {% if product.Type == "audio" %}
                 <div class="audio-controls">
-                    <button onclick="playAudio('{{ product.Id }}')" class="play-button">Play</button>
+                    <button id="play-button" class="play-button" onclick="playAudio('{{ product.Id }}')">
+                        <i class="fas fa-play"></i> Play Audio
+                    </button>
+                    <div id="audio-player" class="audio-player">
+                        <audio id="audio" controls></audio>
+                    </div>
                     <form action="/playlist/add" method="POST" class="action-form">
                         <input type="hidden" name="product_id" value="{{ product.Id }}">
                         <select name="playlist_id" required>
@@ -80,5 +85,6 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="/static/js/audio_player.js"></script>
 <script src="/static/js/product_info.js"></script>
 {% endblock %}

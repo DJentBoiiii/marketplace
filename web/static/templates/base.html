@@ -6,6 +6,7 @@
     <title>{% block title %}Soundify | Home{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
     {% block head %}{% endblock %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 <header>
@@ -19,7 +20,7 @@
             <ul class="nav-links">
                 <li><a href="#">Home</a></li>
                 <li class="browse-menu">
-                    <a href="#">Browse</a>
+                    <a href="/catalogue">Browse</a>
                     <div class="submenu">
                         <div class="submenu-section">
                             <h4>Music</h4>
@@ -69,7 +70,7 @@
                     Name &#x25BC;
                 </button>
                 <ul class="dropdown-menu" aria-label="submenu">
-                    <li><a href="#">Profile</a></li>
+                    <li><a href="/profile/{{ User.name }}">{{ User.name }}</a></li>
                     <li><a href="/admin">Admin</a></li>
                     <li><a href="/cart">Cart</a></li>
                     <li><a href="/upload">Upload</a></li>
@@ -84,12 +85,14 @@
     {% block content %}
     {% endblock %}
 </main>
+
 <footer>
     <div class="container footer-container">
         <p>&copy; 2023 Soundify. All rights reserved.</p>
         <p>Contact us at: <a href="mailto:contact@soundify.com">contact@soundify.com</a></p>
     </div>
 </footer>
+
 <script src="/static/js/base.js"></script>
 {% block scripts %}{% endblock %}
 </body>

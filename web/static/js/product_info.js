@@ -8,11 +8,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize comments
     loadComments();
 
-    // Set up audio playback if it's an audio product
-    function playAudio(productId) {
-        // Audio playback functionality
-        console.log(`Playing audio for product ${productId}`);
-        // Implementation would connect to audio API
+    // Set up auto audio playback if it's an audio product
+    const audioPlayer = document.getElementById('audio-player');
+    if (audioPlayer) {
+        const audio = document.getElementById('audio');
+        if (audio) {
+            audio.src = `/audio/${productId}`;
+            audio.oncanplay = () => audio.play();
+        }
     }
     
     // Comment submission handler
@@ -25,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const comment = {
                 product_id: productId,
-                comment: commentText.value,
+                comment: commentText.valuez,
                 likes_product: likesProduct.checked
             };
             
