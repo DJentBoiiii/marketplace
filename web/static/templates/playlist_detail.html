@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="/css/playlist_detail.css">
+<link rel="stylesheet" href="/static/css/playlist_detail.css">
 {% endblock %}
 
 {% block content %}
@@ -26,11 +26,11 @@
                 <p><strong>Жанр:</strong> {{ item.Genre }}</p>
                 {% endif %}
                 <div class="item-actions">
-                    <a href="/product/{{ item.Name }}/{{ item.Owner }}" class="btn btn-primary">Детальніше</a>
+                    <a href="/product/{{ item.Name }}/{{ item.Owner }}" class="btn btn-primary btn-block">Детальніше</a>
                     <form action="/playlist/remove" method="POST" class="remove-form">
                         <input type="hidden" name="item_id" value="{{ item.ItemId }}">
                         <input type="hidden" name="playlist_id" value="{{ playlist_id }}">
-                        <button type="submit" class="btn btn-danger">Видалити з плейлиста</button>
+                        <button type="submit" class="btn btn-danger btn-block">Видалити</button>
                     </form>
                 </div>
             </div>
