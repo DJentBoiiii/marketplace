@@ -5,38 +5,40 @@
 {% endblock %}
 
 {% block content %}
-<h2>Кошик</h2>
+<div class="content-container">
+    <h2>Кошик</h2>
 
-{% if products|length > 0 %}
-<div class="cart-container">
-    <div class="cart-items">
-        {% for product in products %}
-        <div class="cart-item">
-            <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
-            <div class="product-info">
-                <h3>{{ product.Name }}</h3>
-                <p><strong>Тип:</strong> {{ product.Type }}</p>
-                <p><strong>Власник:</strong> {{ product.Owner }}</p>
-                <p><strong>Ціна:</strong> ${{ product.Price }}</p>
-                {% if product.Genre %}
-                <p><strong>Жанр:</strong> {{ product.Genre }}</p>
-                {% endif %}
-                <form action="/cart/remove" method="POST" class="action-form">
-                    <input type="hidden" name="product_id" value="{{ product.Id }}">
-                    <button type="submit" class="remove-from-cart-button">Видалити з кошика</button>
-                </form>
+    {% if products|length > 0 %}
+    <div class="cart-container">
+        <div class="cart-items">
+            {% for product in products %}
+            <div class="cart-item">
+                <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+                <div class="product-info">
+                    <h3>{{ product.Name }}</h3>
+                    <p><strong>Тип:</strong> {{ product.Type }}</p>
+                    <p><strong>Власник:</strong> {{ product.Owner }}</p>
+                    <p><strong>Ціна:</strong> ${{ product.Price }}</p>
+                    {% if product.Genre %}
+                    <p><strong>Жанр:</strong> {{ product.Genre }}</p>
+                    {% endif %}
+                    <form action="/cart/remove" method="POST" class="action-form">
+                        <input type="hidden" name="product_id" value="{{ product.Id }}">
+                        <button type="submit" class="remove-from-cart-button">Видалити з кошика</button>
+                    </form>
+                </div>
             </div>
+            {% endfor %}
+        </div>  
+        
+        <div class="cart-actions">
+            <form action="/cart/purchase" method="POST">
+                <button type="submit" class="purchase-button">Придбати все</button>
+            </form>
         </div>
-        {% endfor %}
-    </div>  
-    
-    <div class="cart-actions">
-        <form action="/cart/purchase" method="POST">
-            <button type="submit" class="purchase-button">Придбати все</button>
-        </form>
     </div>
+    {% else %}
+    <p>Кошик порожній</p>
+    {% endif %}
 </div>
-{% else %}
-<p>Кошик порожній</p>
-{% endif %}
 {% endblock %}

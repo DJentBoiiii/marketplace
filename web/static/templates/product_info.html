@@ -40,16 +40,7 @@
                     <div id="audio-player" class="audio-player">
                         <audio id="audio" controls></audio>
                     </div>
-                    <form action="/playlist/add" method="POST" class="action-form">
-                        <input type="hidden" name="product_id" value="{{ product.Id }}">
-                        <select name="playlist_id" required>
-                            <option value="">Оберіть плейлист</option>
-                            {% for playlist in playlists %}
-                            <option value="{{ playlist.id }}">{{ playlist.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <button type="submit" class="add-to-playlist-button">Додати до плейлиста</button>
-                    </form>
+                    <button class="add-to-playlist-button" onclick="showPlaylistModal('{{ product.Id }}'); return false;">Додати до плейлиста</button>
                 </div>
                 {% endif %}
             </div>
@@ -82,9 +73,85 @@
         </div>
     </div>
 </div>
+
+<!-- Playlist Modal -->
+{% if user.Username and product.Type == "audio" %}
+<div id="playlistModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closePlaylistModal()">&times;</span>
+        
+        <!-- Tab Navigation -->
+        <div class="modal-tabs">
+            <button class="tab-button active" onclick="switchTab('existing-playlist-tab')">Додати до плейлиста</button>
+            <button class="tab-button" onclick="switchTab('create-playlist-tab')">Створити плейлист</button>
+        </div>
+        
+        <!-- Add to Existing Playlist Tab -->
+        <div id="existing-playlist-tab" class="tab-content">
+            <h3>Додати до плейлиста</h3>
+            <form action="/playlist/add-item" method="POST">
+                <input type="hidden" id="modalProductId" name="product_id" value="{{ product.Id }}">
+                <select name="playlist_id" id="playlist-select" required>
+                    <option value="">Оберіть плейлист</option>
+                    <!-- Playlists will be populated via JavaScript -->
+                </select>
+                <button type="submit" class="add-to-playlist-button">Додати</button>
+            </form>
+        </div>
+        
+        <!-- Create New Playlist Tab -->
+        <div id="create-playlist-tab" class="tab-content" style="display: none;">
+            <h3>Створити новий плейлист</h3>
+            <form action="/playlist/create-and-add" method="POST" id="create-playlist-form">
+                <input type="hidden" id="newPlaylistProductId" name="product_id" value="{{ product.Id }}">
+                <div class="form-group">
+                    <label for="playlist_name">Назва плейлиста:</label>
+                    <input type="text" id="playlist_name" name="playlist_name" placeholder="Введіть назву плейлиста" required>
+                </div>
+                <button type="submit" class="create-playlist-button">Створити і додати</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
 <script src="/static/js/audio_player.js"></script>
 <script src="/static/js/product_info.js"></script>
+<script src="/static/js/playlist.js"></script>
+<script>
+// Function to fetch user playlists when modal is opened
+function showPlaylistModal(productId) {
+    document.getElementById('modalProductId').value = productId;
+    document.getElementById('newPlaylistProductId').value = productId;
+    
+    // Fetch the playlists
+    fetch('/playlist/get-user-playlists')
+        .then(response => response.json())
+        .then(data => {
+            const selectElement = document.getElementById('playlist-select');
+            // Clear any existing options except the first one
+            while (selectElement.options.length > 1) {
+                selectElement.remove(1);
+            }
+            
+            // Add the playlists to the select element
+            data.forEach(playlist => {
+                const option = document.createElement('option');
+                option.value = playlist.Id;
+                option.textContent = `${playlist.Name} (${playlist.ItemCount} треків)`;
+                selectElement.appendChild(option);
+            });
+            
+            // Display the modal
+            document.getElementById('playlistModal').style.display = 'flex';
+        })
+        .catch(error => {
+            console.error('Error fetching playlists:', error);
+            // Still show the modal even if there's an error
+            document.getElementById('playlistModal').style.display = 'flex';
+        });
+}
+</script>
 {% endblock %}

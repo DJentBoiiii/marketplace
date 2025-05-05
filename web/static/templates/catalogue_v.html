@@ -1,12 +1,39 @@
 {% extends "base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="/static/css/catalogue_type.css">
+<link rel="stylesheet" href="/static/css/catalogue_v.css">
 {% endblock %}
 
 {% block content %}
-<div class="container">
-  <h2>Каталог</h2>
+<div class="content-container">
+  <div class="vendor-section">
+    <div class="vendor-info">
+      <h2>{{ vendor.Username }}</h2>
+      <div class="vendor-details">
+        <p><strong>Email:</strong> {{ vendor.Email }}</p>
+        <p><strong>Повне ім'я:</strong> {{ vendor.FullName }}</p>
+        {% if vendor.Bio %}
+        <p><strong>Про продавця:</strong> {{ vendor.Bio }}</p>
+        {% endif %}
+      </div>
+    </div>
+    <div class="vendor-stats">
+      <h3>Статистика</h3>
+      <div class="stats-details">
+        <p><strong>Кількість завантажень:</strong> {{ vendor.UploadCount }}</p>
+        <p><strong>Дата реєстрації:</strong> {{ vendor.RegisteredOn }}</p>
+        <p><strong>Рейтинг продавця:</strong> 
+          <span class="rating">
+            {% for i in range(vendor.Rating) %}★{% endfor %}
+            {% for i in range(5 - vendor.Rating) %}☆{% endfor %}
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="uploads-heading">Завантаження продавця</h3>
+  
   <div class="catalogue-grid">
     {% for product in products %}
     <div class="product-card">
@@ -24,9 +51,9 @@
         <div class="product-info">
             <h3>{{ product.Name }}</h3>
             <p>{{ product.Price }} грн</p>
-            <p class="vendor">Продавець: <a href="/catalogue/vendor/{{ product.Owner }}">{{ product.Owner }}</a></p>
+            <p class="product-type">Тип: {{ product.Type }}</p>
             {% if product.Genre %}
-            <p class="genre">Тип: {{ product.Genre }}</p>
+            <p class="genre">Жанр: {{ product.Genre }}</p>
             {% endif %}
             <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="details-button">Деталі</a>
             {% if user.Username %}
@@ -40,6 +67,7 @@
     {% endfor %}
   </div>
 
+  {% if user.Username %}
   <!-- Форма створення нового плейлиста -->
   <div class="playlist-management">
       <h3>Ваші плейлисти</h3>
@@ -48,23 +76,51 @@
           <button type="submit">Створити</button>
       </form>
   </div>
+  {% endif %}
 </div>
 
 <!-- Playlist Modal -->
 <div id="playlistModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closePlaylistModal()">&times;</span>
-        <h3>Додати до плейлиста</h3>
-        <form action="/playlist/add-item" method="POST">
-            <input type="hidden" id="modalProductId" name="product_id" value="">
-            <select name="playlist_id" required>
-                <option value="">Оберіть плейлист</option>
-                {% for item in playlist %}
-                <option value="{{ item.Id }}">{{ item.Name }} ({{ item.ItemCount }} треків)</option>
-                {% endfor %}
-            </select>
-            <button type="submit" class="add-to-playlist-button">Додати</button>
-        </form>
+        
+        <!-- Tab Navigation -->
+        <div class="modal-tabs">
+            <button class="tab-button active" onclick="switchTab('existing-playlist-tab')">Додати до плейлиста</button>
+            <button class="tab-button" onclick="switchTab('create-playlist-tab')">Створити плейлист</button>
+        </div>
+        
+        <!-- Add to Existing Playlist Tab -->
+        <div id="existing-playlist-tab" class="tab-content">
+            <h3>Додати до плейлиста</h3>
+            <form action="/playlist/add-item" method="POST">
+                <input type="hidden" id="modalProductId" name="product_id" value="">
+                <select name="playlist_id" required>
+                    <option value="">Оберіть плейлист</option>
+                    {% for item in playlist %}
+                    <option value="{{ item.Id }}">{{ item.Name }} ({{ item.ItemCount }} треків)</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="add-to-playlist-button">Додати</button>
+            </form>
+        </div>
+        
+        <!-- Create New Playlist Tab -->
+        <div id="create-playlist-tab" class="tab-content" style="display: none;">
+            <h3>Створити новий плейлист</h3>
+            <form action="/playlist/create-and-add" method="POST" id="create-playlist-form">
+                <input type="hidden" id="newPlaylistProductId" name="product_id" value="">
+                <div class="form-group">
+                    <label for="playlist_name">Назва плейлиста:</label>
+                    <input type="text" id="playlist_name" name="playlist_name" placeholder="Введіть назву плейлиста" required>
+                </div>
+                <button type="submit" class="create-playlist-button">Створити і додати</button>
+            </form>
+        </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/playlist.js"></script>
 {% endblock %}
