@@ -118,6 +118,13 @@ func UploadFile(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка запису в базу")
 	}
 
+	// Set is_artist flag to true for the user who uploaded a product
+	_, err = db.Exec("UPDATE Users SET is_artist = TRUE WHERE username = ?", user.Username)
+	if err != nil {
+		fmt.Println("Error updating user as artist:", err)
+		// Continue execution even if setting the artist flag fails
+	}
+
 	err = sendEmbedRequest(objectPath, "Licensed by DSA")
 	if err != nil {
 		fmt.Println("Помилка вмонтування водяного знаку:", err)

@@ -8,4 +8,5 @@ func SetupCatalogueRoutes(app *fiber.App) {
 	app.Get("/catalogue", ShowCatalogue)
 	app.Get("/catalogue/:type", ShowProductsByType)
 	app.Get("/test/vendor/:username", ShowVendorProducts)
+	app.Get("/artists", ShowArtists) // Add route for artists catalogue
 }
