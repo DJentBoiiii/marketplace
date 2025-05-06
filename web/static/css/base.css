@@ -473,6 +473,7 @@ nav ul li.browse-menu:hover .submenu {
     color: #eee;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
     z-index: 1000;
+    transform: translateY(0);
     transition: transform 0.3s ease;
     padding: 10px 0;
 }
@@ -527,9 +528,148 @@ nav ul li.browse-menu:hover .submenu {
     padding: 0 20px;
 }
 
-.player-controls audio {
+.custom-player-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
+    gap: 15px;
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    color: #eee;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 8px;
+    border-radius: 50%;
+    width: 36px;
     height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.control-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #1db954;
+}
+
+.control-btn-large {
+    font-size: 20px;
+    width: 42px;
+    height: 42px;
+    background-color: #1db954;
+    color: white;
+}
+
+.control-btn-large:hover {
+    background-color: #17a44c;
+    color: white;
+    transform: scale(1.05);
+}
+
+.timeline-container {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 8px;
+}
+
+.progress-bar-container {
+    flex: 1;
+    padding: 10px 0;
+    position: relative;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background-color: #555;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.progress {
+    height: 100%;
+    background-color: #1db954;
+    border-radius: 2px;
+    width: 0;
+}
+
+.progress-bar:hover .progress {
+    background-color: #17a44c;
+}
+
+#current-time, #duration {
+    font-size: 0.8rem;
+    color: #aaa;
+    min-width: 40px;
+    text-align: center;
+}
+
+.volume-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#volume-icon {
+    color: #aaa;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#volume-icon:hover {
+    color: #1db954;
+}
+
+.volume-slider-container {
+    width: 80px;
+    position: relative;
+}
+
+#volume-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: #555;
+    outline: none;
+    transition: background 0.2s;
+}
+
+#volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #1db954;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#volume-slider::-webkit-slider-thumb:hover {
+    background: #fff;
+    transform: scale(1.2);
+}
+
+#volume-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #1db954;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+#volume-slider::-moz-range-thumb:hover {
+    background: #fff;
+    transform: scale(1.2);
 }
 
 .player-actions {
@@ -551,22 +691,50 @@ nav ul li.browse-menu:hover .submenu {
     color: #fff;
 }
 
-/* Custom audio player controls */
-audio::-webkit-media-controls-panel {
-    background-color: #282828;
-}
-
-audio::-webkit-media-controls-play-button {
-    background-color: #1db954;
-    border-radius: 50%;
-}
-
-audio::-webkit-media-controls-current-time-display,
-audio::-webkit-media-controls-time-remaining-display {
-    color: #eee;
-}
-
 /* Add padding to the bottom of the page when player is shown */
 body.player-active {
     padding-bottom: 80px;
+}
+
+/* Responsive styles for player */
+@media (max-width: 768px) {
+    .player-container {
+        flex-direction: column;
+        padding: 10px;
+    }
+    
+    .player-track-info {
+        max-width: 100%;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .player-controls {
+        max-width: 100%;
+        width: 100%;
+        padding: 0;
+    }
+    
+    .custom-player-controls {
+        flex-wrap: wrap;
+    }
+    
+    .timeline-container {
+        width: 100%;
+        order: 3;
+    }
+    
+    .volume-container {
+        margin-left: auto;
+    }
+    
+    .player-actions {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+    
+    body.player-active {
+        padding-bottom: 140px;
+    }
 }

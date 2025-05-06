@@ -1,184 +1,212 @@
-function playAudio(trackId, trackName = '', trackArtist = '', trackImage = '') {
-    console.log(`Attempting to play audio for track ID: ${trackId}`);
+// Audio Player - Ultra compact version
+const AP = (() => {
+  // Private vars
+  const s = {t: [], i: -1, src: "", v: 1}; // state: tracks, index, source type, last volume
+  const e = {}; // Elements cache
+  
+  // Initialize
+  function init() {
+    // Cache DOM elements
+    ['persistent-player', 'audio', 'player-track-name', 'player-track-artist', 'player-image', 
+     'play-pause-btn', 'prev-track-btn', 'next-track-btn', 'close-player', 'progress',
+     'current-time', 'duration', 'volume-slider', 'volume-icon']
+      .forEach(id => e[id.replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = document.getElementById(id));
+    e.pb = document.querySelector('.progress-bar');
     
-    // Get references to DOM elements
-    const persistentPlayer = document.getElementById('persistent-player');
-    const audio = document.getElementById('audio');
-    const playerTrackName = document.getElementById('player-track-name');
-    const playerTrackArtist = document.getElementById('player-track-artist');
-    const playerImage = document.getElementById('player-image');
+    // Bind events - one-liners for most events
+    if (e.closePlayer) e.closePlayer.onclick = () => (e.persistentPlayer.style.display = 'none', e.audio.pause(),
+                                                     document.body.classList.remove('player-active'), localStorage.removeItem('currentTrack'));
+    if (e.playPauseBtn) e.playPauseBtn.onclick = () => e.audio.paused ? 
+      e.audio.play().then(() => e.playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>') : 
+      (e.audio.pause(), e.playPauseBtn.innerHTML = '<i class="fas fa-play"></i>', save());
+    if (e.prevTrackBtn) e.prevTrackBtn.onclick = prev;
+    if (e.nextTrackBtn) e.nextTrackBtn.onclick = next;
+    if (e.pb) e.pb.onclick = e => (e.audio.currentTime = (e.clientX - e.pb.getBoundingClientRect().left) / e.pb.offsetWidth * e.audio.duration, updateUI());
+    if (e.volumeSlider) e.volumeSlider.oninput = () => (e.audio.volume = e.volumeSlider.value, updateVolIcon());
+    if (e.volumeIcon) e.volumeIcon.onclick = () => e.audio.volume > 0 ?
+      (s.v = e.audio.volume, e.audio.volume = e.volumeSlider.value = 0) :
+      (e.audio.volume = e.volumeSlider.value = s.v, updateVolIcon());
     
-    // Create the audio URL
-    const audioUrl = `/audio/${trackId}`;
-    console.log(`Setting audio src to: ${audioUrl}`);
+    // Audio events
+    if (e.audio) {
+      ['timeupdate', 'loadedmetadata'].forEach(ev => e.audio.addEventListener(ev, updateUI));
+      e.audio.onended = next;
+      e.audio.volume = e.volumeSlider?.value || 1;
+      setInterval(save, 5000);
+    }
     
-    // Set the audio source
-    audio.src = audioUrl;
+    restore();
+  }
+
+  // Format time and update UI elements
+  function updateUI() {
+    if (!e.audio || !e.currentTime || !e.duration || !e.progress) return;
+    const fmt = sec => `${~~(sec/60)}:${(~~(sec%60)).toString().padStart(2,'0')}`;
+    e.currentTime.textContent = fmt(e.audio.currentTime);
+    e.duration.textContent = fmt(e.audio.duration);
+    e.progress.style.width = `${(e.audio.currentTime/e.audio.duration)*100}%`;
+  }
+
+  // Update volume icon based on level
+  function updateVolIcon() {
+    if (e.volumeIcon) e.volumeIcon.className = 'fas fa-volume-' + 
+      (e.audio.volume === 0 ? 'mute' : e.audio.volume < 0.5 ? 'down' : 'up');
+  }
+
+  // Play previous track
+  function prev() {
+    if (s.t.length <= 1 || s.i <= 0) 
+      return e.audio && (e.audio.currentTime = 0, e.audio.play());
+    play(...Object.values(s.t[--s.i]));
+  }
+
+  // Play next track
+  function next() {
+    if (s.t.length <= 1 || s.i >= s.t.length - 1) 
+      return e.audio && (e.audio.pause(), e.playPauseBtn.innerHTML = '<i class="fas fa-play"></i>', save(false));
+    play(...Object.values(s.t[++s.i]));
+  }
+
+  // Find track info from DOM context
+  function findTracks(id) {
+    s.t = []; s.i = -1;
     
-    // Make the player visible and add the body class
-    persistentPlayer.style.display = 'flex';
+    // Check if we're on a playlist or vendor page
+    const items = document.querySelectorAll('.playlist-item');
+    const cards = document.querySelectorAll('.product-card');
+    
+    if (items.length > 0) {
+      s.src = "playlist";
+      collectTracks(items, id);
+    } else if (cards.length > 0 && location.href.includes('/vendor/')) {
+      s.src = "vendor";
+      collectTracks(cards, id);
+    } else {
+      // Default: single track
+      s.src = "single";
+      s.t = [{id, name: e.playerTrackName?.textContent || '', 
+              owner: e.playerTrackArtist?.textContent || '', 
+              image: e.playerImage?.src || ''}];
+      s.i = 0;
+    }
+  }
+
+  // Collect track info from DOM elements
+  function collectTracks(items, currentId) {
+    items.forEach((item, i) => {
+      const btn = item.querySelector('.play-button');
+      if (!btn) return;
+      
+      s.t.push({
+        id: btn.getAttribute('data-product-id'),
+        name: btn.getAttribute('data-product-name'),
+        owner: btn.getAttribute('data-product-owner'),
+        image: item.querySelector('.product-image')?.src || ''
+      });
+      
+      if (s.t[s.t.length-1].id === currentId) s.i = s.t.length-1;
+    });
+  }
+
+  // Save player state to localStorage
+  function save(playing = true) {
+    if (!e.audio || e.persistentPlayer.style.display === 'none') return;
+    
+    localStorage.setItem('currentTrack', JSON.stringify({
+      id: e.audio.src.match(/\/audio\/(\d+)/)?.[1],
+      pos: e.audio.currentTime,
+      playing: playing && !e.audio.paused,
+      name: e.playerTrackName?.textContent || '',
+      artist: e.playerTrackArtist?.textContent || '',
+      image: e.playerImage?.src || '',
+      src: s.src,
+      tracks: s.t,
+      idx: s.i
+    }));
+  }
+
+  // Restore player from localStorage
+  function restore() {
+    try {
+      const d = JSON.parse(localStorage.getItem('currentTrack'));
+      if (!d) return;
+      
+      // Restore state and display player
+      if (d.tracks) s.t = d.tracks;
+      if (d.idx !== undefined) s.i = d.idx;
+      if (d.src) s.src = d.src;
+      
+      e.persistentPlayer.style.display = 'flex';
+      document.body.classList.add('player-active');
+      
+      // Set track info
+      if (e.playerTrackName && d.name) e.playerTrackName.textContent = d.name;
+      if (e.playerTrackArtist && d.artist) e.playerTrackArtist.textContent = d.artist;
+      if (e.playerImage && d.image) e.playerImage.src = d.image;
+      
+      // Set audio source and resume
+      if (e.audio && d.id) {
+        e.audio.src = `/audio/${d.id}`;
+        e.audio.onloadedmetadata = () => {
+          if (d.pos) e.audio.currentTime = d.pos;
+          updateUI();
+          
+          if (d.playing) {
+            e.audio.play().catch(() => {});
+            if (e.playPauseBtn) e.playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+          } else if (e.playPauseBtn) {
+            e.playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+          }
+        };
+      }
+    } catch (e) {
+      localStorage.removeItem('currentTrack');
+    }
+  }
+
+  // Play a track
+  function play(id, name = '', artist = '', image = '') {
+    if (!e.audio || !e.persistentPlayer) return;
+    
+    // Set audio source
+    e.audio.src = `/audio/${id}`;
+    e.persistentPlayer.style.display = 'flex';
     document.body.classList.add('player-active');
     
     // Update track info if provided
-    if (trackName && playerTrackName) playerTrackName.textContent = trackName;
-    if (trackArtist && playerTrackArtist) playerTrackArtist.textContent = trackArtist;
-    if (trackImage && playerImage) playerImage.src = trackImage;
+    if (name && e.playerTrackName) e.playerTrackName.textContent = name;
+    if (artist && e.playerTrackArtist) e.playerTrackArtist.textContent = artist;
+    if (image && e.playerImage) e.playerImage.src = image;
     
-    // Try to find missing info from the closest product card if not provided
-    if ((!trackName || !trackArtist || !trackImage) && event && event.target) {
-        const productCard = event.target.closest('.product-card');
-        if (productCard) {
-            const playButton = productCard.querySelector('.play-button');
-            
-            if (!trackName && playerTrackName) {
-                const nameElement = productCard.querySelector('h3');
-                if (nameElement) playerTrackName.textContent = nameElement.textContent;
-                else if (playButton) playerTrackName.textContent = playButton.getAttribute('data-product-name') || '';
-            }
-            
-            if (!trackArtist && playerTrackArtist) {
-                const vendorElement = productCard.querySelector('.vendor a');
-                if (vendorElement) playerTrackArtist.textContent = vendorElement.textContent;
-                else if (playButton) playerTrackArtist.textContent = playButton.getAttribute('data-product-owner') || '';
-            }
-            
-            if (!trackImage && playerImage) {
-                const imageElement = productCard.querySelector('img.product-image');
-                if (imageElement) playerImage.src = imageElement.src;
-            }
-        }
+    // Try to find missing info from product card
+    if ((!name || !artist || !image) && event?.target) {
+      const card = event.target.closest('.product-card') || event.target.closest('.playlist-item');
+      if (card) {
+        const btn = card.querySelector('.play-button');
+        if (!name && e.playerTrackName) 
+          e.playerTrackName.textContent = card.querySelector('h3')?.textContent || btn?.dataset.productName || '';
+        if (!artist && e.playerTrackArtist) 
+          e.playerTrackArtist.textContent = card.querySelector('.vendor a')?.textContent || btn?.dataset.productOwner || '';
+        if (!image && e.playerImage) 
+          e.playerImage.src = card.querySelector('img.product-image')?.src || '';
+      }
     }
     
-    // Save track info to localStorage
-    const trackData = {
-        id: trackId,
-        position: 0,
-        isPlaying: true,
-        name: playerTrackName ? playerTrackName.textContent : '',
-        artist: playerTrackArtist ? playerTrackArtist.textContent : '',
-        image: playerImage ? playerImage.src : ''
-    };
-    localStorage.setItem('currentTrack', JSON.stringify(trackData));
+    // Set play icon and find track context
+    if (e.playPauseBtn) e.playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    findTracks(id);
     
-    // Set up the play event and handle errors
-    audio.oncanplay = () => {
-        console.log('Audio can play, attempting to play now');
-        let playPromise = audio.play();
-        
-        if (playPromise !== undefined) {
-            playPromise.then(_ => {
-                console.log('Audio started playing successfully');
-            }).catch(error => {
-                console.error('Error playing the audio:', error);
-            });
-        }
-    };
-    
-    audio.onerror = () => {
-        console.error(`Error loading audio from ${audioUrl}`);
-        console.error('Audio error code:', audio.error ? audio.error.code : 'unknown');
-    };
-    
-    // Add an ended event to remove the track from localStorage when finished
-    audio.onended = () => {
-        console.log('Track playback ended');
-        // Optional: You can decide whether to close the player or not when track ends
-        // For now, just update the localStorage to reflect that it's not playing
-        const currentData = JSON.parse(localStorage.getItem('currentTrack') || '{}');
-        currentData.isPlaying = false;
-        localStorage.setItem('currentTrack', JSON.stringify(currentData));
-    };
+    // Play audio and save state
+    e.audio.oncanplay = () => e.audio.play().then(updateUI).catch(() => {});
+    save();
+  }
+
+  return {init, play};
+})();
+
+// Public interface and auto-init
+function playAudio(id, name = '', artist = '', image = '') {
+  AP.play(id, name, artist, image);
 }
 
-// Persistent audio player functionality
-document.addEventListener('DOMContentLoaded', function() {
-    // Get DOM references
-    const persistentPlayer = document.getElementById('persistent-player');
-    const audio = document.getElementById('audio');
-    const playerTrackName = document.getElementById('player-track-name');
-    const playerTrackArtist = document.getElementById('player-track-artist');
-    const playerImage = document.getElementById('player-image');
-    const closePlayerBtn = document.getElementById('close-player');
-    
-    // Add event listener to close the player
-    if (closePlayerBtn) {
-        closePlayerBtn.addEventListener('click', function() {
-            persistentPlayer.style.display = 'none';
-            audio.pause();
-            document.body.classList.remove('player-active');
-            // Clear storage
-            localStorage.removeItem('currentTrack');
-        });
-    }
-    
-    // Check if there's a saved track in localStorage and restore it
-    const savedTrack = localStorage.getItem('currentTrack');
-    if (savedTrack) {
-        try {
-            const trackData = JSON.parse(savedTrack);
-            
-            // Restore player state
-            persistentPlayer.style.display = 'flex';
-            document.body.classList.add('player-active');
-            
-            // Set track info if available
-            if (playerTrackName && trackData.name) playerTrackName.textContent = trackData.name;
-            if (playerTrackArtist && trackData.artist) playerTrackArtist.textContent = trackData.artist;
-            if (playerImage && trackData.image) playerImage.src = trackData.image;
-            
-            // Set audio source and restore playback position
-            if (audio) {
-                audio.src = `/audio/${trackData.id}`;
-                
-                // Set up event when metadata is loaded
-                audio.onloadedmetadata = function() {
-                    // If there was a saved position, seek to it
-                    if (trackData.position) {
-                        audio.currentTime = trackData.position;
-                    }
-                    
-                    // If it was playing, resume playback
-                    if (trackData.isPlaying) {
-                        const playPromise = audio.play();
-                        if (playPromise !== undefined) {
-                            playPromise.catch(error => {
-                                console.error('Error resuming playback:', error);
-                            });
-                        }
-                    }
-                };
-            }
-        } catch (error) {
-            console.error('Error restoring player state:', error);
-            localStorage.removeItem('currentTrack'); // Clear invalid data
-        }
-    }
-    
-    // Save current track data and position every second when playing
-    if (audio) {
-        setInterval(function() {
-            if (!audio.paused && persistentPlayer.style.display !== 'none') {
-                const trackData = {
-                    id: getCurrentTrackId(),
-                    position: audio.currentTime,
-                    duration: audio.duration,
-                    isPlaying: !audio.paused,
-                    name: playerTrackName ? playerTrackName.textContent : '',
-                    artist: playerTrackArtist ? playerTrackArtist.textContent : '',
-                    image: playerImage ? playerImage.src : ''
-                };
-                localStorage.setItem('currentTrack', JSON.stringify(trackData));
-            }
-        }, 1000);
-    }
-});
-
-// Helper to extract the current track id from the audio src
-function getCurrentTrackId() {
-    const audio = document.getElementById('audio');
-    if (!audio || !audio.src) return null;
-    
-    // Extract the ID from the audio URL (e.g., /audio/123)
-    const matches = audio.src.match(/\/audio\/(\d+)/);
-    return matches ? matches[1] : null;
-}
+document.addEventListener('DOMContentLoaded', AP.init);
