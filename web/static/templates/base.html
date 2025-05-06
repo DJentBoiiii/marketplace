@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}Soundify | Home{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css?v=1.1" />
     {% block head %}{% endblock %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -12,8 +12,8 @@
 <header>
     <div class="container header-container">
         <h1 class="logo">Soundify</h1>
-        <form class="search-form" action="#" method="GET" role="search">
-            <input type="search" name="q" placeholder="Search music..." aria-label="Search music" />
+        <form class="search-form" action="/catalogue" method="GET" role="search">
+            <input type="search" name="search" placeholder="Search music..." aria-label="Search music" />
             <button type="submit">Search</button>
         </form>
         <nav>
@@ -48,14 +48,6 @@
                                 <li><a href="#">FX</a></li>
                             </ul>
                         </div>
-                        <div class="submenu-section">
-                            <h4>Artists</h4>
-                            <ul>
-                                <li><a href="#">Top Artists</a></li>
-                                <li><a href="#">New Artists</a></li>
-                                <li><a href="#">Featured Artists</a></li>
-                            </ul>
-                        </div>
                     </div>
                 </li>
                 <li><a href="#">Feed</a></li>
@@ -67,7 +59,7 @@
             <!-- Dropdown menu trigger -->
             <div class="dropdown">
                 <button class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-                    Name &#x25BC;
+                    {% if User %}{{ User.name }}{% else %}Name{% endif %} &#x25BC;
                 </button>
                 <ul class="dropdown-menu" aria-label="submenu">
                     <li><a href="/profile/{{ User.name }}">{{ User.name }}</a></li>

@@ -33,6 +33,7 @@
   </div>
 
   <h3 class="uploads-heading">Завантаження продавця</h3>
+  <a href="/catalogue" class="catalog-btn">← До каталогу</a>
   
   <div class="catalogue-grid">
     {% for product in products %}
@@ -55,7 +56,7 @@
             {% if product.Genre %}
             <p class="genre">Жанр: {{ product.Genre }}</p>
             {% endif %}
-            <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="details-button">Деталі</a>
+            <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="catalog-btn">Деталі</a>
             {% if user.Username %}
             <a href="/cart/add?product_id={{ product.Id }}" class="add-to-cart-button">В кошик</a>
             {% if product.Type == "audio" %}

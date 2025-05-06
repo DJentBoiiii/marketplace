@@ -13,7 +13,7 @@
     <section>
         <header class="section-header">
             <h2>Аудіо</h2>
-            <a href="/catalogue/audio" class="view-all">Переглянути всі</a>
+            <a href="/catalogue/audio" class="catalog-btn">Переглянути всі</a>
         </header>
         <div class="catalogue-grid">
             {% for product in audioProducts %}
@@ -36,7 +36,7 @@
                     {% if product.Genre %}
                     <p class="genre">Тип: {{ product.Genre }}</p>
                     {% endif %}
-                    <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="details-button">Деталі</a>
+                    <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="catalog-btn">Деталі</a>
                     {% if user.Username %}
                     <a href="/cart/add?product_id={{ product.Id }}" class="add-to-cart-button">В кошик</a>
                     <a href="#" onclick="showPlaylistModal('{{ product.Id }}'); return false;" class="add-to-playlist-button">До плейлиста</a>
@@ -51,7 +51,7 @@
     <section>
         <div class="section-header">
             <h2>MIDI</h2>
-            <a href="/catalogue/midi" class="view-all">Переглянути всі</a>
+            <a href="/catalogue/midi" class="catalog-btn">Переглянути всі</a>
         </div>
         <div class="catalogue-grid">
             {% for product in midiProducts %}
@@ -74,7 +74,7 @@
                     {% if product.Genre %}
                     <p class="genre">Тип: {{ product.Genre }}</p>
                     {% endif %}
-                    <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="details-button">Деталі</a>
+                    <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="catalog-btn">Деталі</a>
                     {% if user.Username %}
                     <a href="/cart/add?product_id={{ product.Id }}" class="add-to-cart-button">В кошик</a>
                     <a href="#" onclick="showPlaylistModal('{{ product.Id }}'); return false;" class="add-to-playlist-button">До плейлиста</a>
@@ -89,7 +89,7 @@
     <section>
         <div class="section-header">
             <h2>Семпли</h2>
-            <a href="/catalogue/samples" class="view-all">Переглянути всі</a>
+            <a href="/catalogue/samples" class="catalog-btn">Переглянути всі</a>
         </div>
         <div class="catalogue-grid">
             {% for product in samplesProducts %}
@@ -112,7 +112,7 @@
                     {% if product.Genre %}
                     <p class="genre">Тип: {{ product.Genre }}</p>
                     {% endif %}
-                    <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="details-button">Деталі</a>
+                    <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="catalog-btn">Деталі</a>
                     {% if user.Username %}
                     <a href="/cart/add?product_id={{ product.Id }}" class="add-to-cart-button">В кошик</a>
                     <a href="#" onclick="showPlaylistModal('{{ product.Id }}'); return false;" class="add-to-playlist-button">До плейлиста</a>

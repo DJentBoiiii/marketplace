@@ -2,6 +2,7 @@
 
 {% block head %}
 <link rel="stylesheet" href="/static/css/purchases_category.css">
+<link rel="stylesheet" href="/static/css/catalogue_type.css">
 {% endblock %}
 
 {% block content %}
@@ -9,25 +10,35 @@
     <h2>Ваші придбані {{ productType }}</h2>
 
     {% if products|length > 0 %}
-    <div class="products-grid">
+    <div class="catalogue-grid">
         {% for product in products %}
-        <div class="product-card">
-            <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
+        <div class="product-card" data-product-id="{{ product.Id }}">
+            <div class="image-container">
+                <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" />
+                {% if product.Type == "audio" %}
+                <div class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#1db954" height="48px" width="48px" viewBox="0 0 512 512" >
+                        <g>
+                            <path d="M256,0C114.88,0,0,114.88,0,256s114.88,256,256,256s256-114.88,256-256S397.12,0,256,0z M256,490.667 c-129.387,0-234.667-105.28-234.667-234.667S126.613,21.333,256,21.333S490.667,126.613,490.667,256S385.387,490.667,256,490.667z"/>
+                            <path d="M377.6,246.507L186.027,150.72c-5.227-2.667-11.627-0.533-14.293,4.8c-0.747,1.493-1.173,3.093-1.173,4.8v191.573 c0,5.867,4.8,10.667,10.667,10.667c1.6,0,3.307-0.427,4.8-1.173L377.6,265.493c5.227-2.667,7.36-9.067,4.8-14.293 C381.333,249.173,379.627,247.467,377.6,246.507z M192,334.72V177.28L349.44,256L192,334.72z"/>
+                        </g>
+                    </svg>
+                </div>
+                {% endif %}
+            </div>
             <div class="product-info">
                 <h3>{{ product.Name }}</h3>
-                <p>Власник: {{ product.Owner }}</p>
+                <p class="vendor">Продавець: <a href="/catalogue/vendor/{{ product.Owner }}">{{ product.Owner }}</a></p>
                 {% if product.Genre %}
-                <p>Жанр: {{ product.Genre }}</p>
+                <p class="genre">Тип: {{ product.Genre }}</p>
                 {% endif %}
-                <div class="product-card-buttons">
-                    <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="btn btn-primary btn-block">Деталі</a>
-                    {% if product.Type == "audio" %}
-                    <button onclick="playAudio('{{ product.Id }}')" class="btn btn-secondary btn-block">Відтворити</button>
-                    {% endif %}
-                    <form action="/download/{{ product.Id }}" method="post">
-                        <button type="submit" class="btn btn-secondary btn-block">Завантажити</button>
-                    </form>
-                </div>
+                <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="catalog-btn">Деталі</a>
+                {% if product.Type == "audio" %}
+                <button onclick="playAudio('{{ product.Id }}')" class="add-to-cart-button">Відтворити</button>
+                {% endif %}
+                <form action="/download/{{ product.Id }}" method="post">
+                    <button type="submit" class="add-to-playlist-button">Завантажити</button>
+                </form>
             </div>
         </div>
         {% endfor %}

@@ -204,6 +204,33 @@ footer {
     color: #1db954;
 }
 
+/* Catalog action buttons - styled like login button */
+.catalog-btn {
+    color: #eee !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    padding: 6px 12px !important;
+    border-radius: 20px !important;
+    border: 1px solid transparent !important;
+    transition: all 0.3s ease !important;
+    display: inline-block !important;
+    margin: 10px 0 !important;
+    text-align: center !important;
+    background-color: transparent !important;
+}
+
+.catalog-btn:hover {
+    border-color: #1db954 !important;
+    color: #1db954 !important;
+    background-color: transparent !important;
+}
+
+.catalog-btn-center {
+    display: block !important;
+    width: fit-content !important;
+    margin: 10px auto !important;
+}
+
 /* Dropdown menu styles */
 .dropdown {
     position: relative;
