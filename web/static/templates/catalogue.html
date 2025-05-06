@@ -8,6 +8,11 @@
 <link rel="stylesheet" href="/static/css/catalogue_type.css">
 <div class="container">
     <h1>Каталог продуктів</h1>
+    
+    <!-- Audio Player Container -->
+    <div id="audio-player" class="audio-player" style="display: none;">
+        <audio id="audio" controls></audio>
+    </div>
 
     <!-- Audio Products Section -->
     <section>
@@ -19,8 +24,8 @@
             {% for product in audioProducts %}
             <div class="product-card" data-product-id="{{ product.Id }}">
                 <div class="image-container">
-                    <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" />
-                    <div class="play-button">
+                    <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" onclick="playAudio('{{ product.Id }}'); return false;" />
+                    <div class="play-button" data-product-id="{{ product.Id }}" data-product-name="{{ product.Name }}" data-product-owner="{{ product.Owner }}" onclick="playAudio('{{ product.Id }}'); return false;">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="#1db954" height="48px" width="48px" viewBox="0 0 512 512" >
                             <g>
                                 <path d="M256,0C114.88,0,0,114.88,0,256s114.88,256,256,256s256-114.88,256-256S397.12,0,256,0z M256,490.667 c-129.387,0-234.667-105.28-234.667-234.667S126.613,21.333,256,21.333S490.667,126.613,490.667,256S385.387,490.667,256,490.667z"/>
@@ -57,8 +62,8 @@
             {% for product in midiProducts %}
             <div class="product-card" data-product-id="{{ product.Id }}">
                 <div class="image-container">
-                    <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" />
-                    <div class="play-button">
+                    <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" onclick="playAudio('{{ product.Id }}'); return false;" />
+                    <div class="play-button" data-product-id="{{ product.Id }}" data-product-name="{{ product.Name }}" data-product-owner="{{ product.Owner }}" onclick="playAudio('{{ product.Id }}'); return false;">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="#1db954" height="48px" width="48px" viewBox="0 0 512 512" >
                             <g>
                                 <path d="M256,0C114.88,0,0,114.88,0,256s114.88,256,256,256s256-114.88,256-256S397.12,0,256,0z M256,490.667 c-129.387,0-234.667-105.28-234.667-234.667S126.613,21.333,256,21.333S490.667,126.613,490.667,256S385.387,490.667,256,490.667z"/>
@@ -95,8 +100,8 @@
             {% for product in samplesProducts %}
             <div class="product-card" data-product-id="{{ product.Id }}">
                 <div class="image-container">
-                    <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" />
-                    <div class="play-button">
+                    <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" onclick="playAudio('{{ product.Id }}'); return false;" />
+                    <div class="play-button" data-product-id="{{ product.Id }}" data-product-name="{{ product.Name }}" data-product-owner="{{ product.Owner }}" onclick="playAudio('{{ product.Id }}'); return false;">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="#1db954" height="48px" width="48px" viewBox="0 0 512 512" >
                             <g>
                                 <path d="M256,0C114.88,0,0,114.88,0,256s114.88,256,256,256s256-114.88,256-256S397.12,0,256,0z M256,490.667 c-129.387,0-234.667-105.28-234.667-234.667S126.613,21.333,256,21.333S490.667,126.613,490.667,256S385.387,490.667,256,490.667z"/>
@@ -169,6 +174,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="/static/js/audio_player.js"></script>
 <script src="/static/js/catalogue.js"></script>
 <script src="/static/js/playlist.js"></script>
 {% endblock %}

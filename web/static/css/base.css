@@ -12,6 +12,10 @@ body {
     background-color: #121212;
     color: #eee;
     line-height: 1.6;
+    /* Add padding at the bottom for the persistent player */
+    padding-bottom: 90px;
+    position: relative;
+    min-height: 100vh;
 }
 
 /* Container for consistent horizontal padding */
@@ -427,9 +431,142 @@ nav ul li.browse-menu:hover .submenu {
     }
 }
 
-@media (max-width: 480px) {
-    .products-grid,
-    .catalogue-grid {
-        grid-template-columns: 1fr;
-    }
+/* Image container play button */
+.image-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 6px;
+}
+
+.image-container img {
+    transition: filter 0.3s ease;
+    width: 100%;
+}
+
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.image-container:hover img {
+    filter: brightness(0.7);
+}
+
+.image-container:hover .play-button {
+    opacity: 1;
+}
+
+/* Persistent Audio Player styles */
+.persistent-player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #161616;
+    color: #eee;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+    z-index: 1000;
+    transition: transform 0.3s ease;
+    padding: 10px 0;
+}
+
+.player-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.player-track-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    max-width: 300px;
+}
+
+.player-track-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 4px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.player-track-details {
+    overflow: hidden;
+}
+
+.player-track-name {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px;
+}
+
+.player-track-artist {
+    font-size: 0.9rem;
+    color: #aaa;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-controls {
+    flex: 2;
+    max-width: 600px;
+    padding: 0 20px;
+}
+
+.player-controls audio {
+    width: 100%;
+    height: 36px;
+}
+
+.player-actions {
+    display: flex;
+    align-items: center;
+}
+
+.close-player-btn {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.2s ease;
+}
+
+.close-player-btn:hover {
+    color: #fff;
+}
+
+/* Custom audio player controls */
+audio::-webkit-media-controls-panel {
+    background-color: #282828;
+}
+
+audio::-webkit-media-controls-play-button {
+    background-color: #1db954;
+    border-radius: 50%;
+}
+
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display {
+    color: #eee;
+}
+
+/* Add padding to the bottom of the page when player is shown */
+body.player-active {
+    padding-bottom: 80px;
 }

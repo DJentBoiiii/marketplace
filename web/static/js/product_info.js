@@ -8,14 +8,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize comments
     loadComments();
 
-    // Set up auto audio playback if it's an audio product
-    const audioPlayer = document.getElementById('audio-player');
-    if (audioPlayer) {
-        const audio = document.getElementById('audio');
-        if (audio) {
-            audio.src = `/audio/${productId}`;
-            audio.oncanplay = () => audio.play();
-        }
+    // Set up audio playback if it's an audio product
+    const playButton = document.getElementById('play-button');
+    if (playButton) {
+        playButton.addEventListener('click', function() {
+            const productName = document.querySelector('.product-details h2').textContent;
+            const productOwner = document.querySelector('.product-info strong:nth-of-type(2)').nextSibling.textContent.trim();
+            const productImage = document.querySelector('.product-image').src;
+            
+            // Use the persistent player to play the audio
+            playTrack(productId, productName, productOwner, productImage);
+        });
     }
     
     // Comment submission handler
@@ -28,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const comment = {
                 product_id: productId,
-                comment: commentText.valuez,
+                comment: commentText.value,
                 likes_product: likesProduct.checked
             };
             
@@ -140,7 +143,4 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Сталася помилка при видаленні коментаря');
         });
     }
-
-    // Make playAudio globally accessible
-    window.playAudio = playAudio;
 });

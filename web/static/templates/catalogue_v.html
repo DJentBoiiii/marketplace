@@ -10,8 +10,12 @@
     <div class="vendor-info">
       <h2>{{ vendor.Username }}</h2>
       <div class="vendor-details">
+        {% if vendor.Email %}
         <p><strong>Email:</strong> {{ vendor.Email }}</p>
+        {% endif %}
+        {% if vendor.FullName %}
         <p><strong>Повне ім'я:</strong> {{ vendor.FullName }}</p>
+        {% endif %}
         {% if vendor.Bio %}
         <p><strong>Про продавця:</strong> {{ vendor.Bio }}</p>
         {% endif %}
@@ -20,12 +24,14 @@
     <div class="vendor-stats">
       <h3>Статистика</h3>
       <div class="stats-details">
-        <p><strong>Кількість завантажень:</strong> {{ vendor.UploadCount }}</p>
+        <p><strong>Кількість завантажень:</strong> {{ vendor.UploadCount|default:0 }}</p>
+        {% if vendor.RegisteredOn %}
         <p><strong>Дата реєстрації:</strong> {{ vendor.RegisteredOn }}</p>
+        {% endif %}
         <p><strong>Рейтинг продавця:</strong> 
           <span class="rating">
-            {% for i in range(vendor.Rating) %}★{% endfor %}
-            {% for i in range(5 - vendor.Rating) %}☆{% endfor %}
+            {% for i in range(vendor.Rating|default:0) %}★{% endfor %}
+            {% for i in range(5 - vendor.Rating|default:0) %}☆{% endfor %}
           </span>
         </p>
       </div>
@@ -37,10 +43,11 @@
   
   <div class="catalogue-grid">
     {% for product in products %}
-    <div class="product-card">
+    <div class="product-card" data-product-id="{{ product.Id }}">
         <div class="image-container">
-            <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" />
-            <div class="play-button">
+            <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" onclick="playAudio('{{ product.Id }}', '{{ product.Name }}', '{{ product.Owner }}', '/{{ product.ImageURL }}'); return false;" />
+            {% if product.Type == "audio" %}
+            <div class="play-button" data-product-id="{{ product.Id }}" data-product-name="{{ product.Name }}" data-product-owner="{{ product.Owner }}" onclick="playAudio('{{ product.Id }}', '{{ product.Name }}', '{{ product.Owner }}', '/{{ product.ImageURL }}'); return false;">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#1db954" height="48px" width="48px" viewBox="0 0 512 512" >
                     <g>
                         <path d="M256,0C114.88,0,0,114.88,0,256s114.88,256,256,256s256-114.88,256-256S397.12,0,256,0z M256,490.667 c-129.387,0-234.667-105.28-234.667-234.667S126.613,21.333,256,21.333S490.667,126.613,490.667,256S385.387,490.667,256,490.667z"/>
@@ -48,6 +55,7 @@
                     </g>
                 </svg>
             </div>
+            {% endif %}
         </div>
         <div class="product-info">
             <h3>{{ product.Name }}</h3>
@@ -66,6 +74,12 @@
         </div>
     </div>
     {% endfor %}
+    
+    {% if products|length == 0 %}
+    <div class="empty-result">
+        <p>У цього продавця поки що немає продуктів</p>
+    </div>
+    {% endif %}
   </div>
 
   {% if user.Username %}
@@ -123,5 +137,6 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="/static/js/audio_player.js"></script>
 <script src="/static/js/playlist.js"></script>
 {% endblock %}

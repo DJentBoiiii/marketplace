@@ -357,6 +357,32 @@ audio::-webkit-media-controls-time-remaining-display {
     font-size: 1.2rem;
 }
 
+/* Large play button styles */
+.play-button-large {
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.play-button-large i {
+    margin-right: 8px;
+}
+
+.play-button-large:hover {
+    background-color: #17a44c;
+}
+
 /* Modal styles */
 .modal {
     display: none; /* Hidden by default */
