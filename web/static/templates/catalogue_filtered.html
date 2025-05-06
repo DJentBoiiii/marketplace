@@ -118,16 +118,64 @@
 <div id="playlistModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closePlaylistModal()">&times;</span>
-        <h3>Додати до плейлиста</h3>
-        <form action="/playlist/add-item" method="POST">
-            <input type="hidden" id="modalProductId" name="product_id" value="">
-            <select name="playlist_id" required>
-                <option value="">Оберіть плейлист</option>
-                <!-- In a real app, this would be populated from the backend -->
-            </select>
-            <button type="submit" class="add-to-playlist-button">Додати</button>
-        </form>
+        
+        <!-- Tab Navigation -->
+        <div class="modal-tabs">
+            <button class="tab-button active" onclick="switchTab('existing-playlist-tab')">Додати до плейлиста</button>
+            <button class="tab-button" onclick="switchTab('create-playlist-tab')">Створити плейлист</button>
+        </div>
+        
+        <!-- Add to Existing Playlist Tab -->
+        <div id="existing-playlist-tab" class="tab-content">
+            <h3>Додати до плейлиста</h3>
+            <form action="/playlist/add-item" method="POST">
+                <input type="hidden" id="modalProductId" name="product_id" value="">
+                <select name="playlist_id" required>
+                    <option value="">Оберіть плейлист</option>
+                    <!-- Will be populated via JavaScript -->
+                </select>
+                <button type="submit" class="add-to-playlist-button">Додати</button>
+            </form>
+        </div>
+        
+        <!-- Create New Playlist Tab -->
+        <div id="create-playlist-tab" class="tab-content" style="display: none;">
+            <h3>Створити новий плейлист</h3>
+            <form action="/playlist/create-and-add" method="POST" id="create-playlist-form">
+                <input type="hidden" id="newPlaylistProductId" name="product_id" value="">
+                <div class="form-group">
+                    <label for="playlist_name">Назва плейлиста:</label>
+                    <input type="text" id="playlist_name" name="playlist_name" placeholder="Введіть назву плейлиста" required>
+                </div>
+                <button type="submit" class="create-playlist-button">Створити і додати</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/playlist.js"></script>
+<script>
+// Additional initialization for catalogue_filtered page
+document.addEventListener('DOMContentLoaded', function() {
+    // Make sure the modal is properly initialized
+    const modal = document.getElementById('playlistModal');
+    if (modal) {
+        // Setup close button
+        const closeBtn = modal.querySelector('.close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closePlaylistModal);
+        }
+        
+        // Setup tab buttons
+        const tabButtons = modal.querySelectorAll('.tab-button');
+        if (tabButtons.length > 0) {
+            // The first tab is active by default
+            switchTab('existing-playlist-tab');
+        }
+    }
+});
+</script>
 {% endblock %}
