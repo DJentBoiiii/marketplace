@@ -13,12 +13,20 @@ import (
 func ShowCatalogue(c *fiber.Ctx) error {
 	user, _ := auth.GetUserData(c)
 
+	// Get search query from the search form
+	search := c.Query("search", "")
+
 	name := c.Query("name", "")
 	vendor := c.Query("vendor", "")
 	genre := c.Query("genre", "")
 	minPriceStr := c.Query("min_price", "")
 	maxPriceStr := c.Query("max_price", "")
 	sortBy := c.Query("sort", "newest")
+
+	// If there's a search query, use it as the name filter
+	if search != "" {
+		name = search
+	}
 
 	var minPrice, maxPrice int
 	if minPriceStr != "" {
@@ -65,6 +73,7 @@ func ShowCatalogue(c *fiber.Ctx) error {
 			[2]interface{}{"minPriceAll", minPriceAll},
 			[2]interface{}{"maxPriceAll", maxPriceAll},
 			[2]interface{}{"isFiltered", isFiltered},
+			[2]interface{}{"search", search},
 		)
 	}
 
