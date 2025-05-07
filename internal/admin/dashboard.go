@@ -67,5 +67,6 @@ func Dashboard(c *fiber.Ctx) error {
 		[2]interface{}{"user", user},
 		[2]interface{}{"stats", stats},
 		[2]interface{}{"latestUsers", latestUsers},
+		[2]interface{}{"active_page", "dashboard"},
 	)
 }
