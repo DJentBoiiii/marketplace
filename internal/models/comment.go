@@ -10,7 +10,6 @@ type Comment struct {
 	Username     string    `json:"username"`
 	ProductID    int       `json:"product_id"`
 	Comment      string    `json:"comment"`
-	LikesProduct bool      `json:"likes_product"`
 	CreatedAt    time.Time `json:"created_at"`
 	ProfilePhoto string    `json:"profile_photo"`
 }

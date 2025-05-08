@@ -6,15 +6,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const productData = document.getElementById('product-data');
     const commentsList = document.getElementById('comments-list');
     const commentText = document.getElementById('comment-text');
-    const likesProduct = document.getElementById('likes-product');
     const submitComment = document.getElementById('submit-comment');
+    const likeButton = document.getElementById('like-button');
     
     // Check if these elements exist on the page
     console.log('Product data element exists:', !!productData);
     console.log('Comments list element exists:', !!commentsList);
     console.log('Comment text element exists:', !!commentText);
-    console.log('Likes product element exists:', !!likesProduct);
     console.log('Submit comment button exists:', !!submitComment);
+    console.log('Like button exists:', !!likeButton);
     
     // Make sure we have the necessary elements before proceeding
     if (!productData || !commentsList) {
@@ -32,6 +32,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load comments on page load
     loadComments();
     
+    // Initialize like functionality if the button exists
+    if (likeButton) {
+        initializeLikeButton();
+    } else {
+        // If the like button doesn't exist (user not logged in), we still load the like count
+        updateLikeCount();
+    }
+    
     // Set up comment submission if form elements exist
     if (submitComment && commentText) {
         submitComment.addEventListener('click', function(e) {
@@ -39,6 +47,90 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Submit comment button clicked');
             submitNewComment();
         });
+    }
+    
+    /**
+     * Initialize the like button functionality
+     */
+    function initializeLikeButton() {
+        // First check if the user has already liked this product
+        fetch(`/api/likes/${productId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Like status:', data);
+                
+                if (data.success) {
+                    updateLikeButtonState(data.is_liked, data.count);
+                }
+                
+                // Add click handler to toggle like
+                likeButton.addEventListener('click', toggleLike);
+            })
+            .catch(error => {
+                console.error('Error checking like status:', error);
+            });
+    }
+    
+    /**
+     * Toggle product like status
+     */
+    function toggleLike() {
+        const isLiked = likeButton.classList.contains('liked');
+        const method = isLiked ? 'DELETE' : 'POST';
+        
+        fetch(`/api/likes/${productId}`, {
+            method: method
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Like toggle response:', data);
+            
+            if (data.success) {
+                updateLikeButtonState(data.is_liked, data.count);
+            }
+        })
+        .catch(error => {
+            console.error('Error toggling like:', error);
+        });
+    }
+    
+    /**
+     * Update the like button state based on user's like status
+     */
+    function updateLikeButtonState(isLiked, count) {
+        if (isLiked) {
+            likeButton.classList.add('liked');
+        } else {
+            likeButton.classList.remove('liked');
+        }
+        
+        // Update the count
+        const countElement = likeButton.querySelector('.like-count');
+        if (countElement) {
+            countElement.textContent = count;
+        }
+    }
+    
+    /**
+     * Update like count for non-logged in users
+     */
+    function updateLikeCount() {
+        fetch(`/api/likes/${productId}/count`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Like count:', data);
+                
+                if (data.success) {
+                    // Find the count element in any like button element (logged in or not)
+                    const countElements = document.querySelectorAll('.like-count');
+                    countElements.forEach(element => {
+                        element.textContent = data.count;
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching like count:', error);
+            });
     }
     
     /**
@@ -110,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             ${isAuthor ? '<button class="delete-comment-btn" data-id="' + comment.id + '">Delete</button>' : ''}
                         </div>
                         <p class="comment-text">${comment.comment}</p>
-                        ${comment.likes_product ? '<div class="comment-likes">❤️</div>' : ''}
                     </div>
                 </div>
             `;
@@ -142,8 +233,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const comment = {
             product_id: parseInt(productId),
-            comment: commentText.value.trim(),
-            likes_product: likesProduct ? likesProduct.checked : false
+            comment: commentText.value.trim()
         };
         
         console.log('Submitting comment:', comment);
@@ -165,7 +255,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 // Clear the form
                 commentText.value = '';
-                if (likesProduct) likesProduct.checked = false;
                 
                 // Reload comments
                 loadComments();

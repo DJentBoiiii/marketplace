@@ -28,7 +28,7 @@ func GetComments(c *fiber.Ctx) error {
 
 	// Debug: Print the SQL query being executed
 	query := `
-		SELECT c.id, c.user_id, u.username, c.product_id, c.comment, c.likes_product, c.created_at, 
+		SELECT c.id, c.user_id, u.username, c.product_id, c.comment, c.created_at, 
 		       IFNULL(u.profile_photo, '') as profile_photo
 		FROM Comments c
 		JOIN Users u ON c.user_id = u.id
@@ -62,7 +62,6 @@ func GetComments(c *fiber.Ctx) error {
 			&comment.Username,
 			&comment.ProductID,
 			&comment.Comment,
-			&comment.LikesProduct,
 			&createdAtStr, // Scan into string first
 			&comment.ProfilePhoto,
 		)

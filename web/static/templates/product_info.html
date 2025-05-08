@@ -31,6 +31,21 @@
                     <button type="submit" class="add-to-cart-button">Додати до кошика</button>
                 </form>
 
+                <!-- Like button -->
+                {% if user.Username %}
+                <button id="like-button" class="like-button" data-product-id="{{ product.ID }}">
+                    <span class="heart-icon">❤️</span>
+                    <span class="like-text">Подобається</span>
+                    <span class="like-count">0</span>
+                </button>
+                {% else %}
+                <div class="like-button">
+                    <span class="heart-icon">❤️</span>
+                    <span class="like-text">Подобається</span>
+                    <span class="like-count">0</span>
+                </div>
+                {% endif %}
+
                 <!-- Якщо це аудіо -->
                 {% if product.Type == "audio" %}
                 <div class="audio-controls">
@@ -57,10 +72,6 @@
         <div id="user-data" data-user-id="{{ user.ID }}" class="add-comment-form">
             <textarea id="comment-text" placeholder="Напишіть ваш коментар..."></textarea>
             <div class="comment-actions">
-                <label class="like-product">
-                    <input type="checkbox" id="likes-product">
-                    <span class="heart-icon">❤️</span> Подобається продукт
-                </label>
                 <button id="submit-comment">Додати коментар</button>
             </div>
         </div>
@@ -153,24 +164,5 @@ function showPlaylistModal(productId) {
             document.getElementById('playlistModal').style.display = 'flex';
         });
 }
-</script>
-
-<!-- Debug script to check comments functionality -->
-<script>
-console.log('=== PRODUCT INFO HTML LOADED ===');
-document.addEventListener('DOMContentLoaded', function() {
-    // Force immediate comments check
-    setTimeout(function() {
-        const commentsList = document.getElementById('comments-list');
-        console.log('Comments list content after 1 second:', 
-                    commentsList ? commentsList.innerHTML : 'Element not found');
-        
-        // Check if any API calls have been made
-        console.log('Network requests should appear in the Network tab');
-        
-        // Alert for visibility
-        console.log('%c CHECK COMMENTS NOW ', 'background: #1db954; color: white; font-size: 16px; font-weight: bold;');
-    }, 1000);
-});
 </script>
 {% endblock %}

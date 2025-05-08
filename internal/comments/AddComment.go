@@ -23,9 +23,8 @@ func AddComment(c *fiber.Ctx) error {
 	fmt.Println("User data retrieved:", user.Id, user.Username) // Debug log
 
 	var input struct {
-		ProductID    int    `json:"product_id"`
-		Comment      string `json:"comment"`
-		LikesProduct bool   `json:"likes_product"`
+		ProductID int    `json:"product_id"`
+		Comment   string `json:"comment"`
 	}
 
 	if err := c.BodyParser(&input); err != nil {
@@ -35,7 +34,7 @@ func AddComment(c *fiber.Ctx) error {
 			"message": "Невірний формат даних запиту",
 		})
 	}
-	fmt.Println("Comment data parsed:", input.ProductID, input.Comment, input.LikesProduct) // Debug log
+	fmt.Println("Comment data parsed:", input.ProductID, input.Comment) // Debug log
 
 	if input.ProductID <= 0 || input.Comment == "" {
 		fmt.Println("Invalid comment data") // Debug log
@@ -46,11 +45,11 @@ func AddComment(c *fiber.Ctx) error {
 	}
 
 	// Debug: Print the SQL query being executed
-	fmt.Println("Executing INSERT query with values:", user.Id, input.ProductID, input.Comment, input.LikesProduct)
+	fmt.Println("Executing INSERT query with values:", user.Id, input.ProductID, input.Comment)
 
 	result, err := DB.Exec(
-		"INSERT INTO Comments (user_id, product_id, comment, likes_product) VALUES (?, ?, ?, ?)",
-		user.Id, input.ProductID, input.Comment, input.LikesProduct,
+		"INSERT INTO Comments (user_id, product_id, comment) VALUES (?, ?, ?)",
+		user.Id, input.ProductID, input.Comment,
 	)
 	if err != nil {
 		fmt.Println("Error executing insert query:", err) // Debug log
@@ -70,12 +69,12 @@ func AddComment(c *fiber.Ctx) error {
 	var createdAtStr string // Use string as intermediate type for date
 
 	err = DB.QueryRow(`
-		SELECT c.id, c.user_id, u.username, c.product_id, c.comment, c.likes_product, c.created_at, u.profile_photo 
+		SELECT c.id, c.user_id, u.username, c.product_id, c.comment, c.created_at, u.profile_photo 
 		FROM Comments c
 		JOIN Users u ON c.user_id = u.id
 		WHERE c.id = ?`, commentID).Scan(
 		&comment.ID, &comment.UserID, &comment.Username, &comment.ProductID,
-		&comment.Comment, &comment.LikesProduct, &createdAtStr, &comment.ProfilePhoto,
+		&comment.Comment, &createdAtStr, &comment.ProfilePhoto,
 	)
 
 	if err != nil {
