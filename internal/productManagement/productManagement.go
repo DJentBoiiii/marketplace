@@ -27,7 +27,7 @@ func SetupProductHandlers(app *fiber.App) {
 
 		isOwned := false
 		if user.Id > 0 {
-			isOwned, _ = CheckUserOwnsProduct(user.Id, product.Id)
+			isOwned, _ = CheckUserOwnsProduct(user.Id, product.ID)
 		}
 
 		return render.RenderTemplate(c, "product_info.html",

@@ -19,7 +19,7 @@ func GetAllProductsData(owner, productType string) ([]models.Product, error) {
 	for rows.Next() {
 		var p models.Product
 		var imagePath string
-		if err := rows.Scan(&p.Id, &p.Name, &p.Price, &p.Type, &p.Owner, &imagePath, &p.Genre); err != nil {
+		if err := rows.Scan(&p.ID, &p.Name, &p.Price, &p.Type, &p.Owner, &imagePath, &p.Genre); err != nil {
 			return nil, err
 		}
 		p.ImageURL = "/" + imagePath

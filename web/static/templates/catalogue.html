@@ -22,10 +22,10 @@
         </header>
         <div class="catalogue-grid">
             {% for product in audioProducts %}
-            <div class="product-card" data-product-id="{{ product.Id }}">
+            <div class="product-card" data-product-id="{{ product.ID }}">
                 <div class="image-container">
-                    <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" onclick="playAudio('{{ product.Id }}'); return false;" />
-                    <div class="play-button" data-product-id="{{ product.Id }}" data-product-name="{{ product.Name }}" data-product-owner="{{ product.Owner }}" onclick="playAudio('{{ product.Id }}'); return false;">
+                    <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" onclick="playAudio('{{ product.ID }}'); return false;" />
+                    <div class="play-button" data-product-id="{{ product.ID }}" data-product-name="{{ product.Name }}" data-product-owner="{{ product.Owner }}" onclick="playAudio('{{ product.ID }}'); return false;">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="#1db954" height="48px" width="48px" viewBox="0 0 512 512" >
                             <g>
                                 <path d="M256,0C114.88,0,0,114.88,0,256s114.88,256,256,256s256-114.88,256-256S397.12,0,256,0z M256,490.667 c-129.387,0-234.667-105.28-234.667-234.667S126.613,21.333,256,21.333S490.667,126.613,490.667,256S385.387,490.667,256,490.667z"/>
@@ -39,13 +39,16 @@
                     <p>{{ product.Price }} грн</p>
                     <p class="vendor">Продавець: <a href="/test/vendor/{{ product.Owner }}">{{ product.Owner }}</a></p>
                     {% if product.Genre %}
-                    <p class="genre">Тип: {{ product.Genre }}</p>
+                    <p class="genre"> {{ product.Genre }}</p>
                     {% endif %}
                     <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="catalog-btn">Деталі</a>
                     {% if user.Username %}
-                    <a href="/cart/add" class="add-to-cart-button">В кошик</a>
-                    <a href="#" onclick="showPlaylistModal('{{ product.Id }}'); return false;" class="add-to-playlist-button">До плейлиста</a>
-                    {% endif %}
+                    <form action="/cart/add" method="POST" style="display:inline;">
+                        <input type="hidden" name="product_id" value="{{ product.ID }}">
+                        <button type="submit" class="add-to-cart-button">В кошик</button>
+                    </form>
+                      {% endif %}
+                    <a href="#" onclick="showPlaylistModal('{{ product.ID }}'); return false;" class="add-to-playlist-button">До плейлиста</a>
                 </div>
             </div>
             {% endfor %}
@@ -60,10 +63,10 @@
         </div>
         <div class="catalogue-grid">
             {% for product in midiProducts %}
-            <div class="product-card" data-product-id="{{ product.Id }}">
+            <div class="product-card" data-product-id="{{ product.ID }}">
                 <div class="image-container">
-                    <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" onclick="playAudio('{{ product.Id }}'); return false;" />
-                    <div class="play-button" data-product-id="{{ product.Id }}" data-product-name="{{ product.Name }}" data-product-owner="{{ product.Owner }}" onclick="playAudio('{{ product.Id }}'); return false;">
+                    <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" onclick="playAudio('{{ product.ID }}'); return false;" />
+                    <div class="play-button" data-product-id="{{ product.ID }}" data-product-name="{{ product.Name }}" data-product-owner="{{ product.Owner }}" onclick="playAudio('{{ product.ID }}'); return false;">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="#1db954" height="48px" width="48px" viewBox="0 0 512 512" >
                             <g>
                                 <path d="M256,0C114.88,0,0,114.88,0,256s114.88,256,256,256s256-114.88,256-256S397.12,0,256,0z M256,490.667 c-129.387,0-234.667-105.28-234.667-234.667S126.613,21.333,256,21.333S490.667,126.613,490.667,256S385.387,490.667,256,490.667z"/>
@@ -81,8 +84,11 @@
                     {% endif %}
                     <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="catalog-btn">Деталі</a>
                     {% if user.Username %}
-                    <a href="/cart/add?product_id={{ product.Id }}" class="add-to-cart-button">В кошик</a>
-                    <a href="#" onclick="showPlaylistModal('{{ product.Id }}'); return false;" class="add-to-playlist-button">До плейлиста</a>
+                    <form action="/cart/add" method="POST" style="display:inline;">
+                        <input type="hidden" name="product_id" value="{{ product.ID }}">
+                        <button type="submit" class="add-to-cart-button">В кошик</button>
+                    </form>
+                    <a href="#" onclick="showPlaylistModal('{{ product.ID }}'); return false;" class="add-to-playlist-button">До плейлиста</a>
                     {% endif %}
                 </div>
             </div>
@@ -98,10 +104,10 @@
         </div>
         <div class="catalogue-grid">
             {% for product in samplesProducts %}
-            <div class="product-card" data-product-id="{{ product.Id }}">
+            <div class="product-card" data-product-id="{{ product.ID }}">
                 <div class="image-container">
-                    <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" onclick="playAudio('{{ product.Id }}'); return false;" />
-                    <div class="play-button" data-product-id="{{ product.Id }}" data-product-name="{{ product.Name }}" data-product-owner="{{ product.Owner }}" onclick="playAudio('{{ product.Id }}'); return false;">
+                    <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" onclick="playAudio('{{ product.ID }}'); return false;" />
+                    <div class="play-button" data-product-id="{{ product.ID }}" data-product-name="{{ product.Name }}" data-product-owner="{{ product.Owner }}" onclick="playAudio('{{ product.ID }}'); return false;">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="#1db954" height="48px" width="48px" viewBox="0 0 512 512" >
                             <g>
                                 <path d="M256,0C114.88,0,0,114.88,0,256s114.88,256,256,256s256-114.88,256-256S397.12,0,256,0z M256,490.667 c-129.387,0-234.667-105.28-234.667-234.667S126.613,21.333,256,21.333S490.667,126.613,490.667,256S385.387,490.667,256,490.667z"/>
@@ -119,8 +125,11 @@
                     {% endif %}
                     <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="catalog-btn">Деталі</a>
                     {% if user.Username %}
-                    <a href="/cart/add?product_id={{ product.Id }}" class="add-to-cart-button">В кошик</a>
-                    <a href="#" onclick="showPlaylistModal('{{ product.Id }}'); return false;" class="add-to-playlist-button">До плейлиста</a>
+                    <form action="/cart/add" method="POST" style="display:inline;">
+                        <input type="hidden" name="product_id" value="{{ product.ID }}">
+                        <button type="submit" class="add-to-cart-button">В кошик</button>
+                    </form>
+                    <a href="#" onclick="showPlaylistModal('{{ product.ID }}'); return false;" class="add-to-playlist-button">До плейлиста</a>
                     {% endif %}
                 </div>
             </div>

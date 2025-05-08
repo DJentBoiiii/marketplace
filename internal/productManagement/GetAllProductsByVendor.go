@@ -34,7 +34,7 @@ func GetAllProductsByVendor(vendorUsername string) (map[string][]models.Product,
 		var product models.Product
 		var createdAt []uint8 // temporary variable for timestamp
 		err := rows.Scan(
-			&product.Id,
+			&product.ID,
 			&product.Name,
 			&product.Price,
 			&product.Type,

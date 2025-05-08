@@ -13,7 +13,7 @@
     <div class="cart-container">
         <div class="catalogue-grid">
             {% for product in products %}
-            <div class="product-card" data-product-id="{{ product.Id }}">
+            <div class="product-card" data-product-id="{{ product.ID }}">
                 <div class="image-container">
                     <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" />
                     {% if product.Type == "audio" %}
@@ -36,7 +36,7 @@
                     {% endif %}
                     <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="catalog-btn">Деталі</a>
                     <form action="/cart/remove" method="POST" class="action-form">
-                        <input type="hidden" name="product_id" value="{{ product.Id }}">
+                        <input type="hidden" name="product_id" value="{{ product.ID }}">
                         <button type="submit" class="remove-from-cart-button">Видалити з кошика</button>
                     </form>
                 </div>

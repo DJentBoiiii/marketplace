@@ -12,7 +12,7 @@ func GetProductData(productName, owner string) (models.Product, error) {
 		FROM Products p
 		JOIN Users u ON p.vendor = u.username
 		WHERE p.name = ? AND u.username = ?`, productName, owner).Scan(
-		&p.Id, &p.Name, &p.Price, &p.Type, &p.Owner, &imagePath, &p.Description, &p.Genre)
+		&p.ID, &p.Name, &p.Price, &p.Type, &p.Owner, &imagePath, &p.Description, &p.Genre)
 	if err != nil {
 		return p, err
 	}

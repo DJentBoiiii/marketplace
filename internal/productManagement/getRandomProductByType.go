@@ -29,7 +29,7 @@ func GetRandomProductsByType(productType string) ([]models.Product, error) {
 		var product models.Product
 		var createdAt string
 		err := rows.Scan(
-			&product.Id,
+			&product.ID,
 			&product.Name,
 			&product.Price,
 			&product.Type,

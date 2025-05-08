@@ -14,10 +14,10 @@
         {% if products.audio|length > 0 %}
         <div class="catalogue-grid">
             {% for product in products.audio %}
-            <div class="product-card" data-product-id="{{ product.Id }}">
+            <div class="product-card" data-product-id="{{ product.ID }}">
                 <div class="image-container">
-                    <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" onclick="playAudio('{{ product.Id }}', '{{ product.Name }}', '{{ product.Owner }}', '{{ product.ImageURL }}'); return false;" />
-                    <div class="play-button" data-product-id="{{ product.Id }}" data-product-name="{{ product.Name }}" data-product-owner="{{ product.Owner }}" onclick="playAudio('{{ product.Id }}', '{{ product.Name }}', '{{ product.Owner }}', '{{ product.ImageURL }}'); return false;">
+                    <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" onclick="playAudio('{{ product.ID }}', '{{ product.Name }}', '{{ product.Owner }}', '{{ product.ImageURL }}'); return false;" />
+                    <div class="play-button" data-product-id="{{ product.ID }}" data-product-name="{{ product.Name }}" data-product-owner="{{ product.Owner }}" onclick="playAudio('{{ product.ID }}', '{{ product.Name }}', '{{ product.Owner }}', '{{ product.ImageURL }}'); return false;">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="#1db954" height="48px" width="48px" viewBox="0 0 512 512" >
                             <g>
                                 <path d="M256,0C114.88,0,0,114.88,0,256s114.88,256,256,256s256-114.88,256-256S397.12,0,256,0z M256,490.667 c-129.387,0-234.667-105.28-234.667-234.667S126.613,21.333,256,21.333S490.667,126.613,490.667,256S385.387,490.667,256,490.667z"/>
@@ -33,8 +33,8 @@
                     <p class="genre">Тип: {{ product.Genre }}</p>
                     {% endif %}
                     <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="catalog-btn">Деталі</a>
-                    <button onclick="playAudio('{{ product.Id }}')" class="add-to-cart-button">Відтворити</button>
-                    <form action="/download/{{ product.Id }}" method="post">
+                    <button onclick="playAudio('{{ product.ID }}')" class="add-to-cart-button">Відтворити</button>
+                    <form action="/download/{{ product.ID }}" method="post">
                         <button type="submit" class="add-to-playlist-button">Завантажити</button>
                     </form>
                 </div>
@@ -49,7 +49,7 @@
         {% if products.midi|length > 0 %}
         <div class="catalogue-grid">
             {% for product in products.midi %}
-            <div class="product-card" data-product-id="{{ product.Id }}">
+            <div class="product-card" data-product-id="{{ product.ID }}">
                 <div class="image-container">
                     <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" />
                 </div>
@@ -60,7 +60,7 @@
                     <p class="genre">Тип: {{ product.Genre }}</p>
                     {% endif %}
                     <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="catalog-btn">Деталі</a>
-                    <form action="/download/{{ product.Id }}" method="post">
+                    <form action="/download/{{ product.ID }}" method="post">
                         <button type="submit" class="add-to-playlist-button">Завантажити</button>
                     </form>
                 </div>
@@ -75,7 +75,7 @@
         {% if products.samples|length > 0 %}
         <div class="catalogue-grid">
             {% for product in products.samples %}
-            <div class="product-card" data-product-id="{{ product.Id }}">
+            <div class="product-card" data-product-id="{{ product.ID }}">
                 <div class="image-container">
                     <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" />
                 </div>
@@ -86,7 +86,7 @@
                     <p class="genre">Тип: {{ product.Genre }}</p>
                     {% endif %}
                     <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="catalog-btn">Деталі</a>
-                    <form action="/download/{{ product.Id }}" method="post">
+                    <form action="/download/{{ product.ID }}" method="post">
                         <button type="submit" class="add-to-playlist-button">Завантажити</button>
                     </form>
                 </div>

@@ -33,7 +33,7 @@ func ListProducts(c *fiber.Ctx) error {
 		var product models.Product
 		var createdAt []uint8
 		err := rows.Scan(
-			&product.Id,
+			&product.ID,
 			&product.Name,
 			&product.Price,
 			&product.Type,
