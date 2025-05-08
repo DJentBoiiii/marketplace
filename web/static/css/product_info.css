@@ -63,26 +63,105 @@ body {
     color: #1db954;
 }
 
-.add-to-cart-button,
-.add-to-playlist-button {
-    background-color: #1db954;
-    color: white;
+/* Button container for row alignment */
+.product-button-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 15px;
+    width: 100%;
+}
+
+/* Reset any margins on form elements */
+.product-button-container form,
+.product-button-container .action-form {
+    margin: 0;
+    padding: 0;
+}
+
+/* Button base styles */
+.product-button-container button,
+.product-button-container .like-button {
     border: none;
-    border-radius: 20px;
-    padding: 8px 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+/* Play button - circle with icon */
+.play-button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: #1db954 !important;
+    color: white !important;
+    border-radius: 50% !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    padding: 0 !important;
+}
+
+.play-button:hover {
+    transform: scale(1.1);
+    background-color: #17a44c !important;
+}
+
+.play-button i {
+    margin: 0 !important;
+    font-size: 16px !important;
+}
+
+/* Like button - pill with icon and count */
+.like-button {
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    background-color: #282828 !important;
+    color: white !important;
+    border-radius: 20px !important;
+    padding: 5px 12px !important;
+    height: 36px !important;
+}
+
+.like-button.liked {
+    background-color: #1db954 !important;
+}
+
+.like-button:hover {
+    background-color: #3a3a3a !important;
+}
+
+.like-button.liked:hover {
+    background-color: #17a44c !important;
+}
+
+.like-button .heart-icon {
+    font-size: 16px !important;
+}
+
+/* Cart and playlist buttons */
+.add-to-cart-button,
+.add-to-playlist-button {
+    background-color: #1db954 !important;
+    color: white !important;
+    border-radius: 20px !important;
+    padding: 8px 16px !important;
+    height: 36px !important;
+    text-align: center !important;
+    line-height: 20px !important;
 }
 
 .add-to-cart-button:hover,
 .add-to-playlist-button:hover {
-    background-color: #17a44c;
+    background-color: #17a44c !important;
 }
 
 .action-form {
-    margin-top: 10px;
+    margin-top: 0 !important;  /* Override the 10px margin */
 }
 
 .action-form select {
@@ -282,23 +361,25 @@ audio::-webkit-media-controls-time-remaining-display {
     background-color: #1db954;
     color: white;
     border: none;
-    border-radius: 30px;
-    padding: 10px 25px;
-    font-weight: 600;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    padding: 0;
     font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin: 15px 0;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .play-button:hover {
     background-color: #17a44c;
-    transform: scale(1.03);
+    transform: scale(1.1);
 }
 
 .play-button i {
-    margin-right: 8px;
+    margin: 0;
     font-size: 1.2rem;
 }
 
@@ -429,20 +510,20 @@ audio::-webkit-media-controls-time-remaining-display {
     background-color: #17a44c;
 }
 
-/* Like button styles */
+/* Like button styles - only icon with counter */
 .like-button {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 5px;
     background-color: #282828;
     color: white;
     border: none;
-    border-radius: 20px;
-    padding: 8px 16px;
+    border-radius: 50px;
+    padding: 5px 12px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 15px;
+    margin-top: 0;
 }
 
 .like-button .heart-icon {
@@ -466,7 +547,6 @@ audio::-webkit-media-controls-time-remaining-display {
 .like-count {
     font-weight: normal;
     font-size: 0.9rem;
-    margin-left: auto;
 }
 
 /* Responsive adjustments */

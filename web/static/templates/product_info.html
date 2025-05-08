@@ -16,46 +16,60 @@
         <div class="product-details">
             <img src="{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
             <div class="product-info">
-                <h3>Ціна: ${{ product.Price }}</h3>
-                <p><strong>Тип:</strong> {{ product.Type }}</p>
-                <p><strong>Власник:</strong> {{ product.Owner }}</p>
-                {% if product.Genre %}
-                <p><strong>Жанр:</strong> {{ product.Genre }}</p>
-                {% endif %}
-                <p><strong>Опис:</strong> {{ product.Description }}</p>
-                <p><strong>id:</strong> {{ product.ID }}</p>
-
-                <!-- Кнопка додавання до кошика -->
-                <form action="/cart/add" method="POST" class="action-form">
-                    <input type="hidden" name="product_id" value="{{ product.ID }}">
-                    <button type="submit" class="add-to-cart-button">Додати до кошика</button>
-                </form>
-
-                <!-- Like button -->
-                {% if user.Username %}
-                <button id="like-button" class="like-button" data-product-id="{{ product.ID }}">
-                    <span class="heart-icon">❤️</span>
-                    <span class="like-text">Подобається</span>
-                    <span class="like-count">0</span>
-                </button>
-                {% else %}
-                <div class="like-button">
-                    <span class="heart-icon">❤️</span>
-                    <span class="like-text">Подобається</span>
-                    <span class="like-count">0</span>
+                <h3 style="font-size: 24px; margin-bottom: 20px; text-align: left;">Ціна: ${{ product.Price }}</h3>
+                
+                <div style="display: flex; flex-wrap: wrap; margin-bottom: 15px; text-align: left;">
+                    <p style="margin: 8px 0; width: 50%;"><strong style="color: #1db954; width: 80px; display: inline-block; text-align: left;">Тип:</strong> <span style="color: #eee;">{{ product.Type }}</span></p>
+                    <p style="margin: 8px 0; width: 50%;"><strong style="color: #1db954; width: 80px; display: inline-block; text-align: left;">Власник:</strong> <span style="color: #eee;">{{ product.Owner }}</span></p>
+                    {% if product.Genre %}
+                    <p style="margin: 8px 0; width: 50%;"><strong style="color: #1db954; width: 80px; display: inline-block; text-align: left;">Жанр:</strong> <span style="color: #eee;">{{ product.Genre }}</span></p>
+                    {% endif %}
+                    <p style="margin: 8px 0; width: 50%;"><strong style="color: #1db954; width: 80px; display: inline-block; text-align: left;">id:</strong> <span style="color: #eee;">{{ product.ID }}</span></p>
                 </div>
-                {% endif %}
+                
+                <div style="margin-bottom: 15px; text-align: left;">
+                    <p style="margin: 8px 0;"><strong style="color: #1db954; display: inline-block; text-align: left; margin-bottom: 5px;">Опис:</strong></p>
+                    <p style="color: #eee; margin: 0; line-height: 1.4;">{{ product.Description }}</p>
+                </div>
+
+                <!-- Button row aligned to the right -->
+                <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 25px;">
+                    <!-- Basic play button -->
+                    <button style="background-color: #1db954; color: white; width: 36px; height: 36px; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; padding: 0;">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    
+                    <!-- Like button with counter -->
+                    {% if user.Username %}
+                    <button id="like-button" class="like-button" style="height: 36px; display: flex; align-items: center; padding: 5px 12px; margin: 0;">
+                        <span class="heart-icon">❤️</span>
+                        <span id="like-count" class="like-count">0</span>
+                    </button>
+                    {% else %}
+                    <div class="like-button" style="height: 36px; display: flex; align-items: center; padding: 5px 12px; margin: 0;">
+                        <span class="heart-icon">❤️</span>
+                        <span id="like-count" class="like-count">0</span>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Cart button -->
+                    <form action="/cart/add" method="POST" class="action-form" style="margin: 0; padding: 0; display: flex; align-items: center;">
+                        <input type="hidden" name="product_id" value="{{ product.ID }}">
+                        <button type="submit" class="add-to-cart-button" style="height: 36px; display: flex; align-items: center; justify-content: center; padding: 0 16px; margin: 0; white-space: nowrap;">Додати до кошика</button>
+                    </form>
+                    
+                    <!-- Playlist button (only for audio) -->
+                    {% if product.Type == "audio" %}
+                    <button class="add-to-playlist-button" onclick="showPlaylistModal('{{ product.ID }}'); return false;" style="height: 36px; display: flex; align-items: center; justify-content: center; padding: 0 16px; margin: 0; white-space: nowrap;">Додати до плейлиста</button>
+                    {% endif %}
+                </div>
 
                 <!-- Якщо це аудіо -->
                 {% if product.Type == "audio" %}
                 <div class="audio-controls">
-                    <button id="play-button" class="play-button-large" data-product-id="{{ product.ID }}" data-product-name="{{ product.Name }}" data-product-owner="{{ product.Owner }}">
-                        <i class="fas fa-play"></i> Play Audio
-                    </button>
                     <div id="audio-player" class="audio-player" style="display: none;">
                         <audio id="audio" controls></audio>
                     </div>
-                    <button class="add-to-playlist-button" onclick="showPlaylistModal('{{ product.ID }}'); return false;">Додати до плейлиста</button>
                 </div>
                 {% endif %}
             </div>
@@ -140,7 +154,7 @@ function showPlaylistModal(productId) {
     // Fetch the playlists
     fetch('/playlist/get-user-playlists')
         .then(response => response.json())
-        .then(data => {
+        .then((data) => {
             const selectElement = document.getElementById('playlist-select');
             // Clear any existing options except the first one
             while (selectElement.options.length > 1) {
