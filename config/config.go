@@ -5,6 +5,7 @@ import (
 
 	"github.com/DjentBoiiii/marketplace/internal/db"
 	"github.com/joho/godotenv"
+	"github.com/minio/minio-go/v7"
 )
 
 var (
@@ -16,4 +17,11 @@ var (
 	SHA_SECRET  = os.Getenv("SHA_SECRET")
 	DB_HOST     = os.Getenv("DB_HOST")
 	DB          = db.DB
+)
+
+var (
+	MinioEndpoint  = os.Getenv("MINIO_ENDPOINT")
+	MinioAccessKey = os.Getenv("MINIO_ACCESS_KEY")
+	MinioSecretKey = os.Getenv("MINIO_SECRET_KEY")
+	MinioClient    *minio.Client
 )

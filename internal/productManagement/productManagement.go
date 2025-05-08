@@ -30,10 +30,13 @@ func SetupProductHandlers(app *fiber.App) {
 			isOwned, _ = CheckUserOwnsProduct(user.Id, product.ID)
 		}
 
-		return render.RenderTemplate(c, "product_info.html",
-			[2]interface{}{"product", product},
-			[2]interface{}{"isOwned", isOwned},
-			[2]interface{}{"user", user})
+		data := render.TemplateData{
+			"product": product,
+			"isOwned": isOwned,
+			"user":    user,
+		}
+
+		return render.RenderTemplate(c, "product_info.html", data)
 	})
 
 	app.Get("/purchases", auth.LoginRequired(), func(c *fiber.Ctx) error {
@@ -47,9 +50,12 @@ func SetupProductHandlers(app *fiber.App) {
 			return c.Status(500).SendString("Помилка отримання придбаних продуктів")
 		}
 
-		return render.RenderTemplate(c, "purchases.html",
-			[2]interface{}{"products", purchasedProducts},
-			[2]interface{}{"user", user})
+		data := render.TemplateData{
+			"products": purchasedProducts,
+			"user":     user,
+		}
+
+		return render.RenderTemplate(c, "purchases.html", data)
 	})
 
 	app.Get("/purchases/:type", auth.LoginRequired(), func(c *fiber.Ctx) error {
@@ -68,9 +74,12 @@ func SetupProductHandlers(app *fiber.App) {
 			return c.Status(500).SendString("Помилка отримання придбаних продуктів")
 		}
 
-		return render.RenderTemplate(c, "purchases_category.html",
-			[2]interface{}{"products", products},
-			[2]interface{}{"productType", productType},
-			[2]interface{}{"user", user})
+		data := render.TemplateData{
+			"products":    products,
+			"productType": productType,
+			"user":        user,
+		}
+
+		return render.RenderTemplate(c, "purchases_category.html", data)
 	})
 }

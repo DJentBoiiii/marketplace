@@ -59,9 +59,12 @@ func ShowArtists(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Database error")
 	}
 
+	data := render.TemplateData{
+		"Title":   "Artists - DSA Marketplace",
+		"User":    user,
+		"Artists": artists,
+	}
+
 	// Render the template with artists data using render.RenderTemplate
-	return render.RenderTemplate(c, "catalogue_artists.html",
-		[2]interface{}{"Title", "Artists - DSA Marketplace"},
-		[2]interface{}{"User", user},
-		[2]interface{}{"Artists", artists})
+	return render.RenderTemplate(c, "catalogue_artists.html", data)
 }

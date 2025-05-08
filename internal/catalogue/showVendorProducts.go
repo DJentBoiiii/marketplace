@@ -64,27 +64,31 @@ func ShowVendorProducts(c *fiber.Ctx) error {
 		genres, _ := productManagement.GetGenres()
 		minPriceRange, maxPriceRange, _ := productManagement.GetPriceRange("")
 
-		return render.RenderTemplate(c, "vendor_products.html",
-			[2]interface{}{"user", user},
-			[2]interface{}{"productsByType", filteredByType},
-			[2]interface{}{"vendor", vendorInfo},
-			[2]interface{}{"filters", filterOptions},
-			[2]interface{}{"genres", genres},
-			[2]interface{}{"minPriceRange", minPriceRange},
-			[2]interface{}{"maxPriceRange", maxPriceRange},
-			[2]interface{}{"isFiltered", isFiltered},
-		)
+		data := render.TemplateData{
+			"user":           user,
+			"productsByType": filteredByType,
+			"vendor":         vendorInfo,
+			"filters":        filterOptions,
+			"genres":         genres,
+			"minPriceRange":  minPriceRange,
+			"maxPriceRange":  maxPriceRange,
+			"isFiltered":     isFiltered,
+		}
+
+		return render.RenderTemplate(c, "vendor_products.html", data)
 	}
 
 	genres, _ := productManagement.GetGenres()
 	minPriceRange, maxPriceRange, _ := productManagement.GetPriceRange("")
 
-	return render.RenderTemplate(c, "vendor_products.html",
-		[2]interface{}{"user", user},
-		[2]interface{}{"productsByType", productsByType},
-		[2]interface{}{"vendor", vendorInfo},
-		[2]interface{}{"genres", genres},
-		[2]interface{}{"minPriceRange", minPriceRange},
-		[2]interface{}{"maxPriceRange", maxPriceRange},
-	)
+	data := render.TemplateData{
+		"user":           user,
+		"productsByType": productsByType,
+		"vendor":         vendorInfo,
+		"genres":         genres,
+		"minPriceRange":  minPriceRange,
+		"maxPriceRange":  maxPriceRange,
+	}
+
+	return render.RenderTemplate(c, "vendor_products.html", data)
 }

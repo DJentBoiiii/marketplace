@@ -11,5 +11,7 @@ func index(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return render.RenderTemplate(c, "index.html", [2]interface{}{"user", user})
+	return render.RenderTemplate(c, "index.html", render.TemplateData{
+		"user": user,
+	})
 }

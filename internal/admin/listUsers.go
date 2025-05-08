@@ -35,8 +35,10 @@ func ListUsers(c *fiber.Ctx) error {
 		users = append(users, userInfo)
 	}
 
-	return render.RenderTemplate(c, "admin_users.html",
-		[2]interface{}{"user", user},
-		[2]interface{}{"users", users},
-	)
+	data := render.TemplateData{
+		"users": users,
+		"user":  user,
+	}
+
+	return render.RenderTemplate(c, "admin_users.html", data)
 }

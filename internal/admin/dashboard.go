@@ -52,10 +52,11 @@ func Dashboard(c *fiber.Ctx) error {
 		latestUsers = append(latestUsers, user)
 	}
 
-	return render.RenderTemplate(c, "admin_dashboard.html",
-		[2]interface{}{"user", user},
-		[2]interface{}{"stats", stats},
-		[2]interface{}{"latestUsers", latestUsers},
-		[2]interface{}{"active_page", "dashboard"},
-	)
+	data := render.TemplateData{
+		"user":        user,
+		"stats":       stats,
+		"latestUsers": latestUsers,
+		"active_page": "dashboard",
+	}
+	return render.RenderTemplate(c, "admin_dashboard.html", data)
 }

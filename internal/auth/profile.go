@@ -17,8 +17,10 @@ func Profile(c *fiber.Ctx) error {
 	currentUser, _ := GetUserData(c)
 	isOwnProfile := currentUser.Username == user.Username
 
-	return render.RenderTemplate(c, "profile.html",
-		[2]interface{}{"user", user},
-		[2]interface{}{"isOwnProfile", isOwnProfile},
-	)
+	data := render.TemplateData{
+		"user":         user,
+		"isOwnProfile": isOwnProfile,
+	}
+
+	return render.RenderTemplate(c, "profile.html", data)
 }

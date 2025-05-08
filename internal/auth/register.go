@@ -10,7 +10,7 @@ import (
 
 func register(c *fiber.Ctx) error {
 	fmt.Println("Register page visited")
-	return render.RenderTemplate(c, "register.html")
+	return render.RenderTemplate(c, "register.html", nil)
 }
 
 func processRegister(c *fiber.Ctx) error {

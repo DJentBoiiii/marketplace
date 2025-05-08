@@ -49,9 +49,11 @@ func ListProducts(c *fiber.Ctx) error {
 		products = append(products, product)
 	}
 
-	return render.RenderTemplate(c, "admin_products.html",
-		[2]interface{}{"user", user},
-		[2]interface{}{"products", products},
-		[2]interface{}{"productType", productType},
-	)
+	data := render.TemplateData{
+		"products":    products,
+		"user":        user,
+		"productType": productType,
+	}
+
+	return render.RenderTemplate(c, "admin_products.html", data)
 }

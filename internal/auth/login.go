@@ -13,7 +13,7 @@ import (
 
 func login(c *fiber.Ctx) error {
 	fmt.Println("Login page visited")
-	return render.RenderTemplate(c, "login.html")
+	return render.RenderTemplate(c, "login.html", nil)
 }
 
 func processLogin(c *fiber.Ctx) error {

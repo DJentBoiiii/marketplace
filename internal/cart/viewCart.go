@@ -22,8 +22,9 @@ func ViewCart(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка отримання продуктів кошика")
 	}
 
-	return render.RenderTemplate(c, "cart.html",
-		[2]interface{}{"products", products},
-		[2]interface{}{"user", user},
-	)
+	data := render.TemplateData{
+		"products": products,
+		"user":     user,
+	}
+	return render.RenderTemplate(c, "cart.html", data)
 }

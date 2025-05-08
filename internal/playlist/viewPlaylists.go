@@ -23,8 +23,10 @@ func ViewPlaylists(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка отримання плейлистів: " + err.Error())
 	}
 
-	return render.RenderTemplate(c, "playlists.html",
-		[2]interface{}{"playlists", playlists},
-		[2]interface{}{"user", user},
-	)
+	data := render.TemplateData{
+		"playlists": playlists,
+		"user":      user,
+	}
+
+	return render.RenderTemplate(c, "playlists.html", data)
 }

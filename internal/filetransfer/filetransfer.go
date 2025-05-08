@@ -2,8 +2,8 @@ package filetransfer
 
 import (
 	"fmt"
-	"os"
 
+	"github.com/DjentBoiiii/marketplace/config"
 	"github.com/DjentBoiiii/marketplace/internal/auth"
 	"github.com/DjentBoiiii/marketplace/internal/db"
 	"github.com/DjentBoiiii/marketplace/internal/render"
@@ -13,20 +13,14 @@ import (
 )
 
 var (
-	MinioEndpoint  = os.Getenv("MINIO_ENDPOINT")
-	MinioAccessKey = os.Getenv("MINIO_ACCESS_KEY")
-	MinioSecretKey = os.Getenv("MINIO_SECRET_KEY")
-	MinioClient    *minio.Client
-)
-
-var (
-	DB = db.DB
+	DB          = db.DB
+	MinioClient = config.MinioClient
 )
 
 func init() {
 	var err error
-	MinioClient, err = minio.New(MinioEndpoint, &minio.Options{
-		Creds:  credentials.NewStaticV4(MinioAccessKey, MinioSecretKey, ""),
+	MinioClient, err = minio.New(config.MinioEndpoint, &minio.Options{
+		Creds:  credentials.NewStaticV4(config.MinioAccessKey, config.MinioSecretKey, ""),
 		Secure: false,
 	})
 	if err != nil {
@@ -38,11 +32,11 @@ func init() {
 
 func SetupUploadHandlers(app *fiber.App) {
 	app.Get("/upload", auth.LoginRequired(), func(c *fiber.Ctx) error {
-		return render.RenderTemplate(c, "upload.html")
+		return render.RenderTemplate(c, "upload.html", nil)
 	})
 	app.Post("/upload", auth.LoginRequired(), UploadFile)
 	app.Get("/delete", auth.LoginRequired(), func(c *fiber.Ctx) error {
-		return render.RenderTemplate(c, "delete.html")
+		return render.RenderTemplate(c, "delete.html", nil)
 	})
 	app.Post("/delete", auth.LoginRequired(), DeleteFile)
 	app.Post("/download/:id", auth.LoginRequired(), DownloadFile)

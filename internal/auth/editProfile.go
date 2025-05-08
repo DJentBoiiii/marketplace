@@ -32,7 +32,8 @@ func EditProfile(c *fiber.Ctx) error {
 	user.Profile_pic = profilePhoto
 
 	return render.RenderTemplate(c, "edit_profile.html",
-		[2]interface{}{"user", user},
+		render.TemplateData{
+			"user": user},
 	)
 }
 

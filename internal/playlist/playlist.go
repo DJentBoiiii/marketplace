@@ -25,7 +25,10 @@ func SetupPlaylistHandlers(app *fiber.App) {
 			return c.Status(500).SendString("Помилка отримання плейлистів користувача")
 		}
 
-		return render.RenderTemplate(c, "playlists.html", [2]interface{}{"playlists", playlists}, [2]interface{}{"user", user})
+		return render.RenderTemplate(c, "playlists.html", render.TemplateData{
+			"playlists": playlists,
+			"user":      user,
+		})
 	})
 
 	// API endpoint to get user playlists as JSON - Put this BEFORE :id route to avoid conflicts
@@ -100,9 +103,12 @@ func SetupPlaylistHandlers(app *fiber.App) {
 			return c.Status(500).SendString("Помилка отримання елементів плейлиста")
 		}
 
-		return render.RenderTemplate(c, "playlist_detail.html",
-			[2]interface{}{"playlist", playlist},
-			[2]interface{}{"items", items},
-			[2]interface{}{"user", user})
+		data := render.TemplateData{
+			"playlist": playlist,
+			"items":    items,
+			"user":     user,
+		}
+
+		return render.RenderTemplate(c, "playlist_detail.html", data)
 	})
 }
