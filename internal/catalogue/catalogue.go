@@ -1,7 +1,12 @@
 package catalogue
 
 import (
+	"github.com/DjentBoiiii/marketplace/internal/db"
 	"github.com/gofiber/fiber/v2"
+)
+
+var (
+	DB = db.DB
 )
 
 func SetupCatalogueRoutes(app *fiber.App) {

@@ -2,34 +2,25 @@ package auth
 
 import (
 	"crypto/sha256"
-	"database/sql"
 	"fmt"
-	"os"
 
+	"github.com/DjentBoiiii/marketplace/config"
+	"github.com/DjentBoiiii/marketplace/internal/db"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gofiber/fiber/v2"
-	"github.com/joho/godotenv"
 )
 
 var (
-	_           = godotenv.Load("/marketplace/.env")
-	DB_USER     = os.Getenv("MYSQL_USER")
-	DB_PASSWORD = os.Getenv("MYSQL_PASSWORD")
-	DB_NAME     = os.Getenv("MYSQL_DATABASE")
-	JWT_SECRET  = os.Getenv("JWT_SECRET")
-	SHA_SECRET  = os.Getenv("SHA_SECRET")
-	DB_HOST     = os.Getenv("DB_HOST")
-	DB          *sql.DB
+	err error
+	DB  = db.DB
 )
 
 func hash_pwd(password string) string {
-	passwordWithKey := password + SHA_SECRET
+	passwordWithKey := password + config.SHA_SECRET
 	hash := sha256.New()
 	hash.Write([]byte(passwordWithKey))
 	hashedPassword := hash.Sum(nil)
-
 	hashedPasswordHex := fmt.Sprintf("%x", hashedPassword)
-
 	return hashedPasswordHex
 }
 

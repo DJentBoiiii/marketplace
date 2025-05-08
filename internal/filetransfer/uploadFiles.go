@@ -2,7 +2,6 @@ package filetransfer
 
 import (
 	"bytes"
-	"database/sql"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -116,8 +115,7 @@ func UploadFile(c *fiber.Ctx) error {
 	filename := strings.TrimSuffix(file.Filename, filepath.Ext(file.Filename))
 	extension := filepath.Ext(file.Filename)
 
-	db, _ := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	_, err = db.Exec(
+	_, err = DB.Exec(
 		"INSERT INTO Products (name, type, price, description, vendor, image_url, Extension, genre) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
 		filename, typeVal, price, description, user.Username, imgDBPath, extension, genre,
 	)
@@ -127,7 +125,7 @@ func UploadFile(c *fiber.Ctx) error {
 	}
 
 	// Set is_artist flag to true for the user who uploaded a product
-	_, err = db.Exec("UPDATE Users SET is_artist = TRUE WHERE username = ?", user.Username)
+	_, err = DB.Exec("UPDATE Users SET is_artist = TRUE WHERE username = ?", user.Username)
 	if err != nil {
 		fmt.Println("Error updating user as artist:", err)
 		// Continue execution even if setting the artist flag fails

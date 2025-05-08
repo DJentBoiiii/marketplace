@@ -1,7 +1,6 @@
 package productManagement
 
 import (
-	"database/sql"
 	"fmt"
 	"time"
 
@@ -9,16 +8,11 @@ import (
 )
 
 func GetAllProductsByVendor(vendorUsername string) (map[string][]models.Product, models.VendorInfo, error) {
-	db, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	if err != nil {
-		return nil, models.VendorInfo{}, fmt.Errorf("failed to connect to database: %v", err)
-	}
-	defer db.Close()
 
 	// Get vendor info
 	var vendorInfo models.VendorInfo
 	vendorQuery := `SELECT username, profile_photo FROM Users WHERE username = ?`
-	err = db.QueryRow(vendorQuery, vendorUsername).Scan(&vendorInfo.Username, &vendorInfo.ProfilePic)
+	err := DB.QueryRow(vendorQuery, vendorUsername).Scan(&vendorInfo.Username, &vendorInfo.ProfilePic)
 	if err != nil {
 		return nil, models.VendorInfo{}, fmt.Errorf("failed to get vendor info: %v", err)
 	}
@@ -29,7 +23,7 @@ func GetAllProductsByVendor(vendorUsername string) (map[string][]models.Product,
               WHERE vendor = ?
               ORDER BY type, created_at DESC`
 
-	rows, err := db.Query(query, vendorUsername)
+	rows, err := DB.Query(query, vendorUsername)
 	if err != nil {
 		return nil, vendorInfo, fmt.Errorf("failed to query products: %v", err)
 	}

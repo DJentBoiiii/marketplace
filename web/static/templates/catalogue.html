@@ -43,7 +43,7 @@
                     {% endif %}
                     <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="catalog-btn">Деталі</a>
                     {% if user.Username %}
-                    <a href="/cart/add?product_id={{ product.Id }}" class="add-to-cart-button">В кошик</a>
+                    <a href="/cart/add" class="add-to-cart-button">В кошик</a>
                     <a href="#" onclick="showPlaylistModal('{{ product.Id }}'); return false;" class="add-to-playlist-button">До плейлиста</a>
                     {% endif %}
                 </div>

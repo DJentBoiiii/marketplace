@@ -1,11 +1,9 @@
 package catalogue
 
 import (
-	"database/sql"
 	"log"
 
 	"github.com/DjentBoiiii/marketplace/internal/auth"
-	"github.com/DjentBoiiii/marketplace/internal/filetransfer"
 	"github.com/DjentBoiiii/marketplace/internal/render"
 	"github.com/gofiber/fiber/v2"
 )
@@ -23,16 +21,8 @@ func ShowArtists(c *fiber.Ctx) error {
 	// Get current user data if logged in
 	user, _ := auth.GetUserData(c)
 
-	// Connect to the database
-	db, err := sql.Open("mysql", filetransfer.DB_USER+":"+filetransfer.DB_PASSWORD+"@tcp("+filetransfer.DB_HOST+":3306)/"+filetransfer.DB_NAME)
-	if err != nil {
-		log.Printf("Error connecting to database: %v", err)
-		return c.Status(500).SendString("Database error")
-	}
-	defer db.Close()
-
 	// Query to get all artists (users with is_artist flag = true)
-	rows, err := db.Query(`
+	rows, err := DB.Query(`
 		SELECT u.username, COALESCE(u.profile_photo, ''), COALESCE(u.bio, ''), COUNT(p.id) as product_count
 		FROM Users u
 		LEFT JOIN Products p ON u.username = p.vendor

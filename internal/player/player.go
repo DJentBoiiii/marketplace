@@ -2,44 +2,27 @@ package player
 
 import (
 	"context"
-	"database/sql"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 
+	"github.com/DjentBoiiii/marketplace/internal/db"
 	_ "github.com/go-sql-driver/mysql" // Import MySQL driver
 	"github.com/gofiber/fiber/v2"
-	"github.com/joho/godotenv"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
 var minioClient *minio.Client
 var bucketName = "dyploma-marketplace-products"
-var DB_USER string
-var DB_PASSWORD string
-var DB_NAME string
-var DB_HOST string
+
+var (
+	DB = db.DB
+)
 
 func init() {
-	// Load environment variables first
-	err := godotenv.Load("/marketplace/.env")
-	if err != nil {
-		log.Printf("Warning: Error loading .env file: %v", err)
-	}
-
-	// Set database connection variables
-	DB_USER = os.Getenv("MYSQL_USER")
-	DB_PASSWORD = os.Getenv("MYSQL_PASSWORD")
-	DB_NAME = os.Getenv("MYSQL_DATABASE")
-	DB_HOST = os.Getenv("DB_HOST")
-
-	if DB_HOST == "" {
-		DB_HOST = "localhost"
-		log.Printf("DB_HOST not set, defaulting to %s", DB_HOST)
-	}
 
 	// Initialize MinIO client
 	endpoint := os.Getenv("MINIO_ENDPOINT")
@@ -47,6 +30,7 @@ func init() {
 	secretAccessKey := os.Getenv("MINIO_SECRET_KEY")
 	useSSL := false
 
+	var err error
 	minioClient, err = minio.New(endpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
 		Secure: useSSL,
@@ -61,17 +45,10 @@ func init() {
 func GetAudio(c *fiber.Ctx) error {
 	trackID := c.Params("track_id")
 	log.Printf("GetAudio called with track_id: %s", trackID)
-
-	db, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	if err != nil {
-		log.Printf("Database connection error: %v", err)
-		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to connect to database"})
-	}
-	defer db.Close()
 	log.Printf("Database connected successfully")
 
 	var path string
-	err = db.QueryRow(`SELECT CONCAT(vendor, '/watermarked/', name, '.wav') FROM Products WHERE id = ?`, trackID).Scan(&path)
+	err := DB.QueryRow(`SELECT CONCAT(vendor, '/watermarked/', name, '.wav') FROM Products WHERE id = ?`, trackID).Scan(&path)
 	if err != nil {
 		log.Printf("Database query error for track_id %s: %v", trackID, err)
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "Audio file not found in DB"})

@@ -1,7 +1,6 @@
 package comments
 
 import (
-	"database/sql"
 	"fmt"
 
 	"github.com/DjentBoiiii/marketplace/internal/auth"
@@ -39,16 +38,7 @@ func AddComment(c *fiber.Ctx) error {
 		})
 	}
 
-	db, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"success": false,
-			"message": "Помилка підключення до бази даних",
-		})
-	}
-	defer db.Close()
-
-	result, err := db.Exec(
+	result, err := DB.Exec(
 		"INSERT INTO Comments (user_id, product_id, comment, likes_product) VALUES (?, ?, ?, ?)",
 		user.Id, input.ProductID, input.Comment, input.LikesProduct,
 	)
@@ -62,7 +52,7 @@ func AddComment(c *fiber.Ctx) error {
 	commentID, _ := result.LastInsertId()
 
 	var comment models.Comment
-	err = db.QueryRow(`
+	err = DB.QueryRow(`
 		SELECT c.id, c.user_id, u.username, c.product_id, c.comment, c.likes_product, c.created_at, u.profile_photo 
 		FROM Comments c
 		JOIN Users u ON c.user_id = u.id

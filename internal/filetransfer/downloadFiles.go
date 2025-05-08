@@ -1,7 +1,6 @@
 package filetransfer
 
 import (
-	"database/sql"
 	"fmt"
 	"io"
 	"strings"
@@ -13,11 +12,8 @@ import (
 func DownloadFile(c *fiber.Ctx) error {
 
 	audio_id := c.Params("id")
-
-	db, _ := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	defer db.Close()
 	var vendor, name, fileType, extension string
-	err := db.QueryRow("SELECT vendor, type, Extension, name FROM Products WHERE id = ?", audio_id).Scan(&vendor, &fileType, &extension, &name)
+	err := DB.QueryRow("SELECT vendor, type, Extension, name FROM Products WHERE id = ?", audio_id).Scan(&vendor, &fileType, &extension, &name)
 	if err != nil {
 		return c.Status(500).SendString("Помилка отримання даних продукту")
 	}
