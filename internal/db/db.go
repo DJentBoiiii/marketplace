@@ -2,26 +2,18 @@ package db
 
 import (
 	"database/sql"
-	"os"
 
+	"github.com/DjentBoiiii/marketplace/config"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 )
 
 var (
-	_           = godotenv.Load("/marketplace/.env")
-	DB_USER     = os.Getenv("MYSQL_USER")
-	DB_PASSWORD = os.Getenv("MYSQL_PASSWORD")
-	DB_NAME     = os.Getenv("MYSQL_DATABASE")
-	JWT_SECRET  = os.Getenv("JWT_SECRET")
-	SHA_SECRET  = os.Getenv("SHA_SECRET")
-	DB_HOST     = os.Getenv("DB_HOST")
-	DB          *sql.DB
+	DB *sql.DB
 )
 
 func init() {
 	var err error
-	DB, err = sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
+	DB, err = sql.Open("mysql", config.DB_USER+":"+config.DB_PASSWORD+"@tcp("+config.DB_HOST+":3306)/"+config.DB_NAME)
 	if err != nil {
 		panic(err)
 	}

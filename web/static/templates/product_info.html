@@ -117,9 +117,9 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/js/audio_player.js"></script>
-<script src="/static/js/product_info.js"></script>
-<script src="/static/js/playlist.js"></script>
+<script src="/static/js/audio_player.js?v={{ now }}"></script>
+<script src="/static/js/product_info.js?v={{ now }}"></script>
+<script src="/static/js/playlist.js?v={{ now }}"></script>
 <script>
 // Function to fetch user playlists when modal is opened
 function showPlaylistModal(productId) {
@@ -153,5 +153,24 @@ function showPlaylistModal(productId) {
             document.getElementById('playlistModal').style.display = 'flex';
         });
 }
+</script>
+
+<!-- Debug script to check comments functionality -->
+<script>
+console.log('=== PRODUCT INFO HTML LOADED ===');
+document.addEventListener('DOMContentLoaded', function() {
+    // Force immediate comments check
+    setTimeout(function() {
+        const commentsList = document.getElementById('comments-list');
+        console.log('Comments list content after 1 second:', 
+                    commentsList ? commentsList.innerHTML : 'Element not found');
+        
+        // Check if any API calls have been made
+        console.log('Network requests should appear in the Network tab');
+        
+        // Alert for visibility
+        console.log('%c CHECK COMMENTS NOW ', 'background: #1db954; color: white; font-size: 16px; font-weight: bold;');
+    }, 1000);
+});
 </script>
 {% endblock %}

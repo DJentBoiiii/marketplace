@@ -3,7 +3,6 @@ package config
 import (
 	"os"
 
-	"github.com/DjentBoiiii/marketplace/internal/db"
 	"github.com/joho/godotenv"
 	"github.com/minio/minio-go/v7"
 )
@@ -16,7 +15,6 @@ var (
 	JWT_SECRET  = os.Getenv("JWT_SECRET")
 	SHA_SECRET  = os.Getenv("SHA_SECRET")
 	DB_HOST     = os.Getenv("DB_HOST")
-	DB          = db.DB
 )
 
 var (
