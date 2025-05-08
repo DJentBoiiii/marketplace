@@ -61,16 +61,18 @@ func ShowProductsByType(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка завантаження продуктів")
 	}
 
-	return render.RenderTemplate(c, "catalogue_type.html",
-		[2]interface{}{"user", user},
-		[2]interface{}{"products", products},
-		[2]interface{}{"type", productType},
-		[2]interface{}{"title", formatTypeTitle(productType)},
-		[2]interface{}{"filters", filterOptions},
-		[2]interface{}{"genres", genres},
-		[2]interface{}{"vendors", vendors},
-		[2]interface{}{"minPriceRange", minPriceRange},
-		[2]interface{}{"maxPriceRange", maxPriceRange},
-		[2]interface{}{"isFiltered", isFiltered},
-	)
+	data := render.TemplateData{
+		"products":      products,
+		"user":          user,
+		"type":          productType,
+		"title":         formatTypeTitle(productType),
+		"filters":       filterOptions,
+		"genres":        genres,
+		"vendors":       vendors,
+		"minPriceRange": minPriceRange,
+		"maxPriceRange": maxPriceRange,
+		"isFiltered":    isFiltered,
+	}
+
+	return render.RenderTemplate(c, "catalogue_type.html", data)
 }

@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="profile-container">
+<link rel="stylesheet" type="text/css" href="/static/css/profile.css" />
+<link rel="stylesheet" href="/static/css/catalogue.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% if isOwnProfile %}
+<div class="profile-container container">
     <div class="profile-header">
         <div class="profile-photo-container">
             {% if user.Profile_pic %}
@@ -29,5 +34,119 @@
             {% endif %}
         </div>
     </div>
+
+    <!-- Likes over time graph below profile header -->
+    <section>
+        <h2>Likes over time</h2>
+        <canvas id="likesChart" width="700" height="350"></canvas>
+    </section>
+
+    <!-- My uploads section below chart -->
+    <section>
+        <h2>My uploads</h2>
+
+        <!-- MIDI uploads -->
+        <div class="section-header">
+            <h3>MIDI</h3>
+            <a href="/profile/uploads/midi/{{ user.Username }}" class="view-all">View all</a>
+        </div>
+        <div class="uploads-row">
+            {% for i in range(1,6) %}
+            <div class="product-card">
+                <img src="/static/images/dummy_midi{{ i }}.jpg" alt="MIDI Upload {{ i }}" class="product-image">
+                <div class="product-info">
+                    <h3>MIDI Upload {{ i }}</h3>
+                    <p>Description of MIDI upload {{ i }}</p>
+                    <a href="#" class="details-button">Details</a>
+                </div>
+            </div>
+            
+            {% endfor %}
+        </div>
+
+        <!-- Audio uploads -->
+        <div class="section-header">
+            <h3>Audio</h3>
+            <a href="/profile/uploads/audio/{{ user.Username }}" class="view-all">View all</a>
+        </div>
+        <div class="uploads-row">
+            {% for i in range(1,6) %}
+            <div class="product-card">
+                <img src="/static/images/dummy_audio{{ i }}.jpg" alt="Audio Upload {{ i }}" class="product-image">
+                <div class="product-info">
+                    <h3>Audio Upload {{ i }}</h3>
+                    <p>Description of Audio upload {{ i }}</p>
+                    <a href="#" class="details-button">Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Samples uploads -->
+        <div class="section-header">
+            <h3>Samples</h3>
+            <a href="/profile/uploads/samples/{{ user.Username }}" class="view-all">View all</a>
+        </div>
+        <div class="uploads-row">
+            {% for i in range(1,6) %}
+            <div class="product-card">
+                <img src="/static/images/dummy_samples{{ i }}.jpg" alt="Samples Upload {{ i }}" class="product-image">
+                <div class="product-info">
+                    <h3>Samples Upload {{ i }}</h3>
+                    <p>Description of Samples upload {{ i }}</p>
+                    <a href="#" class="details-button">Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
 </div>
+
+<script>
+    const ctx = document.getElementById('likesChart').getContext('2d');
+    const likesChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            datasets: [{
+                label: 'Likes',
+                data: [12, 19, 3, 5, 2, 3, 7],
+                backgroundColor: 'rgba(29, 185, 84, 0.2)',
+                borderColor: 'rgba(29, 185, 84, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#eee'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#eee'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#eee'
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endif %}
 {% endblock %}

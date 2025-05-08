@@ -1,7 +1,6 @@
 package productManagement
 
 import (
-	"database/sql"
 	"fmt"
 	"time"
 
@@ -10,18 +9,13 @@ import (
 )
 
 func GetAllProductsByType(productType string) ([]models.Product, error) {
-	db, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %v", err)
-	}
-	defer db.Close()
 
 	query := `SELECT id, name, price, type, description, vendor, genre, image_url, created_at 
               FROM Products 
               WHERE type = ? 
               ORDER BY created_at DESC`
 
-	rows, err := db.Query(query, productType)
+	rows, err := DB.Query(query, productType)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query products: %v", err)
 	}
@@ -32,7 +26,7 @@ func GetAllProductsByType(productType string) ([]models.Product, error) {
 		var product models.Product
 		var createdAt string
 		err := rows.Scan(
-			&product.Id,
+			&product.ID,
 			&product.Name,
 			&product.Price,
 			&product.Type,

@@ -2,17 +2,21 @@
 
 {% block title %}Адмін-панель{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/static/css/admin.css" />
+{% endblock %}
+
 {% block content %}
 <div class="admin-container">
     <div class="admin-sidebar">
         <h2>Адміністрування</h2>
         <ul class="admin-nav">
-            <li><a href="/admin">Панель</a></li>
-            <li><a href="/admin/users">Користувачі</a></li>
+            <li><a href="/admin" class="{% if active_page == 'dashboard' %}active{% endif %}">Панель</a></li>
+            <li><a href="/admin/users" class="{% if active_page == 'users' %}active{% endif %}">Користувачі</a></li>
             <li class="nav-section">Продукти</li>
-            <li><a href="/admin/products?type=audio">Аудіо</a></li>
-            <li><a href="/admin/products?type=midi">MIDI</a></li>
-            <li><a href="/admin/products?type=samples">Семпли</a></li>
+            <li><a href="/admin/products?type=audio" class="{% if active_page == 'products' and productType == 'audio' %}active{% endif %}">Аудіо</a></li>
+            <li><a href="/admin/products?type=midi" class="{% if active_page == 'products' and productType == 'midi' %}active{% endif %}">MIDI</a></li>
+            <li><a href="/admin/products?type=samples" class="{% if active_page == 'products' and productType == 'samples' %}active{% endif %}">Семпли</a></li>
             <li class="nav-divider"></li>
             <li><a href="/">На головну</a></li>
         </ul>

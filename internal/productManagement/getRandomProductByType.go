@@ -1,7 +1,6 @@
 package productManagement
 
 import (
-	"database/sql"
 	"fmt"
 
 	"time"
@@ -11,11 +10,6 @@ import (
 )
 
 func GetRandomProductsByType(productType string) ([]models.Product, error) {
-	db, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %v", err)
-	}
-	defer db.Close()
 
 	// Use ORDER BY RAND() to get random products
 	query := `SELECT id, name, price, type, description, vendor, genre, image_url, created_at 
@@ -24,7 +18,7 @@ func GetRandomProductsByType(productType string) ([]models.Product, error) {
               ORDER BY RAND() 
               LIMIT 10`
 
-	rows, err := db.Query(query, productType)
+	rows, err := DB.Query(query, productType)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query products: %v", err)
 	}
@@ -35,7 +29,7 @@ func GetRandomProductsByType(productType string) ([]models.Product, error) {
 		var product models.Product
 		var createdAt string
 		err := rows.Scan(
-			&product.Id,
+			&product.ID,
 			&product.Name,
 			&product.Price,
 			&product.Type,

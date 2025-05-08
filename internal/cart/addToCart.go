@@ -2,7 +2,6 @@ package cart
 
 import (
 	"github.com/DjentBoiiii/marketplace/internal/auth"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/gofiber/fiber/v2"
 )
 

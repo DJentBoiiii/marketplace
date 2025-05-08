@@ -1,8 +1,6 @@
 package admin
 
 import (
-	"database/sql"
-
 	"github.com/DjentBoiiii/marketplace/internal/auth"
 	"github.com/DjentBoiiii/marketplace/internal/models"
 	"github.com/DjentBoiiii/marketplace/internal/render"
@@ -20,12 +18,6 @@ func ListProducts(c *fiber.Ctx) error {
 
 	productType := c.Query("type", "audio")
 
-	DB, err := sql.Open("mysql", auth.DB_USER+":"+auth.DB_PASSWORD+"@tcp("+auth.DB_HOST+":3306)/"+auth.DB_NAME)
-	if err != nil {
-		return c.Status(500).SendString("Помилка підключення до БД")
-	}
-	defer DB.Close()
-
 	rows, err := DB.Query(`
 		SELECT p.id, p.name, p.price, p.type, p.description, p.vendor, p.genre, p.image_url, p.created_at
 		FROM Products p
@@ -41,7 +33,7 @@ func ListProducts(c *fiber.Ctx) error {
 		var product models.Product
 		var createdAt []uint8
 		err := rows.Scan(
-			&product.Id,
+			&product.ID,
 			&product.Name,
 			&product.Price,
 			&product.Type,
@@ -57,9 +49,11 @@ func ListProducts(c *fiber.Ctx) error {
 		products = append(products, product)
 	}
 
-	return render.RenderTemplate(c, "admin_products.html",
-		[2]interface{}{"user", user},
-		[2]interface{}{"products", products},
-		[2]interface{}{"productType", productType},
-	)
+	data := render.TemplateData{
+		"products":    products,
+		"user":        user,
+		"productType": productType,
+	}
+
+	return render.RenderTemplate(c, "admin_products.html", data)
 }

@@ -1,0 +1,583 @@
+/* Product info page styles following base.css conventions */
+
+body {
+    background-color: #121212;
+    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Match container width with catalogue */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* Content wrapper to maintain container width */
+.content-wrapper {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.product-details {
+    background-color: #161616;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    margin-bottom: 30px;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+}
+
+.product-image {
+    width: 300px;
+    height: 300px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    object-fit: cover;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.product-info h3 {
+    margin: 0;
+    color: #eee;
+    font-size: 1.5rem;
+}
+
+.product-info p {
+    margin: 0.5em 0;
+}
+
+.product-info strong {
+    color: #1db954;
+}
+
+/* Button container for row alignment */
+.product-button-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 15px;
+    width: 100%;
+}
+
+/* Reset any margins on form elements */
+.product-button-container form,
+.product-button-container .action-form {
+    margin: 0;
+    padding: 0;
+}
+
+/* Button base styles */
+.product-button-container button,
+.product-button-container .like-button {
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Play button - circle with icon */
+.play-button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: #1db954 !important;
+    color: white !important;
+    border-radius: 50% !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    padding: 0 !important;
+}
+
+.play-button:hover {
+    transform: scale(1.1);
+    background-color: #17a44c !important;
+}
+
+.play-button i {
+    margin: 0 !important;
+    font-size: 16px !important;
+}
+
+/* Like button - pill with icon and count */
+.like-button {
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    background-color: #282828 !important;
+    color: white !important;
+    border-radius: 20px !important;
+    padding: 5px 12px !important;
+    height: 36px !important;
+}
+
+.like-button.liked {
+    background-color: #1db954 !important;
+}
+
+.like-button:hover {
+    background-color: #3a3a3a !important;
+}
+
+.like-button.liked:hover {
+    background-color: #17a44c !important;
+}
+
+.like-button .heart-icon {
+    font-size: 16px !important;
+}
+
+/* Cart and playlist buttons */
+.add-to-cart-button,
+.add-to-playlist-button {
+    background-color: #1db954 !important;
+    color: white !important;
+    border-radius: 20px !important;
+    padding: 8px 16px !important;
+    height: 36px !important;
+    text-align: center !important;
+    line-height: 20px !important;
+}
+
+.add-to-cart-button:hover,
+.add-to-playlist-button:hover {
+    background-color: #17a44c !important;
+}
+
+.action-form {
+    margin-top: 0 !important;  /* Override the 10px margin */
+}
+
+.action-form select {
+    background-color: #282828;
+    color: #eee;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 8px;
+    margin-right: 10px;
+    outline: none;
+}
+
+.back-to-catalogue {
+    display: inline-block;
+    background-color: #1db954;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.back-to-catalogue:hover {
+    background-color: #17a44c;
+    border-color: #1db954;
+}
+
+/* Page layout with comments below product info */
+.main-content {
+    width: 100%;
+}
+
+.comments-section {
+    width: 100%;
+    margin-top: 30px;
+}
+
+/* Comments section */
+.comments-section h3 {
+    font-size: 1.5rem;
+    border-bottom: 2px solid #1db954;
+    padding-bottom: 0.3em;
+    margin-bottom: 1em;
+}
+
+.add-comment-form {
+    background-color: #161616;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.add-comment-form textarea {
+    width: 100%;
+    background-color: #282828;
+    color: #eee;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 10px;
+    min-height: 100px;
+    resize: vertical;
+    margin-bottom: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    outline: none;
+}
+
+.add-comment-form textarea:focus {
+    border-color: #1db954;
+}
+
+.comment-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.comment-item {
+    display: flex;
+    gap: 15px;
+    background-color: #161616;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.comment-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comment-content {
+    flex: 1;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.comment-username {
+    font-weight: 600;
+    color: #eee;
+}
+
+.comment-date {
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.comment-text {
+    color: #eee;
+    margin-bottom: 5px;
+}
+
+.comment-delete {
+    color: #ff6b6b;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 0.9rem;
+}
+
+.comment-delete:hover {
+    text-decoration: underline;
+}
+
+.loading-comments,
+.no-comments {
+    text-align: center;
+    padding: 20px;
+    color: #aaa;
+}
+
+/* Audio playback button */
+button {
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #17a44c;
+}
+
+.audio-controls {
+    width: 100%;
+    margin-top: 15px;
+}
+
+/* Audio player styles */
+.audio-player {
+    margin: 15px 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.audio-player audio {
+    width: 100%;
+    height: 40px;
+    border-radius: 4px;
+    outline: none;
+}
+
+/* Custom audio controls */
+audio::-webkit-media-controls-panel {
+    background-color: #282828;
+}
+
+audio::-webkit-media-controls-play-button {
+    background-color: #1db954;
+    border-radius: 50%;
+}
+
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display {
+    color: #eee;
+}
+
+/* Play button styles */
+.play-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    padding: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.play-button:hover {
+    background-color: #17a44c;
+    transform: scale(1.1);
+}
+
+.play-button i {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+/* Large play button styles */
+.play-button-large {
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.play-button-large i {
+    margin-right: 8px;
+}
+
+.play-button-large:hover {
+    background-color: #17a44c;
+}
+
+/* Modal styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(18, 18, 18, 0.9);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #161616;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    color: #eee;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.7);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: white;
+    text-decoration: none;
+}
+
+/* Modal tab styling */
+.modal-tabs {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #333;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    flex: 1;
+    background-color: #161616;
+    color: #aaa;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-button.active {
+    color: #1db954;
+    border-bottom: 2px solid #1db954;
+}
+
+.tab-button:hover {
+    color: #1db954;
+}
+
+.tab-content {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #eee;
+    font-weight: 600;
+}
+
+.create-playlist-button {
+    width: 100%;
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 0;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.create-playlist-button:hover {
+    background-color: #17a44c;
+}
+
+/* Like button styles - only icon with counter */
+.like-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #282828;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 5px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0;
+}
+
+.like-button .heart-icon {
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.like-button.liked {
+    background-color: #1db954;
+}
+
+.like-button:hover {
+    background-color: #3a3a3a;
+    transform: scale(1.03);
+}
+
+.like-button.liked:hover {
+    background-color: #17a44c;
+}
+
+.like-count {
+    font-weight: normal;
+    font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 960px) {
+    .content-wrapper {
+        flex-direction: column;
+    }
+    
+    .comments-section {
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .product-image {
+        width: 300px;
+        height: 300px;
+        margin: 0 auto;
+    }
+    
+    .comment-actions {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    #submit-comment {
+        align-self: flex-end;
+    }
+}

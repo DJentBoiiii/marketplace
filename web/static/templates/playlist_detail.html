@@ -1,41 +1,60 @@
 {% extends "base.html" %}
 
-{% block content %}
-<div class="playlist-header">
-    <h2>Плейлист: {{ playlist_name }}</h2>
-    <div class="playlist-actions">
-        <a href="/playlists" class="back-button">Назад до плейлистів</a>
-    </div>
-</div>
+{% block head %}
+<link rel="stylesheet" href="/static/css/playlist_detail.css">
+{% endblock %}
 
-{% if items|length > 0 %}
-<div class="playlist-items">
-    {% for item in items %}
-    <div class="playlist-item">
-        <img src="{{ item.ImageURL }}" alt="{{ item.Name }}" class="product-image">
-        <div class="item-info">
-            <h3>{{ item.Name }}</h3>
-            <img src="{{ track.image_url }}" alt="{{ track.name }}" onclick="playAudio('{{ track.id }}')">
-            <p><strong>Власник:</strong> {{ item.Owner }}</p>
-            <p><strong>Тип:</strong> {{ item.Type }}</p>
-            {% if item.Genre %}
-            <p><strong>Жанр:</strong> {{ item.Genre }}</p>
-            {% endif %}
-            <div class="item-actions">
-                <a href="/product/{{ item.Name }}/{{ item.Owner }}" class="details-button">Детальніше</a>
-                <form action="/playlist/remove" method="POST" class="remove-form">
-                    <input type="hidden" name="item_id" value="{{ item.ItemId }}">
-                    <input type="hidden" name="playlist_id" value="{{ playlist_id }}">
-                    <button type="submit" class="remove-button">Видалити з плейлиста</button>
-                </form>
-            </div>
+{% block content %}
+<div class="container">
+    <div class="playlist-header">
+        <h2>Плейлист: {{ playlist_name }}</h2>
+        <div class="playlist-actions">
+            <a href="/playlists" class="btn btn-secondary">Назад до плейлистів</a>
         </div>
     </div>
-    {% endfor %}
+
+    {% if items|length > 0 %}
+    <div class="playlist-items">
+        {% for item in items %}
+        <div class="playlist-item">
+            <div class="image-container">
+                <img src="{{ item.ImageURL }}" alt="{{ item.Name }}" class="product-image" onclick="playAudio('{{ item.ProductID }}', '{{ item.Name }}', '{{ item.Owner }}', '{{ item.ImageURL }}'); return false;">
+                {% if item.Type == "audio" %}
+                <div class="play-button" data-product-id="{{ item.ProductID }}" data-product-name="{{ item.Name }}" data-product-owner="{{ item.Owner }}" onclick="playAudio('{{ item.ProductID }}', '{{ item.Name }}', '{{ item.Owner }}', '{{ item.ImageURL }}'); return false;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#1db954" height="48px" width="48px" viewBox="0 0 512 512" >
+                        <g>
+                            <path d="M256,0C114.88,0,0,114.88,0,256s114.88,256,256,256s256-114.88,256-256S397.12,0,256,0z M256,490.667 c-129.387,0-234.667-105.28-234.667-234.667S126.613,21.333,256,21.333S490.667,126.613,490.667,256S385.387,490.667,256,490.667z"/>
+                            <path d="M377.6,246.507L186.027,150.72c-5.227-2.667-11.627-0.533-14.293,4.8c-0.747,1.493-1.173,3.093-1.173,4.8v191.573 c0,5.867,4.8,10.667,10.667,10.667c1.6,0,3.307-0.427,4.8-1.173L377.6,265.493c5.227-2.667,7.36-9.067,4.8-14.293 C381.333,249.173,379.627,247.467,377.6,246.507z M192,334.72V177.28L349.44,256L192,334.72z"/>
+                        </g>
+                    </svg>
+                </div>
+                {% endif %}
+            </div>
+            <div class="item-info">
+                <h3>{{ item.Name }}</h3>
+                <p><strong>Власник:</strong> {{ item.Owner }}</p>
+                <p><strong>Тип:</strong> {{ item.Type }}</p>
+                {% if item.Genre %}
+                <p><strong>Жанр:</strong> {{ item.Genre }}</p>
+                {% endif %}
+                <div class="item-actions">
+                    <a href="/product/{{ item.Name }}/{{ item.Owner }}" class="btn btn-primary btn-block">Детальніше</a>
+                    <form action="/playlist/remove" method="POST" class="remove-form">
+                        <input type="hidden" name="item_id" value="{{ item.ItemId }}">
+                        <input type="hidden" name="playlist_id" value="{{ playlist_id }}">
+                        <button type="submit" class="btn btn-danger btn-block">Видалити</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-playlist">Плейлист порожній</p>
+    {% endif %}
 </div>
-{% else %}
-<p class="empty-playlist">Плейлист порожній</p>
-{% endif %}
+{% endblock %}
 
-
+{% block scripts %}
+<script src="/static/js/audio_player.js"></script>
 {% endblock %}

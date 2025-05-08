@@ -13,12 +13,20 @@ import (
 func ShowCatalogue(c *fiber.Ctx) error {
 	user, _ := auth.GetUserData(c)
 
+	// Get search query from the search form
+	search := c.Query("search", "")
+
 	name := c.Query("name", "")
 	vendor := c.Query("vendor", "")
 	genre := c.Query("genre", "")
 	minPriceStr := c.Query("min_price", "")
 	maxPriceStr := c.Query("max_price", "")
 	sortBy := c.Query("sort", "newest")
+
+	// If there's a search query, use it as the name filter
+	if search != "" {
+		name = search
+	}
 
 	var minPrice, maxPrice int
 	if minPriceStr != "" {
@@ -56,16 +64,19 @@ func ShowCatalogue(c *fiber.Ctx) error {
 			productsByType[product.Type] = append(productsByType[product.Type], product)
 		}
 
-		return render.RenderTemplate(c, "catalogue_filtered.html",
-			[2]interface{}{"user", user},
-			[2]interface{}{"productsByType", productsByType},
-			[2]interface{}{"filters", filterOptions},
-			[2]interface{}{"genres", genres},
-			[2]interface{}{"vendors", vendors},
-			[2]interface{}{"minPriceAll", minPriceAll},
-			[2]interface{}{"maxPriceAll", maxPriceAll},
-			[2]interface{}{"isFiltered", isFiltered},
-		)
+		data := render.TemplateData{
+			"user":           user,
+			"productsByType": productsByType,
+			"filters":        filterOptions,
+			"genres":         genres,
+			"vendors":        vendors,
+			"minPriceAll":    minPriceAll,
+			"maxPriceAll":    maxPriceAll,
+			"isFiltered":     isFiltered,
+			"search":         search,
+		}
+
+		return render.RenderTemplate(c, "catalogue_filtered.html", data)
 	}
 
 	products, err := productManagement.GetAllRandomProducts()
@@ -74,15 +85,17 @@ func ShowCatalogue(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Помилка завантаження продуктів")
 	}
 
-	return render.RenderTemplate(c, "catalogue.html",
-		[2]interface{}{"user", user},
-		[2]interface{}{"audioProducts", products["audio"]},
-		[2]interface{}{"midiProducts", products["midi"]},
-		[2]interface{}{"samplesProducts", products["samples"]},
-		[2]interface{}{"genres", genres},
-		[2]interface{}{"vendors", vendors},
-		[2]interface{}{"minPriceAll", minPriceAll},
-		[2]interface{}{"maxPriceAll", maxPriceAll},
-		[2]interface{}{"showAllTypesLink", true},
-	)
+	data := render.TemplateData{
+		"user":             user,
+		"audioProducts":    products["audio"],
+		"midiProducts":     products["midi"],
+		"samplesProducts":  products["samples"],
+		"genres":           genres,
+		"vendors":          vendors,
+		"minPriceAll":      minPriceAll,
+		"maxPriceAll":      maxPriceAll,
+		"showAllTypesLink": true,
+	}
+
+	return render.RenderTemplate(c, "catalogue.html", data)
 }

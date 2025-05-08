@@ -1,7 +1,6 @@
 package productManagement
 
 import (
-	"database/sql"
 	"fmt"
 	"time"
 
@@ -21,11 +20,7 @@ type FilterOptions struct {
 
 // GetFilteredProducts returns products filtered by the provided options
 func GetFilteredProducts(options FilterOptions) ([]models.Product, error) {
-	db, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %v", err)
-	}
-	defer db.Close()
+
 	// Build the query
 	queryBase := `SELECT id, name, price, type, description, vendor, genre, image_url, created_at 
                   FROM Products WHERE 1=1`
@@ -89,7 +84,7 @@ func GetFilteredProducts(options FilterOptions) ([]models.Product, error) {
 	}
 
 	// Execute the query
-	stmt, err := db.Prepare(queryBase)
+	stmt, err := DB.Prepare(queryBase)
 	if err != nil {
 		return nil, fmt.Errorf("failed to prepare query: %v", err)
 	}
@@ -107,7 +102,7 @@ func GetFilteredProducts(options FilterOptions) ([]models.Product, error) {
 		var product models.Product
 		var createdAt string
 		err := rows.Scan(
-			&product.Id,
+			&product.ID,
 			&product.Name,
 			&product.Price,
 			&product.Type,
@@ -134,14 +129,9 @@ func GetFilteredProducts(options FilterOptions) ([]models.Product, error) {
 
 // GetGenres returns a list of all distinct genres in the database
 func GetGenres() ([]string, error) {
-	db, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %v", err)
-	}
-	defer db.Close()
 
 	query := "SELECT DISTINCT genre FROM Products WHERE genre IS NOT NULL AND genre != ''"
-	rows, err := db.Query(query)
+	rows, err := DB.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query genres: %v", err)
 	}
@@ -161,14 +151,9 @@ func GetGenres() ([]string, error) {
 
 // GetVendors returns a list of all distinct vendors in the database
 func GetVendors() ([]string, error) {
-	db, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %v", err)
-	}
-	defer db.Close()
 
 	query := "SELECT DISTINCT vendor FROM Products"
-	rows, err := db.Query(query)
+	rows, err := DB.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query vendors: %v", err)
 	}
@@ -188,11 +173,6 @@ func GetVendors() ([]string, error) {
 
 // GetPriceRange returns the minimum and maximum product prices in the database
 func GetPriceRange(productType string) (int, int, error) {
-	db, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	if err != nil {
-		return 0, 0, fmt.Errorf("failed to connect to database: %v", err)
-	}
-	defer db.Close()
 
 	query := "SELECT MIN(price), MAX(price) FROM Products"
 	params := []interface{}{}
@@ -203,7 +183,7 @@ func GetPriceRange(productType string) (int, int, error) {
 	}
 
 	var minPrice, maxPrice int
-	err = db.QueryRow(query, params...).Scan(&minPrice, &maxPrice)
+	err := DB.QueryRow(query, params...).Scan(&minPrice, &maxPrice)
 	if err != nil {
 		return 0, 0, fmt.Errorf("failed to get price range: %v", err)
 	}

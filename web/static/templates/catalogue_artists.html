@@ -1,0 +1,39 @@
+<!-- catalogue_artists.html -->
+{% extends "base.html" %}
+
+{% block title %}Artists - DSA Marketplace{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="/static/css/catalogue_artists.css">
+
+<div class="container">
+    <div class="catalogue-header">
+        <h1>Artists</h1>
+        <p>Discover talented creators on DSA Marketplace</p>
+    </div>
+
+    <div class="artists-container">
+        {% for artist in Artists %}
+        <div class="artist-card">
+            <a href="/test/vendor/{{ artist.Username }}" class="artist-image-link">
+                <div class="artist-image">
+                    <img src="{{ artist.ProfilePic }}" alt="{{ artist.Username }}">
+                    <div class="image-overlay">
+                        <span class="view-text">View Products</span>
+                    </div>
+                </div>
+            </a>
+            <div class="artist-info">
+                <h3>{{ artist.Username }}</h3>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if Artists|length == 0 %}
+    <div class="no-artists">
+        <p>No artists found. Be the first to upload content!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

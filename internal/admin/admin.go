@@ -1,9 +1,12 @@
 package admin
 
 import (
+	"github.com/DjentBoiiii/marketplace/internal/db"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gofiber/fiber/v2"
 )
+
+var DB = db.DB
 
 func SetupAdminHandlers(app *fiber.App) {
 	adminGroup := app.Group("/admin", AdminRequired())

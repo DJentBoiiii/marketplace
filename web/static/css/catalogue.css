@@ -1,0 +1,212 @@
+/* Catalogue page styles following base.css conventions */
+
+body {
+    background-color: #121212;
+    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+h1, h2, h3 {
+    font-weight: 600;
+    margin-bottom: 0.5em;
+    color: #eee;
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    border-bottom: 2px solid #1db954;
+    padding-bottom: 0.3em;
+    margin-bottom: 1em;
+}
+
+.catalogue-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.product-card {
+    background-color: #161616;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease;
+}
+
+.product-card img:hover{
+    transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.7);
+}
+
+.product-image {
+    max-width: 100%;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    display: block;
+    transition: filter 0.3s ease;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.image-container .play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 48px;
+    color: #1db954; /* green color like До кошика link */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    user-select: none;
+}
+
+.image-container:hover .play-button {
+    opacity: 1;
+}
+
+.image-container:hover .product-image {
+    filter: brightness(50%);
+}
+
+.product-info {
+    text-align: center;
+    width: 100%;
+}
+
+.product-info h3 {
+    margin: 0.5em 0;
+    font-size: 1.2rem;
+}
+
+.product-info p {
+    margin: 0.3em 0;
+    color: #ccc;
+}
+
+.vendor a {
+    color: #1db954;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.vendor a:hover {
+    text-decoration: underline;
+}
+
+.details-button,
+.add-to-cart-button,
+.add-to-playlist-button {
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+}
+
+.details-button:hover,
+.add-to-cart-button:hover,
+.add-to-playlist-button:hover {
+    background-color: #17a44c;
+}
+
+.action-form {
+    margin-top: 10px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.view-all {
+    color: #1db954;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.view-all:hover {
+    text-decoration: underline;
+}
+
+/* Modal styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(18, 18, 18, 0.9);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #161616;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    color: #eee;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.7);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: white;
+    text-decoration: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .catalogue-grid {
+        grid-template-columns: 1fr;
+    }
+}

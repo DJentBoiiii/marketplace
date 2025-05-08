@@ -1,62 +1,74 @@
 {% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/upload.css">
+{% endblock %}
+
 {% block content %}
-<h2>Завантажити продукт</h2>
-<form action="/upload" method="POST" enctype="multipart/form-data">
-    <label for="file">Файл:</label>
-    <input type="file" name="file" id="fileInput" required><br>
+<div class="container">
+    <h2>Завантажити продукт</h2>
+    
+    <div class="upload-form-container">
+        <form action="/upload" method="POST" enctype="multipart/form-data" class="upload-form">
+            <div class="form-group">
+                <label for="file">Файл:</label>
+                <input type="file" name="file" id="fileInput" required class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label for="image">Зображення:</label>
+                <input type="file" name="image" id="imageInput" required class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label for="type">Категорія:</label>
+                <select name="type" id="typeSelect" required class="form-control">
+                    <option value="audio">Аудіо</option>
+                    <option value="midi">MIDI</option>
+                    <option value="samples">Семпли</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="genreContainer">
+                <label for="genre">Жанр (для аудіо):</label>
+                <select name="genre" id="genreSelect" class="form-control">
+                    <option value="">-- Виберіть жанр --</option>
+                    <option value="rock">Рок</option>
+                    <option value="pop">Поп</option>
+                    <option value="jazz">Джаз</option>
+                    <option value="electronic">Електронна</option>
+                    <option value="classical">Класична</option>
+                    <option value="hiphop">Хіп-хоп</option>
+                    <option value="other">Інше</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="typeContainer">
+                <label for="subtype">Тип (для MIDI та Семплів):</label>
+                <select name="subtype" id="subtypeSelect" class="form-control">
+                    <option value="">-- Виберіть тип --</option>
+                    <option value="loop">Луп</option>
+                    <option value="one-shot">Одинокий звук</option>
+                    <option value="fx">Ефекти</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Опис:</label>
+                <textarea name="description" class="form-control"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="price">Ціна:</label>
+                <input type="number" name="price" required class="form-control">
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-block">Завантажити</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-    <label for="image">Зображення:</label>
-    <input type="file" name="image" id="imageInput" required><br>
-
-    <label for="type">Тип:</label>
-    <select name="type">
-        <option value="audio">Аудіо</option>
-        <option value="midi">MIDI</option>
-        <option value="samples">Семпли</option>
-    </select><br>
-
-    <label for="description">Опис:</label>
-    <textarea name="description"></textarea><br>
-
-    <label for="price">Ціна:</label>
-    <input type="number" name="price" required><br>
-
-    <button type="submit">Завантажити</button>
-</form>
-<script>
-document.getElementById("fileInput").addEventListener("change", function () {
-    const file = this.files[0];
-    const category = document.querySelector('input[name="category"]:checked');
-
-    if (!file || !category) {
-        alert("Оберіть файл і категорію.");
-        return;
-    }
-
-    const audioFormats = [".mp3", ".wav", ".flac", ".ogg", ".m4a"];
-    const archiveFormats = [".zip"];
-    const fileExt = file.name.split(".").pop().toLowerCase();
-
-    if (category.value === "audio" && !audioFormats.includes("." + fileExt)) {
-        alert("Файл має бути аудіоформатом.");
-        this.value = "";
-    } else if ((category.value === "midi" || category.value === "samples") && !archiveFormats.includes("." + fileExt)) {
-        alert("Файл має бути ZIP-архівом.");
-        this.value = "";
-    }
-});
-
-document.getElementById("imageInput").addEventListener("change", function () {
-    const file = this.files[0];
-    if (!file) return;
-
-    const imgFormats = [".jpg", ".jpeg", ".png", ".webp"];
-    const fileExt = file.name.split(".").pop().toLowerCase();
-
-    if (!imgFormats.includes("." + fileExt)) {
-        alert("Зображення має бути у форматі JPG, JPEG, PNG або WebP.");
-        this.value = "";
-    }
-});
-</script>
+<script src="../js/upload.js"></script>
 {% endblock %}

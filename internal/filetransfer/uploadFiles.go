@@ -2,7 +2,6 @@ package filetransfer
 
 import (
 	"bytes"
-	"database/sql"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -38,6 +37,14 @@ func UploadFile(c *fiber.Ctx) error {
 	typeVal := c.FormValue("type")
 	description := c.FormValue("description")
 	price, _ := strconv.Atoi(c.FormValue("price"))
+
+	// Add genre handling
+	var genre string
+	if typeVal == "audio" {
+		genre = c.FormValue("genre")
+	} else if typeVal == "midi" || typeVal == "samples" {
+		genre = c.FormValue("subtype")
+	}
 
 	src, err := file.Open()
 	if err != nil {
@@ -108,17 +115,23 @@ func UploadFile(c *fiber.Ctx) error {
 	filename := strings.TrimSuffix(file.Filename, filepath.Ext(file.Filename))
 	extension := filepath.Ext(file.Filename)
 
-	db, _ := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	_, err = db.Exec(
-		"INSERT INTO Products (name, type, price, description, vendor, image_url, Extension) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		filename, typeVal, price, description, user.Username, imgDBPath, extension,
+	_, err = DB.Exec(
+		"INSERT INTO Products (name, type, price, description, vendor, image_url, Extension, genre) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+		filename, typeVal, price, description, user.Username, imgDBPath, extension, genre,
 	)
 	if err != nil {
 		fmt.Println(err)
 		return c.Status(500).SendString("Помилка запису в базу")
 	}
 
-	err = sendEmbedRequest(objectPath, "Licensed by DSA")
+	// Set is_artist flag to true for the user who uploaded a product
+	_, err = DB.Exec("UPDATE Users SET is_artist = TRUE WHERE username = ?", user.Username)
+	if err != nil {
+		fmt.Println("Error updating user as artist:", err)
+		// Continue execution even if setting the artist flag fails
+	}
+
+	err = sendEmbedRequest(objectPath, "(C)"+user.Username)
 	if err != nil {
 		fmt.Println("Помилка вмонтування водяного знаку:", err)
 		return c.Status(500).SendString("Помилка вмонтування водяного знаку")

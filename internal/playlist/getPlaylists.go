@@ -45,7 +45,7 @@ func GetUserPlaylists(userId int) ([]models.Playlist, error) {
 	return playlists, nil
 }
 
-func GetPlaylistItems(playlistId string) ([]models.PlaylistItem, error) {
+func GetPlaylistItems(playlistId string) ([]models.Product, error) {
 	rows, err := DB.Query(`
 		SELECT pi.id AS item_id, p.id, p.name, p.price, p.type, 
 			   p.description, u.username AS owner, p.image_url, p.genre
@@ -58,12 +58,12 @@ func GetPlaylistItems(playlistId string) ([]models.PlaylistItem, error) {
 	}
 	defer rows.Close()
 
-	var items []models.PlaylistItem
+	var items []models.Product
 	for rows.Next() {
-		var item models.PlaylistItem
+		var item models.Product
 		var imagePath string
 		if err := rows.Scan(
-			&item.ItemId, &item.ProductID, &item.Name, &item.Price, &item.Type,
+			&item.ItemID, &item.ID, &item.Name, &item.Price, &item.Type,
 			&item.Description, &item.Owner, &imagePath, &item.Genre); err != nil {
 			return nil, err
 		}

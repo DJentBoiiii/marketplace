@@ -1,0 +1,425 @@
+/* Catalogue Filtered Page Styles */
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.section-header h1 {
+    font-size: 1.8rem;
+    margin: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #1db954;
+    color: #eee;
+    font-weight: 600;
+    flex: 1;
+}
+
+.back-button {
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+}
+
+.back-button:hover {
+    background-color: #444;
+}
+
+/* Filter panel styling */
+.filter-panel {
+    background-color: #161616;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+}
+
+.filter-panel h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    color: #1db954;
+    font-weight: 600;
+}
+
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #eee;
+    font-weight: 600;
+}
+
+.filter-group input[type="text"],
+.filter-group select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #333;
+    color: #eee;
+    font-size: 1rem;
+}
+
+.filter-group input[type="text"]:focus,
+.filter-group select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #1db954;
+}
+
+.price-range {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.price-input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #333;
+    color: #eee;
+    font-size: 1rem;
+}
+
+.price-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #1db954;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.filter-button {
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.filter-button:hover {
+    background-color: #17a44c;
+}
+
+.reset-button {
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+}
+
+.reset-button:hover {
+    background-color: #444;
+}
+
+/* Product section styling */
+.product-section {
+    margin-bottom: 3rem;
+}
+
+.product-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #1db954;
+    color: #eee;
+    font-weight: 600;
+}
+
+.catalogue-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.product-card {
+    background-color: #161616;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.7);
+}
+
+.product-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    display: block;
+    transition: filter 0.3s ease;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.image-container .play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 48px;
+    color: #1db954;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    user-select: none;
+}
+
+.image-container:hover .play-button {
+    opacity: 1;
+}
+
+.image-container:hover .product-image {
+    filter: brightness(50%);
+}
+
+.product-info {
+    text-align: center;
+    width: 100%;
+}
+
+.product-info h3 {
+    margin: 0.5rem 0;
+    font-size: 1.2rem;
+    color: #eee;
+}
+
+.product-info p {
+    margin: 0.3rem 0;
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.vendor a {
+    color: #1db954;
+    text-decoration: none;
+}
+
+.vendor a:hover {
+    text-decoration: underline;
+}
+
+.genre {
+    margin-top: 0.3rem;
+}
+
+.details-button {
+    display: inline-block;
+    background-color: #1db954;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    margin-top: 10px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.details-button:hover {
+    background-color: #17a44c;
+}
+
+.action-form {
+    margin-top: 8px;
+    width: 100%;
+}
+
+.add-to-cart-button {
+    width: 100%;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.add-to-cart-button:hover {
+    background-color: #444;
+}
+
+.add-to-playlist-button {
+    width: 100%;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    margin-top: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.add-to-playlist-button:hover {
+    background-color: #444;
+}
+
+/* Empty results */
+.empty-result {
+    text-align: center;
+    color: #aaa;
+    font-size: 1.1rem;
+    margin: 2rem 0;
+    padding: 2rem;
+    background-color: #161616;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+}
+
+/* Modal styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(18, 18, 18, 0.9);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #161616;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    color: #eee;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.7);
+}
+
+.modal-content h3 {
+    color: #1db954;
+    margin-top: 0;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: white;
+}
+
+.modal-content form {
+    margin-top: 20px;
+}
+
+.modal-content select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #333;
+    color: #eee;
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+.modal-content select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #1db954;
+}
+
+.add-to-playlist-button {
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.add-to-playlist-button:hover {
+    background-color: #17a44c;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .filter-row {
+        flex-direction: column;
+    }
+    
+    .filter-group {
+        width: 100%;
+    }
+    
+    .filter-buttons {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .catalogue-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .catalogue-grid {
+        grid-template-columns: 1fr;
+    }
+}

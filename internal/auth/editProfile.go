@@ -20,13 +20,6 @@ func EditProfile(c *fiber.Ctx) error {
 		return c.Status(401).SendString("Необхідно увійти в систему")
 	}
 
-	// Fetch the full user data from DB including bio and profile photo
-	DB, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	if err != nil {
-		return c.Status(500).SendString("Помилка підключення до БД")
-	}
-	defer DB.Close()
-
 	var bio, profilePhoto string
 	err = DB.QueryRow("SELECT COALESCE(bio, ''), COALESCE(profile_photo, '') FROM Users WHERE id = ?", user.Id).
 		Scan(&bio, &profilePhoto)
@@ -39,7 +32,8 @@ func EditProfile(c *fiber.Ctx) error {
 	user.Profile_pic = profilePhoto
 
 	return render.RenderTemplate(c, "edit_profile.html",
-		[2]interface{}{"user", user},
+		render.TemplateData{
+			"user": user},
 	)
 }
 
@@ -53,13 +47,6 @@ func UpdateProfile(c *fiber.Ctx) error {
 	// Get form values
 	email := c.FormValue("email")
 	bio := c.FormValue("bio")
-
-	// Connect to database
-	DB, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	if err != nil {
-		return c.Status(500).SendString("Помилка підключення до БД")
-	}
-	defer DB.Close()
 
 	var profilePhotoPath string = ""
 
@@ -147,13 +134,6 @@ func ChangePassword(c *fiber.Ctx) error {
 		return c.Status(400).SendString("Паролі не співпадають")
 	}
 
-	// Connect to database
-	DB, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp(boku-no-sukele:3306)/"+DB_NAME)
-	if err != nil {
-		return c.Status(500).SendString("Помилка підключення до БД")
-	}
-	defer DB.Close()
-
 	// Verify current password
 	var storedPassword string
 	err = DB.QueryRow("SELECT password FROM Users WHERE id = ?", user.Id).Scan(&storedPassword)
@@ -177,11 +157,6 @@ func ChangePassword(c *fiber.Ctx) error {
 }
 
 func GetUserWithProfile(username string) (*models.Account, error) {
-	DB, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	if err != nil {
-		return nil, fmt.Errorf("помилка підключення до БД: %w", err)
-	}
-	defer DB.Close()
 
 	var user models.Account
 	err = DB.QueryRow(`

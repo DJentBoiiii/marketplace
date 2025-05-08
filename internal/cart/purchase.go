@@ -31,7 +31,7 @@ func PurchaseItems(c *fiber.Ctx) error {
 	for _, product := range cartProducts {
 
 		var count int
-		err = tx.QueryRow("SELECT COUNT(*) FROM Purchases WHERE user_id = ? AND product_id = ?", user.Id, product.Id).Scan(&count)
+		err = tx.QueryRow("SELECT COUNT(*) FROM Purchases WHERE user_id = ? AND product_id = ?", user.Id, product.ID).Scan(&count)
 		if err != nil {
 			tx.Rollback()
 			return c.Status(500).SendString("Помилка перевірки покупок")
@@ -41,7 +41,7 @@ func PurchaseItems(c *fiber.Ctx) error {
 			continue
 		}
 
-		_, err = tx.Exec("INSERT INTO Purchases (user_id, product_id) VALUES (?, ?)", user.Id, product.Id)
+		_, err = tx.Exec("INSERT INTO Purchases (user_id, product_id) VALUES (?, ?)", user.Id, product.ID)
 		if err != nil {
 			tx.Rollback()
 			return c.Status(500).SendString(fmt.Sprintf("Помилка покупки продукту %s: %v", product.Name, err))

@@ -3,7 +3,8 @@ package models
 import "time"
 
 type Product struct {
-	Id          int
+	ID          int
+	ItemID      int
 	Name        string
 	Price       int
 	Type        string

@@ -27,15 +27,15 @@
         <tbody>
             {% for product in products %}
             <tr>
-                <td>{{ product.Id }}</td>
+                <td>{{ product.ID }}</td>
                 <td><img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-thumbnail"></td>
                 <td>{{ product.Name }}</td>
                 <td>{{ product.Price }} грн</td>
                 <td>{{ product.Genre }}</td>
                 <td>{{ product.Owner }}</td>
                 <td class="actions">
-                    <a href="/product/{{ product.Id }}" class="view-button" target="_blank">Перегляд</a>
-                    <form action="/admin/products/{{ product.Id }}/delete?type={{ productType }}" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити цей продукт?');">
+                    <a href="/product/{{ product.ID }}" class="view-button" target="_blank">Перегляд</a>
+                    <form action="/admin/products/{{ product.ID }}/delete?type={{ productType }}" method="post" onsubmit="return confirm('Ви впевнені, що хочете видалити цей продукт?');">
                         <button type="submit" class="delete-button">Видалити</button>
                     </form>
                 </td>

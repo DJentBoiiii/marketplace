@@ -1,0 +1,77 @@
+.upload-container {
+    background-color: black;
+    border-radius: 8px;
+    padding: 40px 20px;
+    min-height: 80vh;
+    color: #eee;
+}
+
+.upload-container h2 {
+    text-align: center;
+}
+
+.upload-form-container {
+    margin: 20px auto 0 auto;
+    width: 100%;
+    max-width: 600px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #eee;
+}
+
+.form-control {
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background-color: #222;
+    color: #eee;
+    font-size: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #1db954;
+    box-shadow: 0 0 5px #1db954;
+    background-color: #1a1a1a;
+}
+
+.form-control.readonly {
+    background-color: #333;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.edit-profile-btn {
+    background-color: #1db954;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.edit-profile-btn:hover {
+    background-color: #17a44c;
+}

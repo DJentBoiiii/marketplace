@@ -10,6 +10,7 @@ import (
 	"github.com/DjentBoiiii/marketplace/internal/catalogue"
 	"github.com/DjentBoiiii/marketplace/internal/comments"
 	"github.com/DjentBoiiii/marketplace/internal/filetransfer"
+	"github.com/DjentBoiiii/marketplace/internal/likes"
 	"github.com/DjentBoiiii/marketplace/internal/player"
 	"github.com/DjentBoiiii/marketplace/internal/playlist"
 	"github.com/DjentBoiiii/marketplace/internal/productManagement"
@@ -25,6 +26,7 @@ func SetupHandlers(app *fiber.App) {
 	playlist.SetupPlaylistHandlers(app)
 	player.RegisterRoutes(app)
 	comments.SetupCommentRoutes(app)
+	likes.SetupLikeRoutes(app)
 	filetransfer.SetupUploadHandlers(app)
 	catalogue.SetupCatalogueRoutes(app)
 	admin.SetupAdminHandlers(app)

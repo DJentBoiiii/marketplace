@@ -5,48 +5,91 @@
 {% block title %}Продукти від {{ vendor.Username }}{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="/static/css/vendor.css">
+<link rel="stylesheet" href="/static/css/catalogue.css">
+
 <div class="container">
-    <div class="vendor-header">
-        <div class="vendor-info">
+    <!-- Back navigation -->
+    <a href="/catalogue" class="back-button">← До каталогу</a>
+    
+    <!-- Vendor Profile Section -->
+    <div class="vendor-profile">
+        <div class="vendor-image-container">
             {% if vendor.ProfilePic %}
             <img src="{{ vendor.ProfilePic }}" alt="{{ vendor.Username }}" class="vendor-image">
             {% else %}
             <div class="vendor-image-placeholder">{{ vendor.Username|slice:":1" }}</div>
             {% endif %}
-            <h1>Продукти від {{ vendor.Username }}</h1>
         </div>
-        <a href="/catalogue" class="back-button">← До каталогу</a>
-    </div>
-
-    {% for type, products in productsByType %}
-    <section>
-        <div class="catalogue-grid">
-            {% for product in products %}
-            <div class="product-card">
-                <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image">
-                <div class="product-info">
-                    <h3>{{ product.Name }}</h3>
-                    <p>{{ product.Price }} грн</p>
-                    <a href="/product/{{ product.Id }}" class="details-button">Деталі</a>
-                    {% if user.Username %}
-                    <form action="/cart/add" method="POST" class="action-form">
-                        <input type="hidden" name="product_id" value="{{ product.Id }}">
-                        <button type="submit" class="add-to-cart-button">В кошик</button>
-                    </form>
-                    <button onclick="showPlaylistModal('{{ product.Id }}')" class="add-to-playlist-button">До плейлиста</button>
+        <div class="vendor-details">
+            <h1 class="vendor-name">{{ vendor.Username }}</h1>
+            <div class="vendor-info">
+                {% if vendor.Bio %}
+                <p>{{ vendor.Bio }}</p>
+                {% endif %}
+                <div class="vendor-stats">
+                    <div class="vendor-stat">
+                        <strong>Продуктів:</strong> {{ productCount }}
+                    </div>
+                    {% if vendor.JoinDate %}
+                    <div class="vendor-stat">
+                        <strong>На сайті з:</strong> {{ vendor.JoinDate|date:"d.m.Y" }}
+                    </div>
                     {% endif %}
                 </div>
             </div>
-            {% endfor %}
         </div>
-    </section>
-    {% endfor %}
-
-    {% if productsByType|length == 0 %}
-    <div class="empty-result">
-        <p>У цього продавця поки що немає продуктів</p>
     </div>
-    {% endif %}
+
+    <!-- Vendor Products Section -->
+    <div class="vendor-products-section">
+        <h2>Усі продукти</h2>
+        
+        {% for type, products in productsByType %}
+        <section>
+            <div class="section-header">
+                <h3>{{ type }}</h3>
+            </div>
+            <div class="catalogue-grid">
+                {% for product in products %}
+                <div class="product-card" data-product-id="{{ product.ID }}">
+                    <div class="image-container">
+                        <img src="/{{ product.ImageURL }}" alt="{{ product.Name }}" class="product-image" onclick="playAudio('{{ product.ID }}', '{{ product.Name }}', '{{ product.Owner }}', '/{{ product.ImageURL }}'); return false;" />
+                        {% if product.Type == "audio" %}
+                        <div class="play-button" data-product-id="{{ product.ID }}" data-product-name="{{ product.Name }}" data-product-owner="{{ product.Owner }}" onclick="playAudio('{{ product.ID }}', '{{ product.Name }}', '{{ product.Owner }}', '/{{ product.ImageURL }}'); return false;">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="#1db954" height="48px" width="48px" viewBox="0 0 512 512" >
+                                <g>
+                                    <path d="M256,0C114.88,0,0,114.88,0,256s114.88,256,256,256s256-114.88,256-256S397.12,0,256,0z M256,490.667 c-129.387,0-234.667-105.28-234.667-234.667S126.613,21.333,256,21.333S490.667,126.613,490.667,256S385.387,490.667,256,490.667z"/>
+                                    <path d="M377.6,246.507L186.027,150.72c-5.227-2.667-11.627-0.533-14.293,4.8c-0.747,1.493-1.173,3.093-1.173,4.8v191.573 c0,5.867,4.8,10.667,10.667,10.667c1.6,0,3.307-0.427,4.8-1.173L377.6,265.493c5.227-2.667,7.36-9.067,4.8-14.293 C381.333,249.173,379.627,247.467,377.6,246.507z M192,334.72V177.28L349.44,256L192,334.72z"/>
+                                </g>
+                            </svg>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <h3>{{ product.Name }}</h3>
+                        <p>{{ product.Price }} грн</p>
+                        {% if product.Genre %}
+                        <p class="genre">Тип: {{ product.Genre }}</p>
+                        {% endif %}
+                        <a href="/product/{{ product.Name }}/{{ product.Owner }}" class="catalog-btn">Деталі</a>
+                        {% if user.Username %}
+                        <a href="/cart/add?product_id={{ product.ID }}" class="add-to-cart-button">В кошик</a>
+                        <a href="#" onclick="showPlaylistModal('{{ product.ID }}'); return false;" class="add-to-playlist-button">До плейлиста</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endfor %}
+
+        {% if productsByType|length == 0 %}
+        <div class="empty-result">
+            <p>У цього продавця поки що немає продуктів</p>
+        </div>
+        {% endif %}
+    </div>
 </div>
 
 <!-- Playlist Modal -->
@@ -54,16 +97,47 @@
 <div id="playlistModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closePlaylistModal()">&times;</span>
-        <h3>Додати до плейлиста</h3>
-        <form action="/playlist/add-item" method="POST">
-            <input type="hidden" id="modalProductId" name="product_id" value="">
-            <select name="playlist_id" required>
-                <option value="">Оберіть плейлист</option>
-                <!-- In a real app, this would be populated from the backend -->
-            </select>
-            <button type="submit" class="add-to-playlist-button">Додати</button>
-        </form>
+        
+        <!-- Tab Navigation -->
+        <div class="modal-tabs">
+            <button class="tab-button active" onclick="switchTab('existing-playlist-tab')">Додати до плейлиста</button>
+            <button class="tab-button" onclick="switchTab('create-playlist-tab')">Створити плейлист</button>
+        </div>
+        
+        <!-- Add to Existing Playlist Tab -->
+        <div id="existing-playlist-tab" class="tab-content">
+            <h3>Додати до плейлиста</h3>
+            <form action="/playlist/add-item" method="POST">
+                <input type="hidden" id="modalProductId" name="product_id" value="">
+                <select name="playlist_id" required>
+                    <option value="">Оберіть плейлист</option>
+                    {% for item in playlist %}
+                    <option value="{{ item.Id }}">{{ item.Name }} ({{ item.ItemCount }} треків)</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="add-to-playlist-button">Додати</button>
+            </form>
+        </div>
+        
+        <!-- Create New Playlist Tab -->
+        <div id="create-playlist-tab" class="tab-content" style="display: none;">
+            <h3>Створити новий плейлист</h3>
+            <form action="/playlist/create-and-add" method="POST" id="create-playlist-form">
+                <input type="hidden" id="newPlaylistProductId" name="product_id" value="">
+                <div class="form-group">
+                    <label for="playlist_name">Назва плейлиста:</label>
+                    <input type="text" id="playlist_name" name="playlist_name" placeholder="Введіть назву плейлиста" required>
+                </div>
+                <button type="submit" class="create-playlist-button">Створити і додати</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/audio_player.js"></script>
+<script src="/static/js/catalogue.js"></script>
+<script src="/static/js/playlist.js"></script>
 {% endblock %}

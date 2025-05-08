@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="profile-edit-container">
+<link rel="stylesheet" type="text/css" href="/static/css/edit_profile.css" />
+<link rel="stylesheet" href="/static/css/catalogue.css" />
+
+<div class="profile-edit-container container">
     <h2>Редагувати профіль</h2>
     
     <div class="profile-form-container">
@@ -31,12 +34,15 @@
                     <div class="no-photo">Немає фото</div>
                     {% endif %}
                 </div>
-                <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="form-control">
+                <div class="custom-file-input">
+                    <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="form-control">
+                    <label for="profile_photo" class="custom-file-label">Вибрати файл</label>
+                </div>
                 <span class="help-text">Завантажте нове фото або залиште порожнім, щоб зберегти поточне</span>
             </div>
             
             <div class="form-actions">
-                <button type="submit" class="btn-save">Зберегти зміни</button>
+                <button type="submit" class="edit-profile-btn">Зберегти зміни</button>
                 <a href="/profile/{{ user.Username }}" class="btn-cancel">Скасувати</a>
             </div>
         </form>
@@ -61,7 +67,7 @@
             </div>
             
             <div class="form-actions">
-                <button type="submit" class="btn-save">Змінити пароль</button>
+                <button type="submit" class="edit-profile-btn">Змінити пароль</button>
             </div>
         </form>
     </div>

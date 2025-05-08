@@ -1,8 +1,6 @@
 package comments
 
 import (
-	"database/sql"
-
 	"github.com/DjentBoiiii/marketplace/internal/auth"
 	"github.com/gofiber/fiber/v2"
 )
@@ -24,18 +22,9 @@ func DeleteComment(c *fiber.Ctx) error {
 		})
 	}
 
-	db, err := sql.Open("mysql", DB_USER+":"+DB_PASSWORD+"@tcp("+DB_HOST+":3306)/"+DB_NAME)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"success": false,
-			"message": "Помилка підключення до бази даних",
-		})
-	}
-	defer db.Close()
-
 	var commentUserID int
 	var isAdmin bool
-	err = db.QueryRow("SELECT user_id FROM Comments WHERE id = ?", commentID).Scan(&commentUserID)
+	err = DB.QueryRow("SELECT user_id FROM Comments WHERE id = ?", commentID).Scan(&commentUserID)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"success": false,
@@ -43,7 +32,7 @@ func DeleteComment(c *fiber.Ctx) error {
 		})
 	}
 
-	err = db.QueryRow("SELECT is_admin FROM Users WHERE id = ?", user.Id).Scan(&isAdmin)
+	err = DB.QueryRow("SELECT is_admin FROM Users WHERE id = ?", user.Id).Scan(&isAdmin)
 	if err != nil {
 		isAdmin = false
 	}
@@ -55,7 +44,7 @@ func DeleteComment(c *fiber.Ctx) error {
 		})
 	}
 
-	_, err = db.Exec("DELETE FROM Comments WHERE id = ?", commentID)
+	_, err = DB.Exec("DELETE FROM Comments WHERE id = ?", commentID)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
